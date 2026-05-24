@@ -2,6 +2,9 @@ streamlit
 openai
 langchain-openai
 langchain-community
-chromadb
-beautifulsoup4
+chromadb==0.4.22
+protobuf==3.20.3
+opentelemetry-api
+opentelemetry-sdk
 requests
+beautifulsoup4
