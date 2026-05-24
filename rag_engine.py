@@ -75,4 +75,19 @@ ODPOWIEDŹ:"""
 def chunk_legal_text(raw_text, source_title):
     pattern = r'(?=Art\.\s*\d+[a-z]*\.)'
     raw_chunks = re.split(pattern, raw_text)
-    return [{"text": f"[ŹRÓDŁO: {source_title}]\n[{'Artykuł' if re.search(r'^Art\.', c.strip()) else 'Sekcja'}]\n---\n{c.strip()}", "metadata": {"source": source_title}} for c in raw_chunks if c.strip()]
+    
+    results = []
+    for c in raw_chunks:
+        clean_c = c.strip()
+        if clean_c:
+            # Rozwiązanie błędu: Brak ukośników, bezpieczne wyciągnięcie zmiennej
+            typ_tekstu = 'Artykuł' if clean_c.startswith('Art.') else 'Sekcja'
+            
+            gotowy_tekst = f"[ŹRÓDŁO: {source_title}]\n[{typ_tekstu}]\n---\n{clean_c}"
+            
+            results.append({
+                "text": gotowy_tekst,
+                "metadata": {"source": source_title}
+            })
+            
+    return results
