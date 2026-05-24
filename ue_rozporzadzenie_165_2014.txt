@@ -1,0 +1,1416 @@
+28.2.2014
+PL
+Dziennik Urzędowy Unii Europejskiej
+L 60/1
+ROZPORZĄDZENIE PARLAMENTU EUROPEJSKIEGO I RADY (UE) NR 165/2014
+z dnia 4 lutego 2014 r.
+w sprawie tachografów stosowanych w transporcie drogowym i uchylające rozporządzenie Rady (EWG) nr 3821/85 w sprawie urządzeń rejestrujących stosowanych w transporcie drogowym oraz zmieniające rozporządzenie (WE) nr 561/2006 Parlamentu Europejskiego i Rady w sprawie harmonizacji niektórych przepisów socjalnych odnoszących się do transportu drogowego
+(Tekst mający znaczenie dla EOG)
+PARLAMENT EUROPEJSKI I RADA UNII EUROPEJSKIEJ,
+uwzględniając Traktat o funkcjonowaniu Unii Europejskiej, w szczególności jego art. 91,
+uwzględniając wniosek Komisji Europejskiej,
+po przekazaniu projektu aktu ustawodawczego parlamentom narodowym,
+uwzględniając opinię Europejskiego Komitetu Ekonomiczno-Społecznego
+(
+1
+)
+,
+po konsultacji z Komitetem Regionów,
+stanowiąc zgodnie ze zwykłą procedurą ustawodawczą
+(
+2
+)
+,
+a także mając na uwadze, co następuje:
+(1)
+Rozporządzenie Rady (EWG) nr 3821/85
+(
+3
+)
+ustanawia przepisy dotyczące budowy, instalacji, użytkowania oraz sprawdzania tachografów. Kilkukrotnie wprowadzano do niego znaczne zmiany. W celu zapewnienia większej przejrzystości jego główne przepisy należy uprościć i uporządkować.
+(2)
+Doświadczenie wskazuje, że w celu zapewnienia skuteczności i sprawności systemu tachografów należy wprowadzić poprawki do pewnych elementów technicznych i procedur kontroli.
+(3)
+Niektóre pojazdy zostały zwolnione z obowiązku stosowania przepisów rozporządzenia (WE) nr 561/2006 Parlamentu Europejskiego i Rady
+(
+4
+)
+. Na potrzeby zapewnienia spójności powinna również istnieć możliwość wyłączenia takich pojazdów z zakresu niniejszego rozporządzenia.
+(4)
+W pojazdach, do których ma zastosowanie rozporządzenie (WE) nr 561/2006, należy instalować tachografy. Aby zapewnić pełną elastyczność, niektóre pojazdy powinny być wyłączone z zakresu stosowania tego rozporządzenia, mianowicie pojazdy o dopuszczalnej masie całkowitej nieprzekraczającej 7,5 tony używane do przewozu materiałów, sprzętu lub urządzeń do użytku kierowcy w trakcie pracy, które to pojazdy są używane wyłącznie w promieniu 100 km od bazy przedsiębiorstwa oraz pod warunkiem że prowadzenie takich pojazdów nie stanowi głównego zajęcia kierowcy. Celem zapewnienia spójności pomiędzy odpowiednimi wyłączeniami określonymi w rozporządzeniu (WE) nr 561/2006 oraz ograniczenia obciążeń administracyjnych dla przedsiębiorstw transportowych, przy jednoczesnym uwzględnieniu celów tego rozporządzenia, należy zweryfikować niektóre określone w tych wyłączeniach maksymalne dopuszczalne odległości.
+(5)
+Komisja rozważy przedłużenie okresu ważności adapterów dla pojazdów M1 i N1 do roku 2015, a przed upływem tego terminu określi dalsze długoterminowe rozwiązanie dla tych pojazdów.
+(6)
+Komisja powinna rozważyć instalowanie w pojazdach ciężarowych czujników wagi; powinna też ocenić, na ile czujniki wagi mogą się przyczynić do lepszego przestrzegania przepisów w transporcie drogowym.
+(7)
+Korzystanie z tachografów połączonych z globalnym systemem nawigacji satelitarnej stanowi właściwy i oszczędny środek umożliwiający automatyczną rejestrację położenia pojazdu w określonym miejscu podczas dziennego okresu pracy w celu wspierania funkcjonariuszy kontrolujących w trakcie kontroli; należy zatem wprowadzić taki środek.
+(8)
+Ponieważ w swoim wyroku w sprawie C-394/92
+(
+5
+)
+MICHELSEN i Bebel Transport Service Trybunał Sprawiedliwości przedstawił definicję „dzienny okres pracy”, organy kontrolne powinny interpretować przepisy niniejszego rozporządzenia w świetle tej definicji. „Dzienny okres pracy” rozpoczyna się wraz z uruchomieniem przez kierowcę tachografu po zakończeniu tygodniowego lub dziennego okresu odpoczynku lub, jeżeli dzienny odpoczynek podzielony jest na odrębne okresy, po okresie odpoczynku trwającym co najmniej dziewięć godzin. Jego zakończenie następuje z rozpoczęciem dziennego okresu odpoczynku lub, jeżeli dzienny odpoczynek podzielony jest na oddzielne okresy, z rozpoczęciem okresu odpoczynku obejmującego co najmniej dziewięć kolejnych godzin.
+(9)
+W dyrektywie 2006/22/WE Parlamentu Europejskiego i Rady
+(
+6
+)
+nałożono na państwa członkowskie wymóg wykonywania minimalnej liczby kontroli drogowych. Komunikacja na odległość pomiędzy tachografem a organami kontrolnymi na potrzeby kontroli drogowych ułatwia ukierunkowane kontrole drogowe, umożliwiając zmniejszenie obciążeń administracyjnych powodowanych przez kontrole losowe przedsiębiorstw transportowych i należy ją wprowadzić.
+(10)
+Inteligentne systemy transportowe (ITS) mogą pomóc w sprostaniu wyzwaniom dotyczącym europejskiej polityki transportowej, takim jak zwiększający się wolumen transportu drogowego i jego natężenie oraz zwiększające się zużycie energii. Należy zatem wyposażyć tachografy w znormalizowane interfejsy w celu zagwarantowania ich interoperacyjności z aplikacjami ITS.
+(11)
+Priorytetowo należy traktować tworzenie aplikacji ułatwiających kierowcom odczytywanie danych zarejestrowanych przez tachograf w celu ułatwienia im zachowania zgodności z przepisami socjalnymi.
+(12)
+Zabezpieczenie tachografów i ich systemu jest kwestią kluczową z punktu widzenia zapewnienia wiarygodności wygenerowanych danych. Producenci powinni zatem projektować, testować i poddawać ciągłym przeglądom tachografy w okresie ich użytkowania w celu wykrywania braków w zabezpieczeniu, zapobiegania im i ich ograniczania.
+(13)
+Badania eksploatacyjne tachografów, które nie uzyskały jeszcze homologacji typu, umożliwiają testowanie urządzeń w warunkach rzeczywistych przed ich wprowadzeniem na szeroką skalę, tym samym umożliwiając szybsze wprowadzenie usprawnień. Należy zatem zezwolić na badania eksploatacyjne, pod warunkiem że udział w takich badaniach i zgodność z przepisami rozporządzenia (WE) nr 561/2006 będą skutecznie monitorowane i kontrolowane.
+(14)
+Zważywszy na znaczenie zachowania jak najwyższego stopnia bezpieczeństwa, świadectwa bezpieczeństwa powinny być wydawane przez jednostkę certyfikującą uznawaną przez Komitet Zarządzający w ramach „Umowy o wzajemnym uznawaniu świadectw z oceny bezpieczeństwa informatycznego” przyjętej przez grupę wyższych urzędników ds. bezpieczeństwa systemów informatycznych (SOG-IS).
+W kontekście stosunków międzynarodowych z państwami trzecimi Komisja nie powinna uznawać żadnej jednostki certyfikującej do celów niniejszego rozporządzenia, o ile jednostka ta nie zapewni warunków oceny bezpieczeństwa równoważnych warunkom przewidzianym w umowie o wzajemnym uznawaniu świadectw. W takich przypadkach należy odwołać się do opinii Komitetu Zarządzającego.
+(15)
+Instalatorzy i warsztaty odgrywają istotną rolę w bezpieczeństwie tachografów. Właściwe jest zatem określenie pewnych minimalnych wymogów dotyczących ich wiarygodności oraz ich zatwierdzania i audytowania. Ponadto państwa członkowskie powinny przyjąć odpowiednie środki, aby zapobiegać konfliktom interesów między instalatorami lub warsztatami a przedsiębiorstwami przewozowymi. Żaden z przepisów niniejszego rozporządzenia nie zabrania państwom członkowskim dokonywać kontroli i certyfikacji, przy zastosowaniu procedur określonych w rozporządzeniu Parlamentu Europejskiego i Rady (WE) nr 765/2008
+(
+7
+)
+, pod warunkiem spełnienia kryteriów minimalnych zawartych w niniejszym rozporządzeniu.
+(16)
+W celu zapewnienia skuteczniejszego nadzoru nad kartami kierowcy i ich kontroli oraz w celu ułatwienia wykonywania zadań funkcjonariuszom kontrolującym należy ustanowić krajowe rejestry elektroniczne oraz przepisy dotyczące ich wzajemnego połączenia.
+(17)
+Przy sprawdzaniu niepowtarzalności kart kierowcy państwa członkowskie powinny stosować procedury zawarte w zaleceniu Komisji 2010/19/UE
+(
+8
+)
+.
+(18)
+Należy wziąć pod uwagę szczególną sytuację, w której państwo członkowskie powinno mieć możliwość wydania kierowcy niemającemu normalnego miejsca zamieszkania w państwie członkowskim lub państwie będącym umawiającą się stroną Umowy europejskiej dotyczącej pracy załóg pojazdów wykonujących międzynarodowe przewozy drogowe z dnia 1 lipca 1970 r. (zwanej dalej „Umową AETR”) czasowej, nieodnawialnej karty kierowcy. W takich przypadkach państwa członkowskie stosują w pełni odpowiednie przepisy niniejszego rozporządzenia.
+(19)
+Oprócz tego należy umożliwić wydawanie przez państwa członkowskie kart kierowcy kierowcom mającym miejsce zamieszkania na ich terytorium również w przypadku, gdy traktaty nie mają zastosowania do niektórych części terytorium takich państw członkowskich. W takich przypadkach państwa członkowskie stosują w pełni odpowiednie przepisy niniejszego rozporządzenia.
+(20)
+Funkcjonariusze służb kontrolnych mają nieustannie do czynienia z wyzwaniami, których źródłem są zmiany tachografu oraz nowe techniki manipulacji. Aby zapewnić skuteczniejsze kontrole oraz zwiększyć harmonizację sposobu wykonywania kontroli w całej Unii, należy przyjąć wspólną metodologię na potrzeby szkoleń wstępnych i ustawicznych (doszkalanie) dla funkcjonariuszy kontrolujących.
+(21)
+Rejestrowanie danych za pomocą tachografu oraz rozwijanie technologii na potrzeby rejestrowania danych dotyczących położenia, komunikacji na odległość oraz interfejsów z ITS będzie wymagało przetwarzania danych osobowych. W związku z tym należy stosować odpowiednie przepisy Unii, w szczególności przepisy dyrektywy 95/46/WE Parlamentu Europejskiego i Rady
+(
+9
+)
+oraz dyrektywy 2002/58/WE Parlamentu Europejskiego i Rady
+(
+10
+)
+.
+(22).
+Aby umożliwić uczciwą konkurencję w zakresie rozwijania aplikacji związanych z tachografem, należy powszechnie udostępnić bezpłatne korzystanie z praw autorskich patentów związanych z przesyłem danych do lub z tachografu.
+(23)
+W odpowiednich przypadkach dane wymieniane w ramach wymiany informacji z organami kontrolnymi w państwach członkowskich powinny być zgodne z właściwymi normami międzynarodowymi, takimi jak zestaw norm związanych z dedykowaną łącznością krótkiego zasięgu, opracowanych przez Europejski Komitet Normalizacyjny.
+(24)
+Aby zapewnić uczciwą konkurencję na wewnętrznym rynku transportu drogowego i wysłać jednoznaczny sygnał kierowcom i przedsiębiorstwom transportowym, państwa członkowskie powinny nakładać skuteczne, proporcjonalne, odstraszające i niedyskryminacyjne sankcje zgodnie z kategoriami naruszeń określonymi w dyrektywie 2006/22/WE, bez uszczerbku dla zasady pomocniczości.
+(25)
+Państwa członkowskie powinny zapewnić, by typowanie pojazdów do kontroli było przeprowadzane bez dyskryminowania ze względu na narodowość kierowcy, państwo rejestracji lub państwo dopuszczenia do ruchu pojazdu użytkowego.
+(26)
+Celem zapewnienia jasnego, skutecznego, proporcjonalnego egzekwowania jednolitego wdrożenia przepisów socjalnych dotyczących transportu drogowego organy państw członkowskich powinny stosować te przepisy w sposób jednolity.
+(27)
+Każde państwo członkowskie powinno informować Komisję o wszelkich znanych mu dostępnych urządzeniach lub instalacjach służących do manipulowania tachografem w celu dokonywania oszustw, w tym oferowanych w internecie, a Komisja powinna o nich informować pozostałe państwa członkowskie.
+(28)
+Komisja powinna w dalszym ciągu utrzymywać swój internetowy punkt informacyjny, który umożliwia kierowcom, przedsiębiorstwom transportowym, organom kontrolnym i upoważnionym instalatorom, warsztatom oraz producentom pojazdów zwrócenie się z pytaniami i problemami związanymi z tachografem cyfrowym, w tym dotyczącymi nowych rodzajów manipulacji lub oszustw.
+(29)
+W wyniku dostosowań Umowy AETR stosowanie tachografu cyfrowego stało się obowiązkowe dla pojazdów zarejestrowanych w państwach trzecich będących sygnatariuszami Umowy AETR. Ponieważ zmiany tachografu wprowadzane niniejszym rozporządzeniem bezpośrednio dotyczą tych państw, powinny one mieć możliwość udziału w dialogu dotyczącym kwestii technicznych, w tym w odniesieniu do systemu wymiany informacji na temat kart kierowcy oraz kart warsztatowych. Należy zatem ustanowić forum do spraw tachografów.
+(30)
+W celu zapewnienia jednolitych warunków wdrożenia niniejszego rozporządzenia należy przyznać Komisji uprawnienia wykonawcze w odniesieniu do wymogów, funkcji wyświetlania i ostrzeżeń oraz homologacji typu tachografu, także szczegółowych przepisów dotyczących inteligentnych tachografów; procedur, których należy przestrzegać w celu wykonania badań eksploatacyjnych oraz formularzy, z których należy korzystać w celu monitorowania tych badań; standardowego formularza pisemnego oświadczenia uzasadniającego zdjęcie plomby; wspólnych procedur i specyfikacji koniecznych do wzajemnego połączenia rejestrów elektronicznych oraz metodologii określania treści szkoleń początkowych i ustawicznych dla funkcjonariuszy kontrolujących. Uprawnienia te powinny być wykonywane zgodnie z rozporządzeniem Parlamentu Europejskiego i Rady (UE) nr 182/2011
+(
+11
+)
+.
+(31)
+Akty wykonawcze przyjęte do celów niniejszego rozporządzenia, które zastąpią przepisy załącznika IB do rozporządzenia (EWG) nr 3821/85 i inne środki wykonawcze, powinny zostać przyjęte do dnia 2 marca 2016 r. Jednak jeżeli z jakiejkolwiek przyczyny te akty wykonawcze nie zostaną przyjęte w terminie, niezbędną ciągłość prawa powinny zapewnić przepisy przejściowe.
+(32)
+Komisja nie powinna przyjmować aktów wykonawczych, o których mowa w niniejszym rozporządzeniu, jeżeli komitet, o którym mowa w niniejszym rozporządzeniu, nie wyda opinii w sprawie projektu aktu wykonawczego przedstawionego przez Komisję.
+(33)
+W kontekście stosowania Umowy AETR odesłania do rozporządzenia (EWG) nr 3821/85 należy uznać za odesłania do niniejszego rozporządzenia. Unia rozważy, jakie kroki należy podjąć na forum Europejskiej Komisji Gospodarczej ONZ, aby zapewnić niezbędną spójność między niniejszym rozporządzeniem a Umową AETR.
+(34)
+Zgodnie z art. 28 ust. 2 rozporządzenia (WE) nr 45/2001 Parlamentu Europejskiego i Rady
+(
+12
+)
+zasięgnięto opinii Europejskiego Inspektora Ochrony Danych, który wydał ją dnia 5 października 2011 r.
+(
+13
+)
+.
+(35)
+Rozporządzenie (EWG) nr 3821/85 powinno w związku z tym zostać uchylone,
+PRZYJMUJĄ NINIEJSZE ROZPORZĄDZENIE:
+ROZDZIAŁ I
+ZASADY, ZAKRES STOSOWANIA I WYMOGI
+Artykuł 1
+Przedmiot i zasady
+1.   W niniejszym rozporządzeniu określono obowiązki i wymogi w odniesieniu do budowy, instalacji, użytkowania, sprawdzania i kontrolowania tachografów stosowanych w transporcie drogowym w celu weryfikacji zgodności z rozporządzeniem (WE) nr 561/2006, dyrektywą 2002/15/WE Parlamentu Europejskiego i Rady
+(
+14
+)
+i dyrektywą Rady 92/6/EWG
+(
+15
+)
+.
+Tachografy muszą spełniać wymogi niniejszego rozporządzenia pod względem budowy, instalacji, użytkowania i sprawdzania.
+2.   W niniejszym rozporządzeniu określono warunki i wymogi, po spełnieniu których informacje i dane inne niż dane osobowe rejestrowane, przetwarzane lub przechowywane przez tachografy mogą być wykorzystywane do celów innych niż weryfikacja zgodności z aktami, o których mowa w ust. 1.
+Artykuł 2
+Definicje
+1.   Na użytek niniejszego rozporządzenia stosowane są definicje zawarte w art. 4 rozporządzenia (WE) nr 561/2006.
+2.   Poza definicjami, o których mowa w ust. 1, na użytek niniejszego rozporządzenia stosowane są następujące definicje:
+a)
+„tachograf” lub „urządzenie rejestrujące” oznacza urządzenie przeznaczone do instalowania w pojazdach w celu automatycznego lub półautomatycznego wyświetlania, rejestrowania, drukowania, przechowywania i wysyłania szczegółowych danych dotyczących ruchu, w tym prędkości takich pojazdów, zgodnie z art. 4 ust. 3 i o pewnych okresach aktywności osób kierujących tymi pojazdami;
+b)
+„przyrząd rejestrujący” oznacza tachograf bez czujnika ruchu i przewodów do przyłączenia czujnika ruchu. Przyrząd rejestrujący może być zarówno pojedynczą jednostką, jak i kilkoma jednostkami rozmieszczonymi w pojeździe, o ile tylko spełnia wymogi zabezpieczenia określone w niniejszym rozporządzeniu; przyrząd rejestrujący składa się między innymi z jednostki przetwarzającej, pamięci danych, funkcji pomiaru czasu, dwóch czytników kart inteligentnych dla kierowcy i współkierowcy, drukarki, wyświetlacza, złącz i urządzeń do wprowadzania danych przez użytkownika;
+c)
+„czujnik ruchu” oznacza część tachografu dostarczającą sygnał odzwierciedlający prędkość pojazdu lub przebytą drogę;
+d)
+„karta do tachografu” oznacza inteligentną kartę przeznaczoną do użytku w tachografie umożliwiającą identyfikację przez tachograf roli posiadacza karty oraz przesyłanie i przechowywanie danych;
+e)
+„wykresówka” oznacza kartę wkładaną do tachografu analogowego, przeznaczoną do zapisywania i przechowywania zarejestrowanych danych, na której urządzenia znakujące tachografu analogowego zapisują w sposób ciągły informacje, które mają być rejestrowane;
+f)
+„karta kierowcy” oznacza kartę do tachografu, która identyfikuje kierowcę i umożliwia gromadzenie danych dotyczących czynności kierowcy, wydaną konkretnemu kierowcy przez organ państwa członkowskiego;
+g)
+„tachograf analogowy” oznacza tachograf korzystający z wykresówki zgodnie z niniejszym rozporządzeniem;
+h)
+„tachograf cyfrowy” oznacza tachograf korzystający z karty do tachografu zgodnie z niniejszym rozporządzeniem;
+i)
+„karta kontrolna” oznacza kartę do tachografu wydaną właściwemu organowi kontrolnemu przez organ państwa członkowskiego, która identyfikuje organ kontrolny i fakultatywnie funkcjonariusza kontrolującego oraz umożliwia dostęp do danych zapisanych w pamięci danych, na kartach kierowcy i fakultatywnie na kartach warsztatowych w celu odczytu, wydruku lub pobrania danych;
+j)
+„karta przedsiębiorstwa” oznacza kartę do tachografu wydaną przez organ państwa członkowskiego przedsiębiorstwu transportowemu używającemu pojazdów wyposażonych w tachografy, która identyfikuje to przedsiębiorstwo transportowe i pozwala na wyświetlanie, pobieranie i drukowanie danych zapisanych w tachografie, który został zabezpieczony blokadą przez to przedsiębiorstwo transportowe;
+k)
+„karta warsztatowa” oznacza kartę do tachografu wydaną przez organ państwa członkowskiego wyznaczonemu personelowi producenta tachografu, instalatorowi, producentowi pojazdu lub warsztatowi zatwierdzonemu przez to państwo członkowskie, która identyfikuje posiadacza karty i umożliwia sprawdzanie, kalibrację i aktywację tachografów lub pobieranie z nich danych;
+l)
+„aktywacja” oznacza fazę, gdy tachograf uzyskuje pełną funkcjonalność i uruchamia wszystkie funkcje, łącznie z funkcjami zabezpieczającymi, z wykorzystaniem karty warsztatowej;
+m)
+„kalibracja” tachografu cyfrowego oznacza aktualizację lub potwierdzenie parametrów pojazdu, w tym identyfikację pojazdu i charakterystykę pojazdu, które mają być przechowywane w pamięci danych, z wykorzystaniem karty warsztatowej;
+n)
+„pobieranie danych” z tachografu cyfrowego oznacza kopiowanie, wraz z podpisem cyfrowym, części lub kompletnego zestawu pliku danych zapisanych w pamięci danych przyrządu rejestrującego lub w pamięci karty tachografu, pod warunkiem że proces ten nie zmienia ani nie usuwa żadnych zapisanych danych;
+o)
+„zdarzenie” oznacza odbiegające od normy działanie wykryte przez tachograf, które może być spowodowane próbą oszustwa;
+p)
+„usterka” oznacza odbiegające od normy działanie wykryte przez tachograf cyfrowy, które może być spowodowane wadliwą pracą lub awarią urządzeń;
+q)
+„instalacja” oznacza montaż tachografu w pojeździe;
+r)
+„karta nieważna” oznacza kartę wykrytą jako wadliwa lub kartę, której wstępne uwierzytelnienie nie jest możliwe lub której okres ważności jeszcze się nie rozpoczął lub już upłynął;
+s)
+„przegląd okresowy” oznacza zespół czynności wykonywanych w celu sprawdzenia, czy tachograf pracuje prawidłowo, czy jego ustawienia odpowiadają parametrom pojazdu i czy do tachografu nie podłączono urządzeń manipulacyjnych;
+t)
+„naprawa” oznacza wszelką naprawę czujnika ruchu lub przyrządu rejestrującego, wymagającą odłączenia zasilania lub odłączenia od innych elementów tachografu, lub otwarcia czujnika ruchu lub przyrządu rejestrującego;
+u)
+„homologacja typu” oznacza proces zmierzający do potwierdzenia przez państwo członkowskie, zgodnie z art. 13, że tachograf, jego właściwe elementy składowe lub karta do tachografu, które mają być wprowadzone na rynek, spełniają wymogi niniejszego rozporządzenia;
+v)
+„interoperacyjność” oznacza zdolność systemów oraz będących ich podstawą procesów gospodarczych do wymiany danych oraz do wymiany informacji;
+w)
+„interfejs” oznacza połączenie między systemami, które zapewnia mechanizmy, za których pośrednictwem systemy te mogą się łączyć i wchodzić w interakcję;
+x)
+„pomiar czasu” oznacza cyfrowy zapis uniwersalnej daty skoordynowanej i uniwersalnego czasu skoordynowanego (UTC);
+y)
+„korekta czasu” oznacza automatyczną korektę bieżącego czasu dokonywaną w regularnych odstępach i z tolerancją maksymalnie jednej minuty lub korektę dokonaną podczas kalibracji;
+z)
+„otwarty standard” oznacza standard określony w dokumencie specyfikacji standardów dostępnym bezpłatnie lub za symboliczną opłatą, który może być kopiowany, rozpowszechniany lub wykorzystywany bezpłatnie lub za symboliczną opłatą.
+Artykuł 3
+Zakres stosowania
+1.   Tachografy są instalowane i użytkowane w pojazdach zarejestrowanych w państwie członkowskim używanych do przewozu drogowego osób lub rzeczy oraz do których zastosowanie ma rozporządzenie (WE) nr 561/2006.
+2.   Państwa członkowskie mogą wyłączyć z zakresu stosowania niniejszego rozporządzenia pojazdy wymienione w art. 13 ust. 1 i 3 rozporządzenia (WE) nr 561/2006.
+3.   Państwa członkowskie mogą wyłączyć z zakresu stosowania niniejszego rozporządzenia pojazdy używane do przewozów podlegającym wyjątkom zgodnie z art. 14 ust. 1 rozporządzenia (WE) nr 561/2006.
+Państwa członkowskie mogą wyłączyć z zakresu stosowania niniejszego rozporządzenia pojazdy używane do przewozów podlegających wyjątkom zgodnie z art. 14 ust. 2 rozporządzenia (WE) nr 561/2006; państwa członkowskie niezwłocznie powiadamiają o tym Komisję.
+4.   Piętnaście lat po terminie, od którego obowiązuje wymóg wyposażania nowo rejestrowanych pojazdów w tachograf, zgodnie z art. 8, 9 i 10, pojazdy użytkowane w innym państwie członkowskim niż państwo ich rejestracji muszą być wyposażone w taki tachograf.
+5.   W odniesieniu do transportu krajowego państwa członkowskie mogą wymagać instalacji i stosowania tachografów zgodnie z niniejszym rozporządzeniem w pojazdach, w których ich instalacja i stosowanie nie jest wymagane na podstawie ust. 1.
+Artykuł 4
+Wymogi i dane, które muszą być rejestrowane
+1.   Tachografy, w tym ich zewnętrzne elementy składowe, karty do tachografu i wykresówki, spełniają surowe wymagania techniczne i inne wymagania, by umożliwić właściwe stosowanie niniejszego rozporządzenia.
+2.   Tachografy i karty do tachografu spełniają następujące wymogi:
+—
+rejestrują dokładne i wiarygodne dane dotyczące kierowcy, czynności kierowcy oraz pojazdu,
+—
+są bezpieczne, w szczególności aby gwarantować integralność i pochodzenie źródła danych rejestrowanych przez przyrządy rejestrujące i czujniki ruchu oraz z nich pobieranych,
+—
+są interoperacyjne między różnymi generacjami przyrządów rejestrujących i kart do tachografu,
+—
+umożliwiają efektywną weryfikację zgodności z niniejszym rozporządzeniem i innymi mającymi zastosowanie aktami prawymi,
+—
+są przyjazne dla użytkownika.
+3.   Tachografy cyfrowe rejestrują następujące dane:
+a)
+przebytą odległość i prędkość pojazdu;
+b)
+pomiar czasu;
+c)
+punkty położenia, o których mowa w art. 8 ust. 1;
+d)
+tożsamość kierowcy;
+e)
+aktywność kierowcy;
+f)
+dane dotyczące kontroli, kalibracji i naprawy tachografu, w tym dane identyfikujące warsztat;
+g)
+zdarzenia i usterki.
+4.   Tachografy analogowe rejestrują co najmniej dane, o których mowa w ust. 3 lit. a), b) i e).
+5.   Dostęp do danych przechowywanych w tachografie i na karcie do tachografu jest umożliwiany w dowolnym czasie:
+a)
+właściwym organom kontrolnym;
+b)
+właściwemu przedsiębiorstwu transportowemu, aby mogło ono wywiązać się z zobowiązań prawnych, określonych w szczególności w art. 32 i 33.
+6.   Pobieranie danych odbywa się tak, by opóźnienie dla przedsiębiorstw transportowych lub kierowców było minimalne.
+7.   Dane, które mogą być przesyłane z tachografu lub do tachografu w sposób bezprzewodowy lub elektroniczny, są zapisywane przez tachograf w formacie publicznie dostępnych protokołów zdefiniowanych w otwartych standardach.
+8.   Aby zapewnić zgodność tachografów i kart do tachografu z zasadami i wymogami określonymi w niniejszym rozporządzeniu, w szczególności w niniejszym artykule, Komisja, w drodze aktów wykonawczych, przyjmuje szczegółowe przepisy konieczne do jednolitego stosowania niniejszego artykułu, w szczególności przepisy określające środki techniczne spełnienia tych wymogów. Te akty wykonawcze przyjmuje się zgodnie z procedurą sprawdzającą, o której mowa w art. 42 ust. 3.
+9.   Przepisy szczegółowe, o których mowa w ust. 8, są w odpowiednich przypadkach oparte na normach i gwarantują interoperacyjność i zgodność między różnymi generacjami przyrządów rejestrujących i wszystkimi kartami do tachografu.
+Artykuł 5
+Funkcje tachografu cyfrowego
+Tachografy cyfrowe zapewniają następujące funkcje:
+—
+pomiar prędkości i odległości,
+—
+monitorowanie czynności kierowcy i stanu prowadzenia pojazdu,
+—
+monitorowanie wkładania i wyjmowania kart do tachografu,
+—
+zapisywanie danych wprowadzanych ręcznie przez kierowcę,
+—
+kalibrację,
+—
+automatyczne zapisywanie punktów położenia, o których mowa w art. 8 ust. 1,
+—
+monitorowanie czynności kontrolnych,
+—
+wykrywanie i zapisywanie zdarzeń i usterek,
+—
+odczytywanie z pamięci danych oraz rejestrowanie i przechowywanie w pamięci danych,
+—
+odczytywanie z kart do tachografu oraz zapisywanie i przechowywanie na kartach do tachografu,
+—
+wyświetlanie, ostrzeganie i drukowanie danych oraz przesyłanie ich do urządzeń zewnętrznych,
+—
+regulację i pomiar czasu,
+—
+zdalną komunikację,
+—
+zarządzanie blokadami firmowymi,
+—
+testy wbudowane i autotesty.
+Artykuł 6
+Wyświetlanie i ostrzeganie
+1.   Informacje zawarte w tachografach cyfrowych i na kartach do tachografu, dotyczące aktywności pojazdu, kierowców i współkierowców, są wyświetlane w sposób wyraźny, jednoznaczny i ergonomiczny.
+2.   Wyświetlane są następujące informacje:
+a)
+czas;
+b)
+tryb pracy;
+c)
+czynności kierowcy:
+—
+jeżeli jego bieżącą czynnością jest prowadzenie – jego bieżący nieprzerwany czas prowadzenia pojazdu i jego bieżący skumulowany czas przerwy,
+—
+jeżeli jego bieżącą czynnością jest gotowość/inna praca/odpoczynek lub przerwa – bieżący czas trwania tej czynności (od jej wybrania) i jego bieżący skumulowany czas przerwy;
+d)
+informacje związane z ostrzeżeniami;
+e)
+informacje związane z dostępem do menu.
+Mogą być wyświetlane również dodatkowe informacje, pod warunkiem że są łatwe do odróżnienia od informacji wymaganych w niniejszym ustępie.
+3.   Tachografy cyfrowe ostrzegają kierowców, jeżeli wykryją zdarzenie lub usterkę, a także przed przekroczeniem i w momencie przekroczenia maksymalnego dopuszczalnego nieprzerwanego czasu prowadzenia pojazdu, aby ułatwiać przestrzeganie obowiązujących przepisów.
+4.   Ostrzeżenia są wizualne oraz mogą też być akustyczne. Ostrzeżenia trwają przez przynajmniej 30 sekund, chyba że są potwierdzone przez użytkownika poprzez wciśnięcie dowolnego przycisku w tachografie. Przyczyna ostrzeżenia jest wyświetlana i pozostaje widoczna aż do potwierdzenia przez użytkownika za pomocą specjalnego przycisku lub polecenia tachografu.
+5.   Aby zapewnić zgodność tachografów z wymogami niniejszego artykułu dotyczącymi wyświetlania i ostrzegania, Komisja, w drodze aktów wykonawczych, przyjmuje szczegółowe przepisy niezbędne do jednolitego stosowania niniejszego artykułu. Te akty wykonawcze przyjmuje się zgodnie z procedurą sprawdzającą, o której mowa w art. 42 ust. 3.
+Artykuł 7
+Ochrona danych
+1.   Państwa członkowskie zapewniają, aby przetwarzanie danych osobowych w kontekście niniejszego rozporządzenia odbywało się wyłącznie do celów kontroli zgodności z niniejszym rozporządzeniem i z rozporządzeniem (WE) nr 561/2006, zgodnie z dyrektywami 95/46/WE i 2002/58/WE oraz pod nadzorem organu nadzorczego państwa członkowskiego, o którym mowa w art. 28 dyrektywy 95/46/WE.
+2.   W szczególności państwa członkowskie zapewniają ochronę danych osobowych przed wykorzystaniem w inny sposób niż w ścisłym związku z niniejszym rozporządzeniem i z rozporządzeniem (WE) nr 561/2006, zgodnie z ust. 1, w odniesieniu do:
+—
+użytkowania globalnego systemu nawigacji satelitarnej (GNSS) do celów rejestrowania danych dotyczących położenia, o którym mowa w art. 8,
+—
+wykorzystania zdalnej komunikacji na potrzeby kontroli, o której mowa w art. 9,
+—
+wykorzystania tachografów posiadających interfejs, o którym mowa w art. 10,
+—
+elektronicznej wymiany informacji dotyczących kart kierowcy, o której mowa w art. 31, w szczególności transgranicznej wymiany takich informacji z państwami trzecimi,
+—
+przechowywania danych przez przedsiębiorstwa transportowe, o których mowa w art. 33.
+3.   Tachografy cyfrowe projektuje się tak, aby zapewnić prywatność. Przetwarzają one wyłącznie dane, które są niezbędne dla celów niniejszego rozporządzenia.
+4.   Właściciele pojazdów, przedsiębiorstwa transportowe oraz inne zainteresowane podmioty spełniają, w stosownych przypadkach, wymogi odpowiednich przepisów dotyczących ochrony danych osobowych.
+ROZDZIAŁ II
+INTELIGENTNY TACHOGRAF
+Artykuł 8
+Zapisywanie położenia pojazdu w pewnych punktach podczas dziennego okresu pracy
+1.   Aby ułatwić sprawdzanie zgodności z właściwymi przepisami, położenie pojazdu jest zapisywane automatycznie w następujących punktach lub w punkcie położonym najbliżej tych miejsc, w którym dostępny jest sygnał satelitarny:
+—
+punkt początkowy dziennego okresu pracy,
+—
+co trzy godziny skumulowanego czasu prowadzenia pojazdu,
+—
+punkt końcowy dziennego okresu pracy.
+W tym celu pojazdy rejestrowane po raz pierwszy 36 miesięcy po wejściu w życie przepisów szczegółowych, o których mowa w art. 11, są wyposażane w tachograf podłączony do systemu określania położenia opartego na systemie nawigacji satelitarnej.
+2.   W odniesieniu do podłączenia tachografu do systemu określania położenia opartego na systemie nawigacji satelitarnej, o którym mowa w ust. 1, wykorzystywane są wyłącznie połączenia z usługami, które pozwalają na korzystanie z usług określania położenia bez ponoszenia opłat. Tachograf nie zapisuje trwale innych danych dotyczących położenia niż dane wyrażone, gdzie to możliwe, we współrzędnych geograficznych określających punkty, o których mowa w ust. 1. Dane dotyczące położenia, które muszą być przechowywane czasowo, aby umożliwić automatyczne zapisywanie punktów, o których mowa w ust. 1, lub aby potwierdzić czujnik ruchu, nie są dostępne dla żadnego użytkownika i są automatycznie usuwane, nie później niż w momencie, gdy nie są już wymagane do tych celów.
+Artykuł 9
+Wczesne zdalne wykrywanie możliwych przypadków manipulowania lub niewłaściwego użycia
+1.   W celu ułatwienia przeprowadzania przez właściwe organy kontrolne ukierunkowanych kontroli drogowych tachografy zainstalowane w pojazdach zarejestrowanych po raz pierwszy 36 miesięcy po wejściu w życie szczegółowych przepisów, o których mowa w art. 11, umożliwiają komunikację z tymi organami, gdy pojazd jest w ruchu.
+2.   Piętnaście lat po terminie, od którego obowiązuje wymóg wyposażania nowo zarejestrowanych pojazdów w tachograf, zgodnie z niniejszym artykułem i art. 8 i 10 niniejszego rozporządzenia, państwa członkowskie wyposażają w odpowiednim zakresie swoje organy kontrolne w urządzenia do wczesnego zdalnego wykrywania niezbędne do umożliwienia przekazywania danych, o których mowa w niniejszym artykule, uwzględniając ich szczegółowe wymogi i strategie egzekwowania prawa. Do tego czasu państwa członkowskie mogą decydować o tym, czy wyposażać swoje organy kontrolne w takie urządzenia do wczesnego zdalnego wykrywania.
+3.   Łączność z tachografem, o której mowa w ust. 1, jest nawiązywana wyłącznie na żądanie wysłane z urządzenia organów kontrolnych. Podlega ona zabezpieczeniu w celu zapewnienia integralności danych oraz uwierzytelnienia urządzeń rejestrujących i kontrolnych. Dostęp do przesyłanych danych ograniczony jest do organów kontrolnych upoważnionych do kontroli naruszeń rozporządzenia (WE) nr 561/2006 i niniejszego rozporządzenia oraz do warsztatów w zakresie niezbędnym do sprawdzenia poprawnego funkcjonowania tachografu.
+4.   Dane przesyłane w trakcie komunikacji ograniczają się do danych niezbędnych na potrzeby ukierunkowanych kontroli drogowych pojazdów wyposażonych w tachografy, które mogły stać się przedmiotem manipulacji lub nadużyć. Takie dane dotyczą następujących zdarzeń lub danych rejestrowanych przez tachograf:
+—
+ostatnia próba naruszenia zabezpieczenia,
+—
+najdłuższa przerwa w zasilaniu,
+—
+usterka czujnika,
+—
+błąd danych dotyczących ruchu,
+—
+konflikt ruchu pojazdu,
+—
+prowadzenie pojazdu bez ważnej karty,
+—
+włożenie karty podczas prowadzenia pojazdu,
+—
+dane dotyczące regulacji czasu,
+—
+dane kalibracyjne, w tym daty przeprowadzenia dwóch ostatnich kalibracji,
+—
+numer rejestracyjny pojazdu,
+—
+prędkość zarejestrowana przez tachograf.
+5.   Przesyłane dane są wykorzystywane wyłącznie do celów weryfikacji przestrzegania niniejszego rozporządzenia. Nie są one przekazywane podmiotom innym niż organy kontrolujące okresy prowadzenia pojazdu i odpoczynku oraz organy sądowe w ramach toczącego się postępowania sądowego.
+6.   Dane mogą być przechowywane przez organy kontrolne wyłącznie na czas trwania kontroli drogowej i są usuwane najpóźniej trzy godziny po ich przesłaniu, chyba że ich zawartość wskazuje na możliwość manipulacji lub nadużyć dotyczących tachografu. Jeżeli na dalszym etapie kontroli drogowej manipulacja lub nadużycie nie zostaną potwierdzone, przesłane dane są usuwane.
+7.   Przedsiębiorstwa transportowe używające pojazdów są odpowiedzialne za powiadomienie kierowców o możliwości zdalnej komunikacji do celów wczesnego zdalnego wykrywania ewentualnych manipulacji lub nadużyć dotyczących tachografów.
+8.   W żadnym przypadku wczesne wykrywanie na odległość, które opisano w niniejszym artykule, nie prowadzi do automatycznego nałożenia mandatu lub grzywny na kierowcę lub przedsiębiorstwo transportowe. Na podstawie przekazanych danych właściwy organ kontrolny może zdecydować o przeprowadzeniu kontroli pojazdu i tachografu. Wyniki zdalnej komunikacji nie stoją na przeszkodzie do przeprowadzania przez organy kontrolne losowych kontroli drogowych w oparciu o system oceny ryzyka wprowadzony na mocy art. 9 dyrektywy 2006/22/WE.
+Artykuł 10
+Interfejs do inteligentnych systemów transportowych
+Tachografy pojazdów zarejestrowanych po raz pierwszy 36 miesięcy po wejściu w życie szczegółowych przepisów, o których mowa w art. 11, mogą być wyposażone w znormalizowane interfejsy pozwalające na wykorzystywanie przez urządzenie zewnętrzne danych rejestrowanych lub generowanych przez tachograf w trybie operacyjnym, z zastrzeżeniem spełnienia następujących warunków:
+a)
+interfejs nie ma wpływu na autentyczność i integralność danych tachografu;
+b)
+interfejs spełnia wymogi szczegółowych przepisów, o których mowa w art. 11;
+c)
+urządzenie zewnętrzne podłączone do interfejsu uzyskuje dostęp do danych osobowych, w tym do danych dotyczących umiejscowienia, dopiero po udzieleniu przez kierowcę, którego te dane dotyczą, podlegającej weryfikacji zgody.
+Artykuł 11
+Szczegółowe przepisy dotyczące inteligentnych tachografów
+W celu zapewnienia zgodności inteligentnych tachografów z zasadami i wymogami określonymi w niniejszym rozporządzeniu, Komisja, w drodze aktów wykonawczych, przyjmuje szczegółowe przepisy konieczne do jednolitego stosowania art. 8, 9 i 10, z wyłączeniem wszelkich przepisów, które przewidywałyby rejestrowanie przez tachograf dodatkowych informacji. Te akty wykonawcze przyjmuje się zgodnie z procedurą sprawdzającą, o której mowa w art. 42 ust. 3.
+Przepisy szczegółowe, o których mowa w akapicie pierwszym:
+a)
+w odniesieniu do realizacji funkcji inteligentnego tachografu, o których mowa w niniejszym rozdziale, obejmują wymogi niezbędne do zagwarantowania bezpieczeństwa, dokładności i rzetelności danych wysyłanych do tachografu przez satelitarną usługę pozycjonowania i technologię komunikacji na odległość, o których mowa w art. 8 i 9;
+b)
+określają warunki i wymogi dotyczące satelitarnej usługi pozycjonowania i technologii komunikacji na odległość, o których mowa w art. 8 i 9, jako istniejących na zewnątrz lub wbudowanych w tachograf; w przypadku gdy są na zewnątrz – warunki wykorzystywania satelitarnego sygnału pozycjonującego jako drugiego czujnika ruchu;
+c)
+określają niezbędne standardy interfejsu, o którym mowa w art. 10. Standardy takie mogą obejmować przepisy dotyczące prawa dostępu dla kierowców, warsztatów oraz przedsiębiorstw transportowych oraz funkcje kontrolne danych rejestrowanych przez tachograf, które to funkcje są oparte na mechanizmie uwierzytelniania/autoryzacji zdefiniowanym dla tego interfejsu, takim jak certyfikat dla każdego poziomu dostępu, z zastrzeżeniem wykonalności technicznej.
+ROZDZIAŁ III
+HOMOLOGACJA TYPU
+Artykuł 12
+Wnioski
+1.   Producenci lub ich przedstawiciele składają organom udzielającym homologacji typu, wyznaczonym do tego celu przez poszczególne państwa członkowskie, wnioski o homologację typu przyrządu rejestrującego, czujnika ruchu, wzoru wykresówki lub karty do tachografu.
+2.   Państwa członkowskie przekazują Komisji do dnia 2 marca 2015 r. nazwy i dane kontaktowe wyznaczonych organów, o których mowa w ust. 1, a następnie, w miarę potrzeby, przedstawiają ich aktualizacje. Komisja publikuje na swojej stronie internetowej wykaz wyznaczonych organów do spraw homologacji typu i w miarę potrzeb aktualizuje ten wykaz.
+3.   Do wniosku o homologację typu dołącza się odpowiednie specyfikacje, w tym niezbędne informacje dotyczące plomb oraz świadectwa bezpieczeństwa, funkcjonalności i interoperacyjności. Świadectwo bezpieczeństwa wydaje uznana jednostka certyfikująca wyznaczona przez Komisję.
+Świadectwa funkcjonalności wydawane są producentowi przez organ odpowiedzialny za homologację typu.
+Świadectwa interoperacyjności są wydawane przez jedno laboratorium w imieniu i na odpowiedzialność Komisji.
+4.   W odniesieniu do tachografów, ich elementów składowych i kart do tachografu:
+a)
+świadectwo bezpieczeństwa potwierdza poniższe w odniesieniu do przyrządu rejestrującego, kart do tachografu, czujnika ruchu i połączenia z odbiornikiem GNSS, jeżeli GNSS nie jest wbudowany w przyrządy rejestrujące:
+(i)
+zgodność z celami bezpieczeństwa;
+(ii)
+spełnianie następujących funkcji w zakresie bezpieczeństwa: identyfikacja i uwierzytelnianie, autoryzacja, poufność, odpowiedzialność, integralność, audyt, dokładność i rzetelność usługi;
+b)
+świadectwo funkcjonalności potwierdza, że badany element spełnia właściwe wymogi w kategoriach realizowanych funkcji, charakterystyki środowiskowe, charakterystyki kompatybilności elektromagnetycznej, zgodności z wymogami fizycznymi i zgodności z innymi normami mającymi zastosowanie;
+c)
+świadectwo interoperacyjności potwierdza, że badany element jest w pełni interoperacyjny z wymaganymi typami tachografów i kartami do tachografu.
+5.   O wszelkich modyfikacjach programowych lub sprzętowych tachografu oraz o modyfikacjach rodzaju materiałów użytych do wytworzenia tachografu powiadamia się, przed ich wprowadzeniem, organ, który wydał homologację typu dla urządzenia. Organ ten potwierdza producentowi rozszerzenie homologacji typu lub też może zażądać uaktualnienia lub potwierdzenia stosownych świadectw funkcjonalności, bezpieczeństwa lub interoperacyjności.
+6.   Wniosek o udzielenie homologacji typu dla danego typu urządzenia rejestrującego, czujnika ruchu, wzoru wykresówki lub karty do tachografu można złożyć tylko w jednym państwie członkowskim.
+7.   Komisja w drodze aktów wykonawczych przyjmuje szczegółowe przepisy niezbędne do jednolitego stosowania niniejszego artykułu. Te akty wykonawcze przyjmuje się zgodnie z procedurą sprawdzającą, o której mowa w art. 42 ust. 3.
+Artykuł 13
+Udzielanie homologacji typu
+Państwo członkowskie udziela homologacji typu dla każdego typu przyrządu rejestrującego, czujnika ruchu, wzoru wykresówki lub karty do tachografu spełniających wymogi określone w art. 4 i 11, pod warunkiem że to państwo członkowskie ma możliwość sprawdzenia, czy określony produkt jest zgodny z homologowanym wzorem.
+Wszelkie zmiany lub uzupełnienia homologowanego wzoru wymagają dodatkowej homologacji typu w państwie członkowskim, które udzieliło pierwotnej homologacji typu.
+Artykuł 14
+Znak homologacji typu
+Państwa członkowskie przyznają wnioskodawcy znak homologacji typu, odpowiadający wcześniej ustalonemu wzorowi, dla każdego typu przyrządu rejestrującego, czujnika ruchu, wzoru wykresówki lub karty do tachografu, które zatwierdzają zgodnie z art. 13 i załącznikiem II. Takie wzory są przyjmowane przez Komisję w drodze aktów wykonawczych zgodnie z procedurą sprawdzającą, o której mowa w art. 42 ust. 3.
+Artykuł 15
+Udzielenie lub odmowa udzielenia homologacji typu
+Właściwe organy państwa członkowskiego, w którym złożono wniosek o homologację typu, w odniesieniu do każdego typu przyrządu rejestrującego, czujnika ruchu, wzoru wykresówki lub karty do tachografu, który homologują, przesyłają w terminie jednego miesiąca właściwym organom innych państw członkowskich kopię świadectwa homologacji typu wraz z kopią odpowiednich specyfikacji, w tym odnośnie do plomb. W przypadku gdy właściwe organy nie uwzględnią wniosku o udzielenie homologacji typu, powiadamiają organy innych państw członkowskich o odmowie udzielenia homologacji typu oraz podają powody takiej decyzji.
+Artykuł 16
+Zgodność urządzeń z homologacją typu
+1.   Jeżeli państwo członkowskie, które zgodnie z art. 13 udzieliło homologacji typu, stwierdzi, że którykolwiek przyrząd rejestrujący, którykolwiek czujnik ruchu, którakolwiek wykresówka lub karta do tachografu oznaczone przyznanym przez nie znakiem homologacji typu nie odpowiada homologowanemu typowi, podejmuje niezbędne działania, by zapewnić zgodność produkowanych wzorów z homologowanym typem. W razie konieczności działania te mogą obejmować cofnięcie homologacji typu.
+2.   Państwo członkowskie, które udzieliło homologacji typu, cofa homologację typu, jeżeli przyrząd rejestrujący, czujnik ruchu, wykresówka lub karta do tachografu po zatwierdzeniu nie spełniają wymogów niniejszego rozporządzenia lub wykazują w użytkowaniu wadę, która powoduje ich nieprzydatność do osiągnięcia celu, dla którego są przeznaczone.
+3.   Jeżeli państwo członkowskie, które udzieliło homologacji typu, zostało powiadomione przez inne państwo członkowskie o jednym z przypadków, o których mowa w ust. 1 lub 2, podejmuje, po przeprowadzeniu konsultacji z powiadamiającym państwem członkowskim, działania określone we wspomnianych ustępach, z uwzględnieniem ust. 5.
+4.   Państwo członkowskie, które stwierdzi, że zaistniał jeden z przypadków, o których mowa w ust. 2, może zabronić, aż do odwołania, wprowadzania do obrotu i użytkowania danego przyrządu rejestrującego, czujnika ruchu, danej wykresówki lub karty do tachografu. To samo ma zastosowanie do przypadków, o których mowa w ust. 1, odnośnie do przyrządów rejestrujących, czujników ruchu, wykresówek lub kart do tachografu, które były zwolnione z legalizacji pierwotnej UE, jeżeli producent, po stosownym ostrzeżeniu, nie doprowadzi do zgodności urządzeń z homologowanym wzorem lub z wymogami niniejszego rozporządzenia.
+W każdym przypadku właściwe ograny państw członkowskich powiadamiają się wzajemnie oraz w terminie miesiąca powiadamiają Komisję o każdym przypadku cofnięcia homologacji typu lub o jakichkolwiek innych działaniach podjętych zgodnie z ust. 1, 2 lub 3 oraz określają powody podjęcia takiego działania.
+5.   Jeżeli państwo członkowskie, które udzieliło homologacji typu, kwestionuje występowanie któregokolwiek z przypadków wymienionych w ust. 1 lub 2, o którym zostało powiadomione, zainteresowane państwa członkowskie dążą do rozwiązania sporu, powiadamiając o tym Komisję.
+Jeżeli w terminie czterech miesięcy od daty powiadomienia, o którym mowa w ust. 3, rozmowy pomiędzy państwami członkowskimi nie zakończą się porozumieniem, Komisja po zasięgnięciu opinii ekspertów ze wszystkich państw członkowskich oraz po rozważeniu wszystkich istotnych czynników, np. ekonomicznych i technicznych, w ciągu sześciu miesięcy od upływu wspomnianego czteromiesięcznego terminu przyjmuje decyzję, którą notyfikuje danym państwom członkowskim i o której jednocześnie powiadamia pozostałe państwa członkowskie. Za każdym razem Komisja określa termin wykonania decyzji.
+Artykuł 17
+Homologacja typu wykresówek
+1.   Wnioskujący o homologację typu dla wzoru wykresówki określa w formularzu wniosku typ lub typy tachografów analogowych, do których dana wykresówka jest przeznaczona, oraz dostarcza odpowiednie wyposażenie typu lub typów w celu zbadania wykresówki.
+2.   Właściwe organy w każdym z państw członkowskich umieszczają w świadectwie homologacji typu wzoru wykresówki typ lub typy tachografów analogowych, w których wykresówka może być używana.
+Artykuł 18
+Uzasadnienie decyzji o odmowie udzielenia homologacji typu
+We wszystkich wydanych na mocy niniejszego rozporządzenia decyzjach dotyczących odmowy udzielenia homologacji typu lub cofnięcia homologacji typu przyrządu rejestrującego, czujnika ruchu, wzoru wykresówki lub karty do tachografu podaje się szczegółowe uzasadnienie ich wydania. Decyzja jest podawana do wiadomości zainteresowanej stronie wraz z informacją o przysługującej możliwości odwołania, zgodnie z prawem właściwego państwa członkowskiego oraz o terminach wniesienia takiego odwołania.
+Artykuł 19
+Uznawanie tachografów posiadających homologację typu
+Żadne państwo członkowskie nie może odmówić rejestracji pojazdu wyposażonego w tachograf ani zakazać wprowadzenia takiego pojazdu do ruchu bądź jego używania, podając jako przyczynę fakt wyposażenia w takie urządzenie, jeżeli to urządzenie jest oznaczone znakiem homologacji typu, o którym mowa w art. 14 oraz ma tabliczkę instalacyjną, o której mowa w art. 22 ust. 4.
+Artykuł 20
+Bezpieczeństwo
+1.   Producenci projektują, badają i sprawdzają wprowadzone do produkcji przyrządy rejestrujące, czujniki ruchu i karty do tachografu, aby wykryć ich braki w zabezpieczeniach, które mogą powstać na każdym etapie użytkowania produktów i aby zapobiec ich wykorzystaniu bądź je ograniczyć. Częstotliwość tych badań jest określana przez państwo członkowskie, które przyznało świadectwo homologacji typu, przy czym limit ten nie powinien przekraczać dwóch lat.
+2.   W tym celu producenci przedkładają jednostce certyfikującej, o której mowa w art. 12 ust. 3, dokumentację niezbędną do celów analizy braków w zakresie zabezpieczeń.
+3.   Do celów ust. 1 jednostka certyfikująca, o której mowa w art. 12 ust. 3, przeprowadza badania przyrządów rejestrujących, czujników ruchu i kart do tachografu w celu potwierdzenia, że znane braki w zakresie zabezpieczeń nie mogą zostać wykorzystane przez osoby posiadające powszechnie dostępne informacje.
+4.   Jeżeli w wyniku badań, o których mowa w ust. 1, zostaną wykryte braki w zakresie zabezpieczeń w elementach systemu (przyrządzie rejestrującym, czujniku ruchu lub karcie do tachografu), elementów tych nie wprowadza się do obrotu. Jeżeli w trakcie badań, o których mowa w ust. 3, zostaną wykryte braki w zakresie zabezpieczeń elementów dostępnych już na rynku, producent lub jednostka certyfikująca informują właściwe organy państwa członkowskiego, które udzieliło homologacji typu. Te właściwe organy podejmują wszelkie niezbędne środki, aby zapewnić rozwiązanie tego problemu, w szczególności przez producenta i informują niezwłocznie Komisję o wykrytych brakach w zakresie zabezpieczeń, i o planowanych lub zastosowanych środkach, w tym – w razie konieczności – o cofnięciu homologacji typu zgodnie z art. 16 ust. 2.
+Artykuł 21
+Badania eksploatacyjne
+1.   Państwa członkowskie mogą zatwierdzić badania eksploatacyjne tachografów, które nie otrzymały jeszcze homologacji typu. Państwa członkowskie wzajemnie uznają takie dopuszczenia do badań eksploatacyjnych.
+2.   Kierowcy i przedsiębiorstwa transportowe uczestniczący w badaniu eksploatacyjnym muszą spełniać wymogi określone w rozporządzeniu (WE) nr 561/2006. W celu wykazania takiej zgodności kierowcy stosują się do procedur określonych w art. 35 ust. 2 niniejszego rozporządzenia.
+3.   Komisja może przyjmować akty wykonawcze w celu określenia procedur, których należy przestrzegać w celu wykonania badań eksploatacyjnych oraz formularzy, z których należy korzystać w celu monitorowania tych badań eksploatacyjnych. Te akty wykonawcze przyjmuje się zgodnie z procedurą sprawdzającą, o której mowa w art. 42 ust. 3.
+ROZDZIAŁ IV
+INSTALACJA I PRZEGLĄDY
+Artykuł 22
+Instalacja i naprawa
+1.   Instalacji i napraw tachografów mogą dokonywać wyłącznie instalatorzy, warsztaty lub producenci pojazdów zatwierdzeni do tego celu przez właściwe organy państw członkowskich zgodnie z art. 24.
+2.   Upoważnieni instalatorzy, warsztaty lub producenci pojazdów plombują tachograf, zgodnie ze specyfikacjami zawartymi w świadectwie homologacji typu, o którym mowa w art. 15, po zweryfikowaniu prawidłowości jego działania, w szczególności w sposób zapewniający, aby żadne urządzenie manipulacyjne nie mogło naruszyć lub zmienić zarejestrowanych danych.
+3.   Zatwierdzony instalator, warsztat lub producent pojazdu umieszcza specjalny znak na zakładanych przez siebie plombach i dodatkowo wprowadza do tachografu cyfrowego elektroniczne dane zabezpieczające w celu uwierzytelnienia wykonanego sprawdzenia. Właściwe organy poszczególnych państw członkowskich przekazują Komisji rejestr użytych znaków oraz elektronicznych danych zabezpieczających i niezbędne informacje dotyczące wykorzystanych elektronicznych danych zabezpieczających. Komisja na żądanie udziela państwom członkowskim dostępu do tych informacji.
+4.   W celu poświadczenia, że instalację tachografu wykonano zgodnie z wymogami niniejszego rozporządzenia, przytwierdza się tabliczkę instalacyjną w sposób zapewniający jej wyraźną widoczność i dostępność.
+5.   Elementy tachografu są zaplombowane, jak wyszczególniono w świadectwie homologacji typu. Wszelkie połączenia z tachografem, które są potencjalnie narażone na ingerencje, w tym połączenie między czujnikiem ruchu a skrzynią biegów, a także w odpowiednich przypadkach, tabliczka instalacyjna, są zaplombowane.
+Plomba może być usunięta lub naruszona wyłącznie:
+—
+przez instalatorów lub warsztaty zatwierdzone przez właściwe organy, zgodnie z art. 24, do celów naprawy, konserwacji lub powtórnej kalibracji tachografu lub przez funkcjonariuszy służb kontrolnych odpowiednio przeszkolonych oraz, o ile jest to wymagane upoważnionych, do celów kontroli,
+—
+do celów naprawy lub modyfikacji pojazdu, która narusza plombę. W takich przypadkach w pojeździe przechowuje się pisemne oświadczenie określające datę i godzinę naruszenia plomby i zawierające uzasadnienie usunięcia plomby. Komisja w drodze aktów wykonawczych opracuje standardowy formularz pisemnego oświadczenia.
+W każdym przypadku plomby są zakładane na nowo przez zatwierdzonego instalatora lub zatwierdzony warsztat bez nieuzasadnionej zwłoki, a najpóźniej w ciągu siedmiu dni od ich zdjęcia.
+Przed ponownym założeniem plomb zatwierdzony warsztat przeprowadza sprawdzenie i kalibrację tachografu.
+Artykuł 23
+Przeglądy tachografów
+1.   Tachografy poddaje się regularnym przeglądom wykonywanym przez zatwierdzone warsztaty. Przeglądy te przeprowadza się przynajmniej raz na dwa lata.
+2.   Zakres przeglądów, o których mowa w ust. 1, obejmuje co najmniej sprawdzenie:
+—
+czy tachograf jest właściwie zainstalowany i czy jest odpowiedni dla danego pojazdu,
+—
+czy tachograf działa prawidłowo,
+—
+czy tachograf jest opatrzony znakiem homologacji typu,
+—
+czy zamocowana jest tabliczka instalacyjna,
+—
+czy wszystkie plomby są nienaruszone i spełniają swoją funkcję,
+—
+czy do tachografu nie są podłączone urządzenia manipulacyjne lub czy nie ma śladów użytkowania takich urządzeń,
+—
+rozmiaru opon i faktycznego obwodu tocznego opon.
+3.   Warsztaty przeprowadzające przeglądy sporządzają protokół przeglądu, w przypadkach gdy konieczne było usunięcie nieprawidłowego działania tachografu, bez względu na to czy nastąpiło to w efekcie przeglądu okresowego, czy przeglądu przeprowadzonego na konkretne żądanie właściwego organu krajowego. Prowadzą oni wykaz wszystkich sporządzonych protokołów przeglądu.
+4.   Protokoły przeglądu są przechowywane co najmniej przez dwa lata od czasu sporządzenia protokołu. Państwa członkowskie decydują, czy protokoły przeglądu mają być w tym okresie przechowywane, czy przesyłane właściwemu organowi. Jeżeli warsztat, który sporządził protokoły, przechowuje takie protokoły przeglądu, na żądanie właściwego organu udostępnia protokoły przeglądu i kalibracji wykonanych w tym okresie.
+Artykuł 24
+Zatwierdzanie instalatorów, warsztatów i producentów pojazdów
+1.   Państwa członkowskie zatwierdzają, regularnie kontrolują i certyfikują instalatorów, warsztaty i producentów pojazdów upoważnionych do wykonywania instalacji, sprawdzeń, przeglądów i napraw tachografów.
+2.   Państwa członkowskie zapewniają kompetentność i rzetelność instalatorów, warsztatów i producentów pojazdów. W tym celu ustanawiają i publikują zestaw jasnych procedur krajowych i zapewniają spełnienie następujących minimalnych kryteriów:
+a)
+właściwe przeszkolenie pracowników;
+b)
+dostępność urządzeń niezbędnych do przeprowadzenia odpowiednich badań i zadań;
+c)
+nieposzlakowana reputacja instalatorów, warsztatów i producentów pojazdów.
+3.   Audyty zatwierdzonych instalatorów lub warsztatów przeprowadza się w następujący sposób:
+a)
+zatwierdzeni instalatorzy lub zatwierdzone warsztaty podlegają co najmniej raz na dwa lata audytowi procedur stosowanych przy obsłudze tachografów. Audyt koncentruje się w szczególności na środkach zabezpieczeń i posługiwaniu się kartami warsztatowymi. Państwa członkowskie mogą wykonywać te audyty bez potrzeby wizyty na miejscu;
+b)
+odbywają się również niezapowiedziane audyty techniczne zatwierdzonych instalatorów lub warsztatów w celu skontrolowania wykonywanych kalibracji, przeglądów i instalacji. Audyty te obejmują rocznie co najmniej 10 % zatwierdzonych instalatorów i warsztatów.
+4.   Państwa członkowskie i ich właściwe organy podejmują odpowiednie środki w celu zapobiegania konfliktom interesów pomiędzy instalatorami lub warsztatami a przedsiębiorstwami transportowymi. W szczególności w przypadku poważnego ryzyka konfliktu interesów podejmuje się szczególne dodatkowe środki w celu zapewnienia przestrzegania niniejszego rozporządzenia przez instalatora lub warsztat.
+5.   Właściwe organy państw członkowskich przesyłają Komisji co roku, w miarę możliwości drogą elektroniczną, wykazy zatwierdzonych instalatorów i warsztatów oraz kart im wydanych. Komisja publikuje te wykazy na swojej stronie internetowej.
+6.   Właściwe organy państw członkowskich cofają zatwierdzenia, czasowo lub na stałe, instalatorom, warsztatom oraz producentom pojazdów niewykonującym swoich obowiązków wynikających z niniejszego rozporządzenia.
+Artykuł 25
+Karty warsztatowe
+1.   Okres ważności kart warsztatowych nie przekracza jednego roku. Przy przedłużaniu karty warsztatowej właściwy organ zapewnia spełnianie przez instalatora, warsztat lub producenta pojazdów kryteriów wymienionych w art. 24 ust. 2.
+2.   Właściwy organ przedłuża kartę warsztatową w ciągu 15 dni roboczych od otrzymania ważnego wniosku o przedłużenie i całej niezbędnej dokumentacji. Jeżeli karta warsztatowa została uszkodzona, działa wadliwie lub została zagubiona albo skradziona, właściwy organ wydaje kartę zastępczą w ciągu pięciu dni roboczych od dnia otrzymania szczegółowego wniosku o jej wydanie. Właściwe organy prowadzą rejestr kart zagubionych, skradzionych lub uszkodzonych.
+3.   W przypadku gdy państwo członkowskie cofa upoważnienie dla instalatora, warsztatu lub producenta pojazdu zgodnie z art. 24, cofa również wydane im karty warsztatowe.
+4.   Państwa członkowskie podejmują wszelkie niezbędne działania, aby zabezpieczyć karty warsztatowe przekazywane zatwierdzonym instalatorom, warsztatom oraz producentom pojazdów przed możliwością ich sfałszowania.
+ROZDZIAŁ V
+KARTY KIEROWCY
+Artykuł 26
+Wydawanie kart kierowcy
+1.   Karty kierowcy są wydawane na wniosek kierowcy przez właściwy organ państwa członkowskiego, w którym kierowca posiada swoje miejsce normalnego zamieszkania. Wydaje się je w ciągu miesiąca od otrzymania przez właściwy organ wniosku i wszelkich niezbędnych dokumentów.
+2.   Do celów niniejszego artykułu „miejsce normalnego zamieszkania” oznacza miejsce, w którym dana osoba zwykle przebywa, to znaczy przez co najmniej 185 dni w każdym roku kalendarzowym, ze względu na więzi osobiste i zawodowe, a w przypadku osoby niezwiązanej z danym miejscem zawodowo, ze względu na więzi osobiste, które wskazują na istnienie ścisłych związków pomiędzy tą osobą a miejscem, w którym mieszka.
+Jednakże za miejsce normalnego zamieszkania danej osoby, której więzi zawodowe są w innym miejscu niż więzi osobiste i która w konsekwencji mieszka na przemian w różnych miejscach położonych w dwóch lub więcej państwach członkowskich, uznaje się miejsce, na które wskazują jej więzi osobiste, pod warunkiem że powraca ona tam regularnie. Ten ostatni warunek nie musi być spełniony w przypadku, gdy osoba ta przebywa w jednym z państw członkowskich w celu realizacji umowy zawartej na czas określony.
+3.   Kierowcy przedstawiają dowód potwierdzający miejsce ich normalnego zamieszkania poprzez okazanie jakiegokolwiek właściwego środka, takiego jak dowód tożsamości lub innego ważnego dokumentu. W przypadku gdy właściwe organy państwa członkowskiego wydające kartę kierowcy mają wątpliwość co do ważności oświadczenia dotyczącego normalnego miejsca zamieszkania, jak również do celów szczegółowych kontroli, mogą zażądać dodatkowych informacji i dowodów.
+4.   W odpowiednio uzasadnionych i wyjątkowych przypadkach państwa członkowskie mogą wydać czasową i nieodnawialną kartę kierowcy, na okres nieprzekraczający 185 dni, kierowcy, który nie ma normalnego miejsca zamieszkania w państwie członkowskim lub w państwie, które jest umawiającą się stroną Umowy AETR, pod warunkiem że kierowcę takiego łączy stosunek pracy z przedsiębiorstwem transportowym mającym siedzibę w państwie członkowskim wydania oraz, o ile zastosowanie ma rozporządzenie Parlamentu Europejskiego i Rady (WE) nr 1072/2009
+(
+16
+)
+, przedstawi świadectwo kierowcy, o którym mowa w tym rozporządzeniu.
+Komisja, na podstawie danych przesłanych przez państwa członkowskie, ściśle monitoruje stosowanie niniejszego ustępu. Co dwa lata Komisja przedstawia swoje ustalenia Parlamentowi Europejskiemu i Radzie i analizuje, w szczególności czy czasowe karty kierowcy wywierają negatywny wpływ na rynek pracy i czy czasowe karty kierowcy są w trybie zwykłym wydawane więcej niż jeden raz kierowcom znanym z nazwiska. W takich przypadkach Komisja może przedstawić odpowiedni wniosek legislacyjny dotyczący zmiany niniejszego ustępu.
+5.   Właściwe organy wydającego państwa członkowskiego przyjmują odpowiednie środki w celu zapewnienia, by wnioskodawca nie posiadał już ważnej karty kierowcy, oraz dokonują personalizacji karty kierowcy, zapewniając, by zawarte na niej dane były widoczne i bezpieczne.
+6.   Okres ważności wydanej karty kierowcy nie przekracza pięciu lat.
+7.   Karta kierowcy nie może, w okresie swojej ważności, zostać cofnięta ani zawieszona, chyba że zostanie uznana przez właściwe organy państwa członkowskiego za sfałszowaną lub gdy kierowca korzysta z karty, której nie jest posiadaczem, lub gdy karta, w której posiadaniu jest kierowca, została wydana na podstawie fałszywych oświadczeń lub sfałszowanych dokumentów. Jeżeli takie zawieszenie lub cofnięcie karty zostało dokonane przez państwo członkowskie inne niż państwo, które wydało kartę, państwo członkowskie, które zawiesiło lub cofnęło kartę, jak najszybciej zwraca ją organom państwa członkowskiego, które wydało kartę oraz wskazuje powody cofnięcia lub zawieszenia. Jeżeli zwrot karty ma nastąpić w okresie dłuższym niż dwa tygodnie, państwo członkowskie, które ją zawiesiło lub cofnęło powiadamia w ciągu tych dwóch tygodni państwo, które wydało kartę, o powodach tego zawieszenia lub cofnięcia.
+8.   Państwa członkowskie podejmują wszelkie działania, aby zapobiec fałszowaniu kart kierowcy.
+9.   Niniejszy artykuł jest bez uszczerbku dla możliwości wydania przez państwo członkowskie karty kierowcy, który ma miejsce normalnego zamieszkania w takiej części terytorium odnośnego państwa członkowskiego, do której nie mają zastosowania Traktat o Unii Europejskiej i Traktat o funkcjonowaniu Unii Europejskiej, pod warunkiem że w takich przypadkach stosowane są właściwe przepisy niniejszego rozporządzenia.
+Artykuł 27
+Posługiwanie się kartami kierowcy
+1.   Karta kierowcy jest imienna.
+2.   Kierowca może posiadać nie więcej niż jedną ważną kartę kierowcy i jest uprawniony do posługiwania się jedynie jego własną imienną kartą kierowcy. Kierowca nie może posługiwać się kartą uszkodzoną lub kartą, której okres ważności upłynął.
+Artykuł 28
+Przedłużanie karty kierowcy
+1.   W przypadku gdy kierowca zamierza przedłużyć swoją kartę kierowcy, składa wniosek do właściwych organów w państwie członkowskim swojego normalnego miejsca zamieszkania nie później niż na 15 dni roboczych przed upływem okresu ważności karty.
+2.   Jeżeli państwo członkowskie normalnego miejsca zamieszkania kierowcy jest inne niż to, które wydało aktualną kartę, oraz gdy organy państwa członkowskiego normalnego miejsca zamieszkania otrzymały wniosek o przedłużenie karty kierowcy, powiadamiają organy, które wydały poprzednią kartę, o powodach jej przedłużenia.
+3.   W przypadku złożenia wniosku o przedłużenie karty, która wkrótce utraci ważność, właściwy organ wydaje nową kartę przed dniem upływu okresu ważności starej karty, pod warunkiem że wniosek został przesłany w terminie określonym ust. 1.
+Artykuł 29
+Kradzież, zagubienie lub uszkodzenie kart kierowcy
+1.   Organy wydające karty kierowcy prowadzą rejestr kart wydanych, skradzionych, zagubionych lub uszkodzonych w okresie odpowiadającym przynajmniej okresowi ich ważności.
+2.   W przypadku gdy karta kierowcy zostanie uszkodzona lub działa wadliwie, kierowca zwraca ją do właściwego organu państwa członkowskiego jego normalnego miejsca zamieszkania. Kradzież karty kierowcy musi zostać formalnie zgłoszona właściwemu organowi państwa, w którym dokonano kradzieży.
+3.   Zaginięcie karty kierowcy musi zostać zgłoszone w drodze formalnego zawiadomienia właściwych organów państwa członkowskiego, które ją wydało oraz właściwych organów państwa członkowskiego, które stanowi normalne miejsce zamieszkania kierowcy, o ile są to różne państwa.
+4.   W przypadku gdy karta kierowcy została uszkodzona, działa wadliwie, została zagubiona lub skradziona, kierowca musi w terminie siedmiu dni kalendarzowych wystąpić o kartę zastępczą do właściwych organów w państwie członkowskim swojego normalnego miejsca zamieszkania. Organy te wydają kartę zastępczą w ciągu ośmiu dni roboczych od dnia otrzymania szczegółowego wniosku o jej wydanie.
+5.   W sytuacjach określonych w ust. 4 kierowca może kontynuować jazdę bez karty kierowcy przez maksymalnie 15 dni kalendarzowych lub w dłuższym okresie, jeśli konieczny jest powrót pojazdu do bazy, pod warunkiem że kierowca może wykazać brak możliwości przedstawienia lub użycia karty podczas tego okresu.
+Artykuł 30
+Wzajemne uznawanie i wymiana kart kierowcy
+1.   Karty kierowcy wydane przez państwa członkowskie są wzajemnie uznawane.
+2.   W przypadku gdy posiadacz ważnej karty kierowcy wydanej przez państwo członkowskie zmienił państwo członkowskie swojego normalnego miejsca zamieszkania, może on ubiegać się o wymianę swojej dotychczasowej karty kierowcy na jej odpowiednik. Państwo członkowskie, które dokonuje wymiany, ponosi odpowiedzialność za sprawdzenie, czy przedstawiona karta jest nadal ważna.
+3.   Państwa członkowskie dokonujące wymiany zwracają starą kartę organom państwa członkowskiego, w którym karta została wydana oraz wskazują powody tego zwrotu.
+4.   W przypadku gdy państwo członkowskie dokonuje zastąpienia albo wymiany karty kierowcy, zastąpienie lub wymiana i inne dalsze zastąpienia oraz wymiany są rejestrowane w tym państwie członkowskim.
+Artykuł 31
+Elektroniczna wymiana informacji dotyczących kart kierowcy
+1.   Aby wykluczyć możliwość, w której wnioskodawca posiada już ważną kartę kierowcy, o czym mowa w art. 26, państwa członkowskie prowadzą krajowe elektroniczne rejestry zawierające następujące informacje dotyczące kart kierowcy, łącznie z informacjami, o których mowa w art. 26 ust. 4, w okresie co najmniej równoważnym z okresem ich ważności:
+—
+nazwisko i imię kierowcy,
+—
+data i – jeśli ta informacja jest dostępna – miejsce urodzenia kierowcy,
+—
+numer ważnego prawa jazdy i kraj wydający prawo jazdy (w stosownych przypadkach),
+—
+status karty kierowcy,
+—
+numer karty kierowcy.
+2.   Komisja i państwa członkowskie przyjmują wszelkie niezbędne środki w celu zapewnienia wzajemnych połączeń rejestrów elektronicznych i ich dostępności w całej Unii, korzystając z systemu informacyjnego TACHOnet, o którym mowa w zaleceniu 2010/19/UE lub systemu z nim kompatybilnego. W przypadku stosowania systemu kompatybilnego wymiana danych elektronicznych ze wszystkimi pozostałymi państwami członkowskimi musi być możliwa za pośrednictwem systemu informacyjnego TACHOnet.
+3.   W każdym przypadku wydawania, wymiany lub, w razie konieczności, przedłużenia karty kierowcy państwa członkowskie sprawdzają przy pomocy elektronicznej wymiany danych, czy kierowca nie posiada już innej ważnej karty kierowcy. Przekazywane dane ograniczają się do danych niezbędnych na potrzeby takiej weryfikacji.
+4.   Funkcjonariusze służb kontrolnych mogą mieć dostęp do rejestru elektronicznego w celu sprawdzenia statusu karty kierowcy.
+5.   Komisja przyjmuje akty wykonawcze w celu określenia wspólnych procedur i specyfikacji niezbędnych dla wzajemnych połączeń, o których mowa w ust. 2, z uwzględnieniem formatu wymiany danych, procedur technicznych do celów konsultacji elektronicznych w krajowych rejestrach elektronicznych, procedur dostępu i mechanizmów zabezpieczenia. Te akty wykonawcze przyjmuje się zgodnie z procedurą sprawdzającą, o której mowa w art. 42 ust. 3.
+ROZDZIAŁ VI
+UŻYTKOWANIE URZĄDZEŃ
+Artykuł 32
+Prawidłowe użytkowanie tachografów
+1.   Przedsiębiorstwa transportowe oraz kierowcy zapewniają poprawne działanie i właściwe użytkowanie tachografów i kart kierowcy. Przedsiębiorstwa transportowe oraz kierowcy stosujący tachografy analogowe zapewniają ich poprawne działanie i prawidłowe stosowanie wykresówek.
+2.   Tachografy cyfrowe nie mogą być ustawione w sposób powodujący automatyczne przełączanie się na konkretną kategorię czynności po wyłączeniu silnika lub zapłonu pojazdu, chyba że kierowca ma w dalszym ciągu możliwość ręcznego wyboru odpowiedniej kategorii czynności.
+3.   Zabrania się fałszowania, ukrywania, likwidowania i niszczenia danych zarejestrowanych na wykresówkach lub przechowywanych w tachografie lub na karcie kierowcy albo zarejestrowanych na wydrukach z tachografu. Każda forma manipulowania tachografem, wykresówką lub kartą kierowcy, która mogłaby spowodować sfałszowanie, zlikwidowanie lub zniszczenie danych lub informacji wydrukowanych jest zabroniona. W pojeździe nie może znajdować się żadne urządzenie, które mogłoby zostać użyte w powyższych celach.
+4.   W pojazdach nie instaluje się więcej niż jednego tachografu, chyba że do celów badań eksploatacyjnych, o których mowa w art. 21.
+5.   Państwa członkowskie zabraniają produkcji, dystrybucji, reklamy lub sprzedaży urządzeń wykonanych lub przeznaczonych do celów manipulowania tachografami.
+Artykuł 33
+Odpowiedzialność przedsiębiorstw transportowych
+1.   Przedsiębiorstwa transportowe są odpowiedzialne za zapewnienie, by ich kierowcy byli właściwie wyszkoleni i poinstruowani w zakresie prawidłowego działania tachografów, zarówno cyfrowych, jak i analogowych, przeprowadzają regularne kontrole, by zapewnić właściwe użytkowanie tachografów przez swoich kierowców i nie udzielają kierowcom żadnych bezpośrednich ani pośrednich zachęt, które mogłyby skłaniać ich do niewłaściwego używania tachografów.
+Przedsiębiorstwa transportowe wydają wystarczającą liczbę wykresówek kierowcom pojazdów wyposażonych w tachografy analogowe, mając na uwadze indywidualny charakter wykresówki, długość okresu pracy i możliwość zaistnienia konieczności ich wymiany, w przypadku gdy zostaną zniszczone lub zatrzymane przez upoważnionego funkcjonariusza służb kontrolnych. Przedsiębiorstwa transportowe wydają kierowcom tylko wykresówki zgodne z homologowanym wzorem i odpowiednie do użycia w urządzeniu zainstalowanym w pojeździe.
+W przypadku gdy pojazd wyposażony jest w tachograf cyfrowy, przedsiębiorstwo transportowe i kierowca zapewniają, biorąc pod uwagę długość okresu pracy, by drukowanie danych z tachografu na żądanie funkcjonariusza służb kontrolnych mogło być prawidłowo przeprowadzone w razie kontroli.
+2.   Przedsiębiorstwa transportowe przechowują wykresówki i wydruki, w każdym przypadku sporządzenia wydruków zgodnie z art. 35, w porządku chronologicznym oraz w czytelnej formie, przez co najmniej rok po ich użyciu oraz wydają ich kopie zainteresowanym kierowcom na ich wniosek. Przedsiębiorstwa transportowe wydają także zainteresowanym kierowcom na ich wniosek kopie danych pobranych z kart kierowcy oraz ich wydruki na papierze. Wykresówki, wydruki oraz wczytane dane okazuje się lub doręcza na żądanie każdego upoważnionego funkcjonariusza służb kontrolnych.
+3.   Przedsiębiorstwa transportowe są odpowiedzialne za naruszenia niniejszego rozporządzenia popełnione przez swoich kierowców lub kierowców będących w ich dyspozycji. Państwa członkowskie mogą jednak uzależnić taką odpowiedzialność od naruszenia przez przedsiębiorstwo transportowe ust. 1 akapit pierwszy niniejszego artykułu i art. 10 ust. 1 i 2 rozporządzenia (WE) nr 561/2006.
+Artykuł 34
+Użytkowanie kart kierowcy i wykresówek
+1.   Kierowcy stosują wykresówki lub karty kierowcy w każdym dniu, w którym prowadzą pojazd, począwszy od przejęcia pojazdu. Nie wyjmuje się wykresówki ani karty kierowcy z urządzenia rejestrującego przed zakończeniem dziennego okresu pracy, chyba że jej wyjęcie jest dopuszczalne z innych powodów. Wykresówka lub karta kierowcy nie może być używana przez okres dłuższy niż ten, na który jest przeznaczona.
+2.   Kierowcy odpowiednio chronią wykresówki lub karty kierowcy i nie używają zabrudzonych lub uszkodzonych wykresówek lub kart kierowcy.
+3.   Jeżeli w wyniku oddalenia się od pojazdu kierowca nie jest w stanie używać tachografu zainstalowanego w pojeździe, to okresy, o których mowa w ust. 5 lit. b) ppkt (ii), (iii) oraz (iv):
+a)
+jeśli pojazd wyposażony jest w tachograf analogowy – wprowadza się na wykresówkę ręcznie, w drodze automatycznej rejestracji lub innym sposobem, czytelnie i nie brudząc wykresówki; lub
+b)
+jeśli pojazd wyposażony jest w tachograf cyfrowy – wprowadza się na kartę kierowcy przy użyciu urządzenia do manualnego wprowadzania danych, w jakie wyposażony jest tachograf.
+Państwa członkowskie nie nakładają na kierowców obowiązku przedkładania formularzy potwierdzających ich czynności w trakcie oddalenia się od pojazdu.
+4.   Jeżeli w pojeździe wyposażonym w tachograf cyfrowy znajduje się więcej niż jeden kierowca, kierowcy ci zapewniają, aby ich karty kierowcy zostały włożone w odpowiednie czytniki tachografu.
+Jeżeli w pojeździe wyposażonym w tachograf analogowy znajduje się więcej niż jeden kierowca, kierowcy zmieniają odpowiednio wykresówki, aby właściwe informacje były zapisywane na wykresówce kierowcy prowadzącego pojazd.
+5.   Kierowcy:
+a)
+zapewniają zgodność czasu zapisywanego na wykresówce z czasem urzędowym/oficjalnym kraju rejestracji pojazdu;
+b)
+obsługują przełączniki umożliwiające osobną i wyraźną rejestrację następujących okresów:
+(i)
+pod symbolem
+: czas prowadzenia pojazdu;
+(ii)
+pod symbolem
+: „inna praca”, która oznacza wszelkie czynności inne niż prowadzenie pojazdu, zgodnie z definicją zawartą w art. 3 lit. a) dyrektywy 2002/15/WE, a także wszelkie prace wykonywane dla tego samego lub innego pracodawcy w sektorze transportowym lub poza nim;
+(iii)
+pod symbolem
+: „okresy gotowości” zgodnie z definicją w art. 3 lit. b) dyrektywy 2002/15/WE;
+(iv)
+pod symbolem
+: przerwy lub odpoczynek.
+6.   Każdy kierowca pojazdu wyposażonego w analogowy tachograf nanosi na swoją wykresówkę następujące informacje:
+a)
+na początku używania wykresówki – swoje nazwisko i imię;
+b)
+datę i miejsce rozpoczęcia używania wykresówki oraz datę i miejsce zakończenia jej używania;
+c)
+numer rejestracyjny każdego pojazdu, do którego został przydzielony kierowca, zarówno na początku pierwszej jazdy zapisanej na wykresówce, jak i następnych, w przypadku zmiany pojazdu, w czasie używania tej samej wykresówki;
+d)
+wskazania licznika długości drogi:
+(i)
+przy rozpoczęciu pierwszej jazdy zarejestrowanej na wykresówce;
+(ii)
+przy zakończeniu ostatniej jazdy zarejestrowanej na wykresówce;
+(iii)
+w razie zmiany pojazdu w ciągu dnia pracy – wskazanie licznika w pierwszym pojeździe, do którego kierowca był przydzielony oraz wskazanie licznika w kolejnym pojeździe;
+e)
+czas, kiedy miała miejsce zmiana pojazdu.
+7.   Kierowca wprowadza w tachografie cyfrowym symbole państw, w których rozpoczyna i kończy dzienny okres pracy. Jednak państwo członkowskie może wymagać od kierowców pojazdów używanych w działalności transportowej prowadzonej na jego terytorium dodatkowych, bardziej szczegółowych niż symbol państwa, danych geograficznych, pod warunkiem że państwo członkowskie powiadomiło o tym Komisję przed dniem 1 kwietnia 1998 r.
+Kierowcy nie muszą wprowadzać informacji, o których mowa w pierwszym zdaniu akapitu pierwszego, jeśli tachograf rejestruje automatycznie dane dotyczące lokalizacji zgodnie z art. 8.
+Artykuł 35
+Uszkodzone karty kierowcy lub wykresówki
+1.   W przypadku uszkodzenia wykresówki zawierającej zapis lub karty kierowcy, kierowcy przechowują uszkodzoną wykresówkę lub kartę kierowcy wraz z zapasową wykresówką zastępującą ją.
+2.   W przypadku uszkodzenia karty kierowcy, jej nieprawidłowego działania, zagubienia lub kradzieży kierowca:
+a)
+na początku trasy drukuje dane prowadzonego przez siebie pojazdu i wpisuje na tym wydruku:
+(i)
+dane umożliwiające identyfikację kierowcy (nazwisko, numer karty kierowcy lub prawa jazdy), wraz z podpisem;
+(ii)
+okresy, o których mowa w art. 34 ust. 5 lit. b) ppkt (ii), (iii) oraz (iv);
+b)
+na końcu trasy drukuje informacje odnoszące się do okresów zarejestrowanych przez tachograf, zapisuje wszystkie okresy innej pracy, okresy gotowości i odpoczynku, od sporządzenia wydruku na początku trasy, które nie zostały zarejestrowane przez tachograf oraz zaznacza na tym dokumencie dane umożliwiające identyfikację kierowcy (nazwisko, numer karty kierowcy lub prawa jazdy), wraz ze swoim podpisem.
+Artykuł 36
+Zapisy przechowywane przez kierowcę
+1.   Jeśli kierowca prowadzi pojazd wyposażony w tachograf analogowy, musi być on w stanie okazać, na każde żądanie upoważnionego funkcjonariusza służb kontrolnych:
+(i)
+wykresówki z bieżącego dnia oraz wykresówki używane przez kierowcę w ciągu poprzednich 28 dni;
+(ii)
+kartę kierowcy, jeśli ją posiada; oraz
+(iii)
+wszelkie zapisy odręczne oraz wydruki sporządzone w ciągu bieżącego dnia oraz poprzednich 28 dni zgodnie z wymaganiami niniejszego rozporządzenia oraz rozporządzenia (WE) nr 561/2006.
+2.   Jeśli kierowca prowadzi pojazd wyposażony w tachograf cyfrowy, musi być w stanie okazać, na każde żądanie upoważnionego funkcjonariusza służb kontrolnych:
+(i)
+swoją kartę kierowcy;
+(ii)
+wszelkie zapisy odręczne oraz wydruki sporządzone w ciągu bieżącego dnia oraz poprzednich 28 dni zgodnie z wymaganiami niniejszego rozporządzenia oraz rozporządzenia (WE) nr 561/2006;
+(iii)
+wykresówki odpowiadające okresowi, o którym mowa w ppkt (ii), w trakcie którego prowadził on pojazd wyposażony w tachograf analogowy.
+3.   Upoważniony funkcjonariusz służb kontrolnych może sprawdzić przestrzeganie przepisów rozporządzenia (WE) nr 561/2006 poprzez analizę wykresówek, wyświetlonych, wydrukowanych lub pobranych danych zapisanych przez tachograf na karcie kierowcy, lub w przypadku ich braku, wszelkich innych dokumentów pomocniczych, usprawiedliwiających nieprzestrzeganie przepisów, jak określono między innymi w art. 29 ust. 2 i w art. 37 ust. 2 niniejszego rozporządzenia.
+Artykuł 37
+Procedury na wypadek wadliwego działania urządzeń
+1.   W razie awarii lub wadliwego działania tachografu przedsiębiorstwo transportowe zobowiązane jest do jego naprawy przez zatwierdzonego instalatora lub zatwierdzony warsztat, tak szybko jak pozwalają na to okoliczności.
+Jeżeli sprowadzenie pojazdu do bazy przedsiębiorstwa transportowego nie jest możliwe w ciągu tygodnia, licząc od dnia uszkodzenia lub wykrycia wadliwego działania, wówczas naprawy dokonuje się w drodze.
+Środki przyjęte przez państwa członkowskie zgodnie z art. 41 upoważniają właściwe organy do wydania zakazu używania pojazdu w przypadku, gdy awaria lub wadliwe działanie nie zostało naprawione zgodnie z akapitami pierwszym i drugim niniejszego ustępu, w zakresie, w jakim jest to zgodne z przepisami krajowymi w danym państwie członkowskim.
+2.   W czasie gdy tachograf nie działa lub działa wadliwie, kierowca zaznacza dane umożliwiające jego identyfikację (nazwisko, numer karty kierowcy lub numer prawa jazdy) wraz z podpisem, jak również informacje dotyczące różnych okresów, które nie były poprawnie rejestrowane lub drukowane przez tachograf:
+a)
+na wykresówce bądź wykresówkach; lub
+b)
+na tymczasowej wykresówce dołączanej do wykresówki lub karty kierowcy.
+ROZDZIAŁ VII
+EGZEKWOWANIE I SANKCJE
+Artykuł 38
+Funkcjonariusze służb kontrolnych
+1.   W celu skutecznego monitorowania zgodności z niniejszym rozporządzeniem upoważnionym funkcjonariuszom służb kontrolnych udostępnia się wystarczający sprzęt i nadaje się odpowiednie uprawnienia, aby umożliwić im wykonywanie ich obowiązków zgodnie z niniejszym rozporządzeniem. Sprzęt ten obejmuje w szczególności:
+a)
+karty kontrolne umożliwiające dostęp do danych zapisanych w tachografach i na kartach do tachografu, a opcjonalnie – na kartach warsztatowych;
+b)
+niezbędne narzędzia, do pobierania plików z danymi z przyrządów rejestrujących i kart do tachografu; analizy takich plików z danymi i wydruków pochodzących z tachografów cyfrowych w połączeniu z wykresówkami pochodzącymi z tachografów analogowych.
+2.   Jeżeli w wyniku kontroli funkcjonariusze służb kontrolnych znajdą wystarczające dowody pozwalające podejrzewać, że dokonano manipulacji, są oni upoważnieni do skierowania pojazdu do zatwierdzonego warsztatu w celu przeprowadzenia dodatkowych badań służących ustaleniu w szczególności, czy tachograf:
+a)
+działa poprawnie;
+b)
+prawidłowo rejestruje i przechowuje dane, i czy poprawne są parametry kalibracji.
+3.   Funkcjonariusze służb kontrolnych są uprawnieni do polecenia zatwierdzonym warsztatom przeprowadzenia badania, o którym mowa w ust. 2, i szczegółowych badań służących zbadaniu obecności urządzeń manipulacyjnych. W przypadku wykrycia urządzeń manipulacyjnych sprzęt ten, w tym samo urządzenie, przyrząd rejestrujący lub jego elementy oraz karta kierowcy mogą zostać usunięte z pojazdu i wykorzystane jako dowód zgodnie z krajowymi przepisami dotyczącymi postępowania z takimi dowodami.
+4.   Funkcjonariusze służb kontrolnych korzystają, w odpowiednich przypadkach, z możliwości kontrolowania tachografów i kart kierowcy, które znajdują się w pomieszczeniach przedsiębiorstw podczas przeprowadzania kontroli na miejscu.
+Artykuł 39
+Szkolenie funkcjonariuszy służb kontrolnych
+1.   Państwa członkowskie zapewniają odpowiedni stopień przeszkolenia funkcjonariuszy służb kontrolnych na potrzeby analizy zarejestrowanych danych i sprawdzenia tachografów, tak aby kontrole i egzekwowanie przepisów przebiegały w sposób sprawny i zharmonizowany.
+2.   Państwa członkowskie powiadamiają Komisję o wymogach w zakresie szkoleń dla funkcjonariuszy służb kontrolnych do dnia 2 września 2016 r.
+3.   Komisja w drodze aktów wykonawczych przyjmuje środki dotyczące treści szkoleń wstępnych i ustawicznych dla funkcjonariuszy służb kontrolnych, w tym szkoleń z zakresu technik kontroli ukierunkowanych, wykrywania urządzeń manipulacyjnych i oszustw. Środki te obejmują wytyczne ułatwiające wykonywanie odnośnych przepisów niniejszego rozporządzenia i rozporządzenia (WE) nr 561/2006. Te akty wykonawcze przyjmuje się zgodnie z procedurą sprawdzającą, o której mowa w art. 42 ust. 3.
+4.   Państwa członkowskie uwzględniają w szkoleniach funkcjonariuszy służb kontrolnych treści wyszczególnione przez Komisję.
+Artykuł 40
+Wzajemna pomoc
+Państwa członkowskie wspomagają się wzajemnie w wykonywaniu niniejszego rozporządzenia oraz w kontrolowaniu zgodności działania z niniejszym rozporządzeniem.
+W ramach tej wzajemnej pomocy właściwe organy państw członkowskich, w szczególności przesyłają sobie regularnie wszystkie dostępne informacje dotyczące przypadków naruszeń niniejszego rozporządzenia przez instalatorów oraz warsztaty, rodzajów praktyk manipulacyjnych oraz wszelkich kar nakładanych z tytułu takich naruszeń.
+Artykuł 41
+Sankcje
+1.   Państwa członkowskie ustanawiają zgodnie z krajowym prawem przepisy dotyczące sankcji nakładanych za naruszenia niniejszego rozporządzenia i podejmują wszelkie konieczne środki, by zapewnić ich wykonywanie. Sankcje te muszą być skuteczne, proporcjonalne, odstraszające i niedyskryminujące oraz muszą być zgodne z kategoriami naruszeń określonymi w dyrektywie 2006/22/WE.
+2.   Państwa członkowskie powiadamiają Komisję o przyjętych środkach oraz przepisach dotyczących sankcji do dnia 2 marca 2016 r. Powiadamiają Komisję o wszelkich późniejszych zmianach tych środków.
+ROZDZIAŁ VIII
+PRZEPISY KOŃCOWE
+Artykuł 42
+Komitet
+1.   Komisję wspomaga komitet. Komitet ten jest komitetem w rozumieniu rozporządzenia (UE) nr 182/2011.
+2.   W przypadku odniesienia do niniejszego ustępu stosuje się art. 4 rozporządzenia (UE) nr 182/2011.
+3.   W przypadku odniesienia do niniejszego ustępu stosuje się art. 5 rozporządzenia (UE) nr 182/2011.
+W przypadku gdy komitet nie przedstawi opinii, Komisja nie przyjmuje projektu aktu wykonawczego i zastosowanie ma art. 5 ust. 4 akapit trzeci rozporządzenia (UE) nr 182/2011.
+W przypadku gdy opinia komitetu ma być uzyskana w drodze procedury pisemnej, procedura ta kończy się bez osiągnięcia rezultatu, jeżeli przed upływem terminu na wydanie opinii zdecyduje o tym przewodniczący komitetu lub wniesie o to zwykła większość członków komitetu.
+Artykuł 43
+Forum do spraw tachografów
+1.   Forum do spraw tachografów ustanawia się w celu wspierania dialogu w zakresie kwestii technicznych dotyczących tachografów w gronie ekspertów z państw członkowskich, członków komitetu, o którym mowa w art. 42, i ekspertów z tych państw trzecich, które używają tachografów zgodnie z Umową AETR.
+2.   Państwa członkowskie powinny oddelegować do uczestnictwa w forum do spraw tachografów ekspertów uczestniczących w pracach komitetu, o którym mowa w art. 42.
+3.   Forum do spraw tachografów jest otwarte na uczestnictwo ekspertów z zainteresowanych państw trzecich, które są stronami Umowy AETR.
+4.   Zainteresowane strony, przedstawiciele producentów pojazdów, producenci tachografów, partnerzy społeczni i Europejski Inspektor Ochrony Danych są zapraszani do udziału w forum do spraw tachografów.
+5.   Forum do spraw tachografów przyjmuje swój regulamin wewnętrzny.
+6.   Posiedzenia forum do spraw tachografów zwołuje się co najmniej raz na rok.
+Artykuł 44
+Powiadomienie o środkach krajowych
+Państwa członkowskie przekazują Komisji teksty przepisów ustawowych, wykonawczych i administracyjnych, które przyjmują w dziedzinie objętej niniejszym rozporządzeniem, nie później niż 30 dni od daty przyjęcia tych przepisów, a po raz pierwszy do dnia 2 marca 2015 r.
+Artykuł 45
+Zmiany w rozporządzeniu (WE) nr 561/2006
+W rozporządzeniu (WE) nr 561/2006 wprowadza się następujące zmiany:
+1)
+w art. 3 po lit. a) dodaje się literę w brzmieniu:
+„aa)
+pojazdami lub zespołami pojazdów o maksymalnej dopuszczalnej masie nieprzekraczającej 7,5 tony używanymi do przewozu materiałów, sprzętu lub urządzeń do użytku kierowcy w trakcie pracy, które to pojazdy są używane wyłącznie w promieniu 100 km od bazy przedsiębiorstwa oraz pod warunkiem że prowadzenie takich pojazdów nie stanowi głównego zajęcia kierowcy.”;
+2)
+w art. 13 ust. 1 wprowadza się następujące zmiany:
+a)
+w lit. d), f) i p) wyrazy „50 km” zastępuje się wyrazami „100 km”;
+b)
+lit. d) akapit pierwszy otrzymuje brzmienie:
+„d)
+pojazdami lub zespołami pojazdów o dopuszczalnej masie całkowitej nieprzekraczającej 7,5 tony, używanymi przez operatorów świadczących usługi powszechne określone w art. 2 ust. 13 dyrektywy 97/67/WE Parlamentu Europejskiego i Rady z dnia 15 grudnia 1997 r. w sprawie wspólnych zasad rozwoju rynku wewnętrznego usług pocztowych Wspólnoty oraz poprawy jakości usług
+(
+*1
+)
+do dostarczania przesyłek w ramach usług powszechnych.
+(
+*1
+)
+Dz.U. L 15 z 21.1.1998, s. 14
+.”."
+Artykuł 46
+Przepisy przejściowe
+W zakresie aktów wykonawczych wspomnianych w niniejszym rozporządzeniu, które nie zostały przyjęte i nie mogą być stosowane od daty rozpoczęcia stosowania niniejszego rozporządzenia, nadal obowiązują przejściowo – do daty wejścia w życie aktów wykonawczych wspomnianych w niniejszym rozporządzeniu – przepisy rozporządzenia (EWG) nr 3821/85, w tym przepisy załącznika IB do tego rozporządzenia.
+Artykuł 47
+Uchylenie
+Niniejszym uchyla się rozporządzenie (EWG) nr 3821/85. Odesłania do uchylonego rozporządzenia uznaje się za odesłania do niniejszego rozporządzenia.
+Artykuł 48
+Wejście w życie
+Niniejsze rozporządzenie wchodzi w życie z następnego dnia po jego opublikowaniu w
+Dzienniku Urzędowym Unii Europejskiej.
+Z zastrzeżeniem środków przejściowych, o których mowa w art. 46, niniejsze rozporządzenie ma zastosowanie od dnia 2 marca 2016 r.
+Jednakże art. 24, 34 i 45 mają zastosowanie od dnia 2 marca 2015 r.
+Niniejsze rozporządzenie wiąże w całości i jest bezpośrednio stosowane we wszystkich państwach członkowskich.
+Sporządzono w Strasburgu dnia 4 lutego 2014 r.
+W imieniu Parlamentu Europejskiego
+M. SCHULZ
+Przewodniczący
+W imieniu Rady
+E. VENIZELOS
+Przewodniczący
+(
+1
+)
+Dz.U. C 43 z 15.2.2012, s. 79
+.
+(
+2
+)
+Stanowisko Parlamentu Europejskiego z dnia 3 lipca 2012 r. (
+Dz.U. C 349 E z 29.11.2013, s. 105
+) i stanowisko Rady w pierwszym czytaniu z dnia 15 listopada 2013 r. (
+Dz.U. C 360 z 10.12.2013, s. 66
+). Stanowisko Parlamentu Europejskiego z dnia 15 stycznia 2014 r. (dotychczas nieopublikowane w Dzienniku Urzędowym).
+(
+3
+)
+Rozporządzenie Rady (EWG) nr 3821/85 z dnia 20 grudnia 1985 r. w sprawie urządzeń rejestrujących stosowanych w transporcie drogowym (
+Dz.U. L 370 z 31.12.1985, s. 8
+).
+(
+4
+)
+Rozporządzenie (WE) nr 561/2006 Parlamentu Europejskiego i Rady z dnia 15 marca 2006 r. w sprawie harmonizacji niektórych przepisów socjalnych odnoszących się do transportu drogowego oraz zmieniającego rozporządzenia Rady (EWG) nr 3821/85 i (WE) nr 2135/98, jak również uchylającego rozporządzenie Rady (EWG) nr 3820/85 (
+Dz.U. L 102 z 11.4.2006, s. 1
+).
+(
+5
+)
+Zb.Orz. 1994, I-2497.
+(
+6
+)
+Dyrektywa 2006/22/WE Parlamentu Europejskiego i Rady z dnia 15 marca 2006 r. w sprawie minimalnych warunków wykonania rozporządzeń Rady (EWG) nr 3820/85 i (EWG) nr 3821/85 dotyczących przepisów socjalnych odnoszących się do działalności w transporcie drogowym oraz uchylająca dyrektywę Rady 88/599/EWG (
+Dz.U. L 102 z 11.4.2006, s. 35
+).
+(
+7
+)
+Rozporządzenie Parlamentu Europejskiego i Rady (WE) nr 765/2008 z dnia 9 lipca 2008 r. ustanawiające wymagania w zakresie akredytacji i nadzoru rynku odnoszące się do warunków wprowadzania produktów do obrotu i uchylające rozporządzenie (EWG) nr 339/93 (
+Dz.U. L 218 z 13.8.2008, s. 30
+).
+(
+8
+)
+Zalecenie Komisji 2010/19/UE z dnia 13 stycznia 2010 r. w sprawie bezpiecznej elektronicznej wymiany danych pomiędzy państwami członkowskimi na potrzeby kontroli niepowtarzalności wydawanych przez nie kart kierowcy (
+Dz.U. L 9 z 14.1.2010, s. 10
+).
+(
+9
+)
+Dyrektywa 95/46/WE Parlamentu Europejskiego i Rady z dnia 24 października 1995 r. w sprawie ochrony osób fizycznych w zakresie przetwarzania danych osobowych i swobodnego przepływu tych danych (
+Dz.U. L 281 z 23.11.1995, s. 31
+).
+(
+10
+)
+Dyrektywa 2002/58/WE Parlamentu Europejskiego i Rady z dnia 12 lipca 2002 r. dotycząca przetwarzania danych osobowych i ochrony prywatności w sektorze łączności elektronicznej (
+Dz.U. L 201 z 31.7.2002, s. 37
+).
+(
+11
+)
+Rozporządzenie Parlamentu Europejskiego i Rady (UE) nr 182/2011 z dnia 16 lutego 2011 r. ustanawiające przepisy i zasady ogólne dotyczące trybu kontroli przez państwa członkowskie wykonywania uprawnień wykonawczych przez Komisję (
+Dz.U. L 55 z 28.2.2011, s. 13
+).
+(
+12
+)
+Rozporządzenie (WE) nr 45/2001 Parlamentu Europejskiego i Rady z dnia 18 grudnia 2000 r. o ochronie osób fizycznych w związku z przetwarzaniem danych osobowych przez instytucje i organy wspólnotowe i o swobodnym przepływie takich danych (
+Dz.U. L 8 z 12.1.2001
+).
+(
+13
+)
+Dz.U. C 37 z 10.2.2012, s. 6
+.
+(
+14
+)
+Dyrektywa 2002/15/WE Parlamentu Europejskiego i Rady z dnia 11 marca 2002 r. w sprawie organizacji czasu pracy osób wykonujących czynności w trasie w zakresie transportu drogowego (
+Dz.U. L 80 z 23.3.2002, s. 35
+).
+(
+15
+)
+Dyrektywa Rady 92/6/EWG z dnia 10 lutego 1992 r. w sprawie montowania i zastosowania urządzeń ograniczenia prędkości w niektórych kategoriach pojazdów silnikowych we Wspólnocie (
+Dz.U. L 57 z 2.3.1992, s. 27
+).
+(
+16
+)
+Rozporządzenie Parlamentu Europejskiego i Rady (WE) nr 1072/2009 z dnia 21 października 2009 r. dotyczące wspólnych zasad dostępu do rynku międzynarodowych przewozów drogowych (
+Dz.U. L 300 z 14.11.2009, s. 72
+).
+ZAŁĄCZNIK I
+WYMOGI DOTYCZĄCE BUDOWY, BADAŃ, INSTALACJI I SPRAWDZANIA TACHOGRAFÓW ANALOGOWYCH
+I.   DEFINICJE
+W niniejszym załączniku:
+a)
+„urządzenie rejestrujące” lub „tachograf analogowy” oznacza
+: urządzenie przeznaczone do instalowania w pojazdach w celu wskazywania i automatycznego lub półautomatycznego rejestrowania szczegółowych danych dotyczących ruchu takich pojazdów oraz szczegółowych danych dotyczących określonych okresów aktywności ich kierowców;
+b)
+„stała urządzenia rejestrującego” oznacza
+: wielkość liczbową określającą liczbę sygnałów wejściowych niezbędną do wskazania i zarejestrowania przejechanej odległości jednego kilometra; stała ta musi być wyrażona w obrotach na kilometr (k =.. … obr./km) albo w impulsach na kilometr (k = ….. imp./km);
+c)
+„współczynnik charakterystyczny pojazdu” oznacza
+: wielkość liczbową określającą liczbę sygnałów dostarczanych przez element pojazdu podłączony do urządzenia rejestrującego (wał główny skrzyni biegów lub oś) w czasie, gdy pojazd przebywa drogę o długości jednego kilometra mierzoną w warunkach odniesienia (patrz: niniejszy załącznik część VI pkt 4). Współczynnik charakterystyczny pojazdu wyrażony jest w obrotach na kilometr (w = … obr./km) albo w impulsach na kilometr (w = … imp./km);
+d)
+„obwód toczny opon kół pojazdu” oznacza
+: wartość średnią długości drogi przebytej przez koła (napędowe) poruszającego się pojazdu podczas jednego pełnego obrotu. Pomiar tych długości drogi musi odbywać się w normalnych warunkach odniesienia (zob. niniejszy załącznik część VI pkt 4) i wyrażony w postaci: 1 = … mm.
+II.   CHARAKTERYSTYKA OGÓLNA I FUNKCJE URZĄDZENIA REJESTRUJĄCEGO
+Urządzenie musi być w stanie zapisywać następujące wielkości:
+1.
+długość przebytej przez pojazd drogi;
+2.
+prędkość pojazdu;
+3.
+czas prowadzenia pojazdu;
+4.
+inne okresy pracy lub gotowości kierowcy;
+5.
+przerwy w pracy i okresy dziennego odpoczynku;
+6.
+otwarcie obudowy zawierającej wykresówkę;
+7.
+w elektronicznym urządzeniu rejestrującym, które jest sterowane sygnałami elektrycznymi przesyłanymi z czujnika pomiaru odległości i prędkości, każde przekraczające 100 milisekund przerwanie zasilania urządzenia rejestrującego (z wyjątkiem oświetlenia) lub przerwanie zasilania czujnika prędkości i odległości lub przerwanie sygnału czujnika pomiaru prędkości i odległości.
+Jeżeli pojazd prowadzony jest przez dwóch kierowców, wówczas urządzenie musi być w stanie rejestrować jednocześnie, a przy tym wyraźnie i na dwóch oddzielnych wykresówkach, dane dotyczące okresów wymienionych w pkt 3, 4 i 5 akapitu pierwszego.
+III.   WYMAGANIA DOTYCZĄCE KONSTRUKCJI URZĄDZENIA REJESTRUJĄCEGO
+a)   Wymagania ogólne
+1.
+W skład urządzenia rejestrującego wchodzą:
+1.1.
+Przyrządy wskazujące:
+—
+długość przebytej drogi (drogomierz),
+—
+prędkość (prędkościomierz),
+—
+czas (zegar).
+1.2.
+Przyrządy rejestrujące, w tym:
+—
+rejestrator długości przebytej drogi,
+—
+rejestrator prędkości,
+—
+jeden lub więcej rejestratorów czasu, spełniających wymagania określone w lit. c) pkt 4.
+1.3.
+Urządzenia zaznaczające na wykresówce, indywidualnie:
+—
+każde otwarcie obudowy zawierającej wykresówkę,
+—
+dla elektronicznych urządzeń rejestrujących, zdefiniowanych w części II akapit pierwszy pkt 7, każde przekraczające 100 milisekund przerwanie zasilania urządzenia rejestrującego (z wyjątkiem oświetlenia), nie później niż przy ponownym załączeniu zasilania,
+—
+dla elektronicznych urządzeń rejestrujących, zdefiniowanych w części II akapit pierwszy pkt 7, każde przekraczające 100 milisekund przerwanie zasilania czujnika prędkości i odległości lub przerwanie sygnału czujnika prędkości i odległości.
+2.
+Dodanie do urządzeń jakichkolwiek urządzeń dodatkowych niewymienionych w pkt 1 nie może zakłócać prawidłowego działania urządzeń obowiązkowych ani ich wskazań.
+Urządzenie jest zgłaszane do homologacji typu wraz z ewentualnymi urządzeniami dodatkowymi.
+3.   Materiały
+3.1.
+Wszystkie części składowe urządzenia rejestrującego muszą być wykonane z materiałów o dostatecznej trwałości i wytrzymałości mechanicznej oraz o stabilnych właściwościach elektrycznych i magnetycznych.
+3.2.
+Jakiekolwiek zmiany części składowych urządzenia lub materiałów użytych do jego produkcji są, przed wprowadzeniem do produkcji, przedstawiane do zatwierdzenia przez organy, które homologowały typ urządzenia.
+4.   Pomiar przebytej drogi
+Długość przebytej drogi może być mierzona i rejestrowana w taki sposób, by albo:
+—
+obejmować ruch pojazdu do przodu lub do tyłu, albo
+—
+obejmować ruch pojazdu tylko do przodu.
+Żaden zapis ruchu do tyłu nie może w żadnym wypadku wpływać na czytelność i dokładność pozostałych zapisów.
+5.   Pomiar prędkości
+5.1.
+Zakres pomiarowy prędkości jest określony w świadectwie homologacji typu.
+5.2.
+Częstotliwość drgań własnych i tłumienie drgań urządzenia mierzącego muszą być takie, aby przyrządy wskazujące i rejestrujące były zdolne, w zakresie pomiarowym, do nadążania za zmianami przyśpieszenia do wartości 2 m/s
+2
+, nie przekraczając dopuszczalnych błędów.
+6.   Pomiar czasu (zegar)
+6.1.
+Mechanizm służący do nastawiania zegara musi się znajdować wewnątrz obudowy zawierającej wykresówkę; każde otwarcie tej obudowy musi być automatycznie rejestrowane na wykresówce.
+6.2.
+Jeżeli mechanizm napędzający wykresówkę jest sterowany zegarem, to czas poprawnej pracy zegara, po jego całkowitym nakręceniu, musi być dłuższy o przynajmniej 10 % od najdłuższego okresu, który może być zarejestrowany na wykresówce.
+7.   Oświetlenie i zabezpieczenie
+7.1.
+Przyrządy wskazujące urządzenia są wyposażone we właściwe i niepowodujące oślepienia oświetlenie.
+7.2.
+W normalnych warunkach użytkowania wszystkie wewnętrzne części urządzenia muszą być zabezpieczone przed wilgocią i kurzem. Ponadto, aby zapobiec ewentualnym ingerencjom, muszą być one zabezpieczone za pomocą obudów, które można zaplombować.
+b)   Przyrządy wskazujące
+1.   Licznik długości drogi (drogomierz)
+1.1.
+Wartość działki elementarnej licznika długości drogi musi wynosić 0,1 kilometra. Cyfry wskazujące hektometry powinny być łatwo odróżnialne od cyfr wskazujących pełne kilometry.
+1.2.
+Cyfry licznika długości drogi muszą być łatwe do odczytania, a ich widoczna wysokość wynosić co najmniej 4 mm.
+1.3.
+Zakres pomiarowy licznika wynosi co najmniej 99 999,9 kilometra.
+2.   Prędkościomierz
+2.1.
+W zakresie pomiarowym podziałka musi mieć równomiernie naniesione wskazy prędkości co 1, 2, 5 lub 10 kilometrów na godzinę. Wartość działki elementarnej prędkości (odległość między dwoma sąsiednimi wskazami podziałki) nie może być większa niż 10 % górnej granicy zakresu pomiarowego.
+2.2.
+Zakres wskazań poza zakresem pomiarowym nie musi mieć oznaczeń liczbowych prędkości.
+2.3.
+Odległość między dwoma wskazami podziałki odpowiadająca różnicy prędkości wynoszącej dziesięć kilometrów na godzinę nie może być mniejsza niż dziesięć milimetrów.
+2.4.
+Jeżeli prędkość jest wskazywana za pomocą wskazówki, to odległość między wskazówką a podzielnią nie może być większa niż trzy milimetry.
+3.   Zegar
+Przyrząd wskazujący czas musi być widoczny z zewnątrz urządzenia, a jego wskazania muszą być łatwo czytelne, zrozumiałe i jednoznaczne.
+c)   Przyrządy rejestrujące
+1.   Wymagania ogólne
+1.1.
+Wszystkie przyrządy, bez względu na rodzaj stosowanych w nich wykresówek (taśmy lub tarcze), muszą być opatrzone oznaczeniem umożliwiającym prawidłowe włożenie wykresówek, tak aby czas wskazywany przez zegar odpowiadał oznaczeniu czasu na wykresówce.
+1.2.
+Mechanizm napędzający wykresówkę musi zapewniać jej przesuw bez powstawania luzów i umożliwiać łatwe jej wkładanie i wyjmowanie.
+1.3.
+W przypadku wykresówek w postaci tarcz mechanizm napędzający powinien być sterowany przez mechanizm zegarowy. W tym przypadku ruch obrotowy wykresówki musi być ciągły i równomierny, przy czym minimalna prędkość przesuwu, mierzona na wewnętrznym okręgu pola przeznaczonego do rejestracji prędkości, musi wynosić siedem milimetrów na godzinę.W urządzeniach z wykresówką w postaci taśmy, w których mechanizm przesuwający taśmę do przodu jest sterowany mechanizmem zegarowym, prędkość prostoliniowego ruchu do przodu musi wynosić co najmniej 10 milimetrów na godzinę.
+1.4.
+Zapis przebytej długości drogi, prędkości pojazdu oraz każdego otwarcia obudowy zawierającej wykresówkę lub wykresówki musi być automatyczny.
+2.   Zapis długości przebytej drogi
+2.1.
+Każdy kilometr przebytej drogi musi być w zapisie przedstawiony przez zmianę o długości wynoszącej co najmniej jeden milimetr na odpowiedniej współrzędnej.
+2.2.
+Nawet przy prędkościach zbliżonych do górnej granicy zakresu pomiarowego zapis długości drogi musi być wyraźnie czytelny.
+3.   Rejestracja prędkości
+3.1.
+Niezależnie od rodzaju wykresówki pisak rejestrujący prędkość musi normalnie przesuwać się po linii prostej i pod kątem prostym w stosunku do kierunku przesuwu wykresówki. Ruch pisaka może jednak być krzywoliniowy, jeżeli spełnione są następujące warunki:
+—
+linia drogi pisaka jest prostopadła do średniego obwodu (w przypadku wykresówek w formie tarcz) lub do osi (w przypadku wykresówek w formie taśmy) pola rejestracji prędkości,
+—
+stosunek promienia krzywizny drogi pisaka do szerokości pola rejestracji prędkości jest nie mniejszy niż 2,4:1, bez względu na rodzaj wykresówki,
+—
+wskazy podziałki czasu przecinają pole rejestracji wzdłuż krzywej o takim samym promieniu jak droga przebywana przez pisak. Odległości między sąsiednimi oznaczeniami podziałki czasu odpowiadają okresowi nie większemu niż jedna godzina.
+3.2.
+Każda zmiana prędkości o dziesięć kilometrów na godzinę musi być zarejestrowana przez zmianę o co najmniej 1,5 milimetra na odpowiedniej współrzędnej.
+4.   Rejestracja czasu
+4.1.
+Przyrząd rejestrujący jest tak skonstruowany, aby okres prowadzenia pojazdu był zawsze rejestrowany automatycznie i aby możliwa była – w razie potrzeby za pomocą przełącznika – automatyczna i oddzielna rejestracja pozostałych okresów aktywności wymienionych w art. 34 ust. 5 lit. b) ppkt (ii), (iii) i (iv) niniejszego rozporządzenia.
+4.2.
+Wyraźne rozróżnienie różnych okresów aktywności musi być możliwe na podstawie cech wykreślonych linii, ich wzajemnego położenia i, o ile zachodzi potrzeba, również symboli określonych w art. 34 niniejszego rozporządzenia. Zapisy różnych okresów aktywności powinny różnić się między sobą różną grubością wykreślonych dla nich linii lub w inny sposób, który jest co najmniej tak samo skuteczny z punktu widzenia czytelności i łatwości interpretowania zapisu.
+4.3.
+Jeżeli pojazd obsługuje załoga składająca się z więcej niż jednego kierowcy, wówczas zapisy przewidziane w pkt 4.1 są wykonywane na oddzielnych wykresówkach, tzn. każdy kierowca ma swoją własną wykresówkę. W takim przypadku przesuw oddzielnych wykresówek jest realizowany albo przez pojedynczy mechanizm albo przez oddzielne, zsynchronizowane mechanizmy.
+d)   Urządzenie zamykające
+1.
+Obudowa zawierająca wykresówkę lub wykresówki oraz mechanizm do nastawiania zegara jest wyposażona w zamek.
+2.
+Każde otwarcie obudowy zawierającej wykresówkę lub wykresówki oraz mechanizm do nastawiania zegara jest automatycznie rejestrowane na wykresówce lub wykresówkach.
+e)   Oznaczenia
+1.
+Na płycie czołowej przyrządu muszą być umieszczone następujące oznaczenia:
+—
+w pobliżu cyfr licznika długości przebytej drogi jednostka długości oznaczona skrótem „km”,
+—
+w pobliżu podziałki prędkości oznaczenie „km/h”,
+—
+zakres pomiarowy prędkościomierza w postaci „V
+min
+… km/h, V
+max
+… km/h”. Oznaczenie to nie jest wymagane, jeżeli znajduje się na tabliczce znamionowej przyrządu.
+Wymagania te nie dotyczą urządzeń rejestrujących zatwierdzonych przed dniem 10 sierpnia 1970 r.
+2.
+Tabliczka znamionowa jest wbudowana w przyrząd i zawiera następujące oznaczenia, które muszą być widoczne po zainstalowaniu przyrządu:
+—
+nazwa i adres producenta urządzenia,
+—
+numer seryjny i rok produkcji,
+—
+znak homologacji typu,
+—
+stała przyrządu w postaci „k = … obr./km” lub „k = … imp./km”;
+—
+ewentualnie: zakres pomiarowy prędkości w formie podanej w pkt 1,
+—
+w przypadku gdy urządzenie rejestrujące jest wrażliwe na kąt pochylenia w takim stopniu, że na skutek zmiany pochylenia jego wskazania mogą przekroczyć błędy dopuszczalne, wówczas dopuszczalny kąt pochylenia podany jest w sposób następujący:
+gdzie α oznacza kąt między poziomem a płaszczyzną płyty czołowej urządzenia (ustawionego w prawidłowym położeniu), przy którym urządzenie jest kalibrowane, natomiast β i γ oznaczają odpowiednio maksymalne dopuszczalne odchylenia do góry i do dołu od kąta kalibracji α.
+f)   Błędy graniczne dopuszczalne (przyrządów wskazujących i rejestrujących)
+1.
+Na stanowisku pomiarowym przed zainstalowaniem:
+a)
+długość przebytej drogi:
+1 % więcej lub mniej od rzeczywistej długości drogi, przy czym długość ta wynosi co najmniej jeden kilometr;
+b)
+prędkość:
+3 km/h więcej lub mniej od rzeczywistej prędkości;
+c)
+czas:
+± dwie minuty na dobę, a maksymalnie 10 minut na siedem dni, w przypadkach gdy okres ciągłej pracy zegara po nakręceniu nie jest krótszy od tego okresu.
+2.
+Przy instalacji:
+a)
+długość przebytej drogi:
+2 % więcej lub mniej od rzeczywistej długości drogi, przy czym długość ta wynosi co najmniej jeden kilometr;
+b)
+prędkość:
+4 km/h więcej lub mniej od rzeczywistej prędkości;
+c)
+czas:
+± dwie minuty na dobę, lub
+± 10 minut na siedem dni.
+3.
+W użytkowaniu:
+a)
+długość przebytej drogi:
+4 % więcej lub mniej od rzeczywistej długości drogi, przy czym długość ta wynosi co najmniej jeden kilometr;
+b)
+prędkość:
+6 km/h więcej lub mniej od rzeczywistej prędkości;
+c)
+czas:
+± dwie minuty na dobę, lub
+± 10 minut na siedem dni.
+4.
+Błędy graniczne dopuszczalne podane w pkt 1–3 obowiązują dla temperatur w zakresie pomiędzy 0 °C a 40 °C, przy czym temperatura musi być mierzona w pobliżu urządzenia.
+5.
+Błędy graniczne dopuszczalne, podane w pkt 2 i 3, są wyznaczane w warunkach określonych w części VI.
+IV.   WYKRESÓWKI
+a)   Wymagania ogólne
+1.
+Wykresówki muszą być tak wykonane, aby nie przeszkadzały w normalnym działaniu przyrządu kontrolnego i aby dokonane na nich zapisy nie dawały się zetrzeć, były łatwo czytelne i łatwe do zidentyfikowania.
+Wykresówki muszą zachowywać swoje wymiary i wszelkie dokonane na nich zapisy w normalnych warunkach wilgotności i temperatury powietrza.
+Ponadto musi być możliwe dokonywanie na nich zapisów bez uszkadzania ich i bez wpływu na czytelność zapisu informacji określonych w art. 34 niniejszego rozporządzenia.
+W normalnych warunkach przechowywania zapisy muszą pozostać wyraźnie czytelne przez okres co najmniej roku.
+2.
+Minimalna pojemność zapisu wykresówek, bez względu na ich rodzaj, wynosi 24 godziny.
+Jeżeli kilka tarcz jest łączonych razem w celu zwiększenia pojemności ciągłego zapisu bez ingerencji personelu, wówczas połączenia między poszczególnymi tarczami są wykonane w taki sposób, aby w punkcie przejścia z jednej tarczy na drugą nie powstawały przerwy zapisów ani zapisy nie nakładały się na siebie.
+b)   Pola rejestracji i ich podziałki
+1.
+Wykresówki zawierają następujące pola rejestracji:
+—
+pole przeznaczone wyłącznie do rejestracji danych o prędkości,
+—
+pole przeznaczone wyłącznie do rejestracji danych o długości przebytej drogi,
+—
+jedno lub więcej pól do rejestracji danych dotyczących czasu kierowania pojazdem, innych okresów pracy i gotowości kierowców, przerw w pracy i okresów odpoczynku kierowców.
+2.
+Pole do rejestrowania prędkości musi mieć podziałkę prędkości o wartości działki elementarnej 20 kilometrów na godzinę lub mniejszej. Każdy wskaz podziałki prędkości musi być oznaczony odpowiadającą jej prędkością za pomocą cyfr umieszczonych na wprost wskazu. Oznaczenie jednostki prędkości w postaci „km/h” musi być umieszczone przynajmniej w jednym miejscu pola rejestracji prędkości. Ostatni wskaz podziałki prędkości musi odpowiadać górnej granicy zakresu pomiarowego.
+3.
+Pole do rejestrowania długości przebytej drogi musi być wykonane w taki sposób, aby bez trudu można było odczytać liczbę przebytych kilometrów.
+4.
+Pole lub pola do rejestracji okresów aktywności, o których mowa w pkt 1, muszą być oznaczone w taki sposób, aby różne okresy aktywności były łatwo rozróżnialne.
+c)   Informacje drukowane na wykresówkach
+Na każdej wykresówce są drukowane następujące informacje:
+—
+nazwisko i adres producenta lub znak handlowy producenta,
+—
+znak homologacji typu wzoru wykresówki,
+—
+znak homologacji typu lub typów urządzeń rejestrujących, w których wykresówka może być używana,
+—
+górna granica zakresu pomiarowego prędkości w kilometrach na godzinę.
+Minimalnym wymaganiem dodatkowym jest, aby każda wykresówka miała naniesioną w formie wydruku podziałkę czasu, wyskalowaną w taki sposób, aby można było odczytać wskazanie czasu bezpośrednio w odstępach piętnastominutowych, przy czym każdy przedział pięciominutowy dawał się łatwo określić.
+d)   Wolne miejsce na dopiski odręczne
+Na wykresówkach pozostawia się wolne miejsce na dopiski odręczne, tak aby kierowcy mogli wpisać co najmniej następujące dane:
+—
+nazwisko i imię kierowcy,
+—
+data i miejsce rozpoczęcia używania tej wykresówki oraz data i miejsce zakończenia jej używania,
+—
+numer lub numery rejestracyjne pojazdu lub pojazdów, do których kierowca jest przydzielony w czasie używania tej wykresówki,
+—
+wskazania licznika przebytej drogi pojazdu lub pojazdów, do których kierowca jest przydzielony podczas używania tej wykresówki,
+—
+data i czas zmiany pojazdu.
+V.   INSTALACJA URZĄDZENIA REJESRTUJĄCEGO
+1.   Urządzenie rejestrujące jest umieszczane w pojeździe w taki sposób, aby kierowca mógł ze swojego miejsca wyraźnie widzieć prędkościomierz, drogomierz i zegar, a jednocześnie by wszystkie części tych przyrządów, wraz z elementami napędzającymi, były zabezpieczone przed przypadkowym uszkodzeniem.
+2.   Musi być możliwe dopasowanie stałej urządzenia rejestrującego do współczynnika charakterystycznego pojazdu za pomocą odpowiedniego urządzenia, znanego pod nazwą adaptera.
+Pojazdy posiadające dwa lub więcej współczynników przełożeń tylnej osi są wyposażone w urządzenie przełączające, dzięki któremu różne przełożenia mogą być automatycznie dopasowane do przełożenia, dla którego urządzenie rejestrujące zostało dopasowane do pojazdu.
+3.   Po zainstalowaniu i sprawdzeniu urządzenia w pojeździe, obok lub wewnątrz urządzenia rejestrującego, zamocowana musi być tabliczka instalacyjna, w taki sposób, aby była łatwo widoczna. Po każdej kontroli przeprowadzonej przez zatwierdzonego instalatora lub zatwierdzony warsztat, która wykaże konieczność zmiany ustawień instalacyjnych przyrządu, zamocowana musi zostać nowa tabliczka instalacyjna w miejsce starej.
+Tabliczka instalacyjna zawiera co najmniej następujące dane:
+—
+nazwa, adres lub nazwa handlowa zatwierdzonego instalatora, warsztatu lub producenta pojazdu,
+—
+współczynnik charakterystyczny pojazdu, w postaci „w = … obr./km” lub „w = … imp./km”;
+—
+obwód toczny kół pojazdu w postaci „l = … mm”,
+—
+datę (daty) wyznaczenia współczynnika charakterystycznego pojazdu oraz zmierzenia obwodu tocznego kół.
+4.   Plombowanie
+Następujące części są plombowane:
+a)
+tabliczka instalacyjna, chyba że jest przymocowana w taki sposób, że nie można jej usunąć bez uszkodzenia wykonanych na niej oznaczeń;
+b)
+oba zakończenia połączenia między urządzeniem rejestrującym a pojazdem;
+c)
+sam adapter oraz punkt jego włączenia w tor połączenia;
+d)
+mechanizm przełączający w pojazdach o dwóch lub więcej przełożeniach osi;
+e)
+połączenia łączące adapter i mechanizm przełączający z resztą urządzenia;
+f)
+obudowy wymagane zgodnie z częścią III lit. a) ppkt 7.2.
+g)
+jakakolwiek osłona dająca dostęp do środków dostosowujących stałą urządzenia rejestrującego do współczynnika charakterystycznego pojazdu.
+W niektórych przypadkach homologacja typu może wymagać dodatkowego plombowania i wówczas homologacja typu musi określać, w których miejscach te plomby mają być nakładane.
+Plomby wymienione w lit. b), c) oraz e) akapitu pierwszego mogą być usunięte:
+—
+w nagłym wypadku,
+—
+do celów zainstalowania, wyregulowania lub naprawy ogranicznika prędkości lub innego urządzenia przyczyniającego się do bezpieczeństwa ruchu drogowego,
+z zastrzeżeniem, że urządzenie rejestrujące nadal pracuje niezawodnie i prawidłowo i zostanie powtórnie zaplombowane przez zatwierdzonego instalatora lub zatwierdzony warsztat niezwłocznie po zamontowaniu ogranicznika prędkości lub każdego innego urządzenia przyczyniającego się do bezpieczeństwa ruchu drogowego lub w ciągu siedmiu dni w innych przypadkach; każdy przypadek naruszenia takich plomb wymaga sporządzenia pisemnego oświadczenia podającego powody takiego działania, a oświadczenie to powinno być dostępne dla właściwego organu.
+5.   Kable łączące urządzenie rejestrujące z nadajnikiem impulsów muszą być zabezpieczone za pomocą ciągłego, pokrytego osłoną z tworzywa sztucznego, zabezpieczonego przed korozją stalowego pancerza wyposażonego w zaciskane zakończenia, z wyjątkiem sytuacji, gdy przy użyciu innych środków zagwarantowana jest równoważna ochrona przed manipulacją (na przykład przy użyciu elektronicznego monitorowania, takiego jak kodowanie sygnału), zdolna wykryć obecność jakiegokolwiek urządzenia niepotrzebnego dla prawidłowej pracy urządzenia rejestrującego, a mającego za zadanie zakłócanie prawidłowej pracy urządzenia rejestrującego poprzez zwieranie, przerywanie lub modyfikację elektronicznych sygnałów z czujnika prędkości i drogi. Połączenie, zawierające zaplombowane złącza, jest uważane za ciągłe w rozumieniu niniejszego rozporządzenia.
+Wymieniony wyżej system monitorowania elektronicznego może być zastąpiony przez układ elektroniczny, który zapewni, że urządzenie rejestrujące będzie w stanie zarejestrować każdy ruch pojazdu, niezależnie od sygnału z czujnika prędkości i odległości.
+Do celów stosowania niniejszego punktu pojazdy kategorii M1 i N1 są pojazdami określonymi w załączniku II część A dyrektywy 2007/46/WE Parlamentu Europejskiego i Rady
+(
+1
+)
+. W tych pojazdach wyposażonych w tachografy zgodne z niniejszym rozporządzeniem, i które nie są projektowane z myślą o instalowaniu opancerzonych kabli pomiędzy czujnikami drogi i prędkości a urządzeniem rejestrującym, adapter powinien być montowany możliwie jak najbliżej czujników drogi i prędkości.
+Kabel opancerzony zakłada się między adapterem a urządzeniem rejestrującym.
+VI.   SPRAWDZENIA I PRZEGLĄDY
+Państwa członkowskie wyznaczają podmioty, które przeprowadzają sprawdzenia i przeglądy.
+1.   Certyfikacja nowych i naprawionych urządzeń
+Każde urządzenie, zarówno nowe jak i naprawione, podlega certyfikacji w zakresie poprawności swojego działania oraz dokładności wskazań i rejestracji, w granicach błędów określonych w części III lit. f) pkt 1, za pomocą plombowania zgodnie z częścią V pkt 4 akapit pierwszy lit. f).
+W tym celu państwa członkowskie mogą ustanowić legalizację pierwotną obejmującą sprawdzenie i potwierdzenie zgodności nowego lub naprawionego urządzenia z homologowanym typem lub wymaganiami niniejszego rozporządzenia lub mogą przekazać uprawnienia do poświadczania producentom lub ich upoważnionym przedstawicielom.
+2.   Instalacja
+Po zamontowaniu w pojeździe urządzenie oraz cała instalacja muszą być zgodne z przepisami dotyczącymi maksymalnych dopuszczalnych błędów określonych w części III lit. f) pkt 2.
+Sprawdzenia są wykonywane przez zatwierdzonego instalatora lub zatwierdzony warsztat na ich odpowiedzialność.
+3.   Przeglądy okresowe
+a)
+Przeglądy okresowe urządzeń zamontowanych w pojazdach są przeprowadzane co dwa lata, przy czym mogą być przeprowadzane przy okazji okresowego badania technicznego.
+Przeglądy te obejmują:
+—
+sprawdzenie, czy urządzenie działa prawidłowo,
+—
+sprawdzenie, czy urządzenie opatrzone jest znakiem homologacji typu,
+—
+sprawdzenie, czy zamocowana jest tabliczka instalacyjna,
+—
+sprawdzenie czy plomby na urządzeniu i na innych częściach instalacji są w stanie nienaruszonym,
+—
+wyznaczenie faktycznego obwodu tocznego kół.
+b)
+Przegląd mający na celu stwierdzenie zgodności z lit. f) pkt 3 części III dotyczący granicznych dopuszczalnych błędów jest przeprowadzany co najmniej raz na sześć lat, przy czym każde państwo członkowskie może ustalić krótszy odstęp między takimi przeglądami, dotyczący pojazdów zarejestrowanych na swoim terytorium. Takie przeglądy obejmują wymianę tabliczki instalacyjnej.
+4.   Wyznaczanie błędów
+Wyznaczanie błędów po zainstalowaniu i podczas użytkowania jest wykonywane w następujących warunkach, które stanowią warunki odniesienia:
+—
+pojazd bez ładunku w stanie jak przy normalnym użytkowaniu,
+—
+ciśnienie w ogumieniu zgodne z instrukcjami producenta,
+—
+zużycie ogumienia w granicach dopuszczonych w obowiązujących przepisach,
+—
+przemieszczanie pojazdu: pojazd porusza się napędzany własnym silnikiem, po linii prostej i po poziomej powierzchni, z prędkością 50 ± 5 km/h. Badanie może być również przeprowadzone na stanowisku warsztatowym, pod warunkiem że zapewni ono porównywalną dokładność.
+(
+1
+)
+Dyrektywa 2007/46/WE Parlamentu Europejskiego i Rady z dnia 5 września 2007 r. ustanawiająca ramy dla homologacji pojazdów silnikowych i ich przyczep oraz układów, części i oddzielnych zespołów technicznych przeznaczonych do tych pojazdów (
+Dz.U. L 263 z 9.10.2007, s. 1
+).
+ZAŁĄCZNIK II
+ZNAK I ŚWIADECTWO HOMOLOGACJI TYPU
+I.   ZNAK HOMOLOGACJI TYPU
+1.
+Znak homologacji typu składa się z:
+a)
+prostokąta, wewnątrz którego jest umieszczona litera „e”, po której następuje liczba lub litera oznaczająca państwo, które wydało homologację, zgodnie z następującymi umownymi znakami:
+Belgia
+6,
+Bułgaria
+34,
+Republika Czeska
+8,
+Dania
+18,
+Niemcy
+1,
+Estonia
+29,
+Irlandia
+24,
+Grecja
+23,
+Hiszpania
+9,
+Francja
+2,
+Chorwacja
+25,
+Włochy
+3,
+Cypr
+CY
+Łotwa
+32,
+Litwa
+36,
+Luksemburg
+13,
+Węgry
+7,
+Malta
+MT,
+Niderlandy
+4,
+Austria
+12,
+Polska
+20,
+Portugalia
+21,
+Rumunia
+19,
+Słowenia
+26,
+Słowacja
+27,
+Finlandia
+17,
+Szwecja
+5,
+Zjednoczone Królestwo
+11,
+oraz
+b)
+numeru homologacji typu odpowiadającego numerowi świadectwa homologacji typu wydanego dla prototypu urządzenia rejestrującego lub wykresówki, lub karty do tachografu, umieszczonego bezpośrednio obok tego prostokąta.
+2.
+Znak homologacji typu jest umieszczony na tabliczce znamionowej każdego urządzenia oraz na każdej wykresówce 1 i na każdej karcie do tachografu. Musi być nieusuwalny i zawsze wyraźnie czytelny.
+3.
+Wymiary narysowanego poniżej znaku homologacji
+(
+1
+)
+typu wyrażone są w milimetrach, przy czym są to wymiary minimalne. Zachowuje się proporcje między wymiarami.
+II.   ŚWIADECTWO HOMOLOGACJI TYPU DLA TACHOGRAFÓW ANALOGOWYCH
+Państwo członkowskie, które udzieliło homologacji typu, wydaje wnioskodawcy świadectwo homologacji, którego wzór przedstawiono poniżej. Informując inne państwa członkowskie o wydanej lub ewentualnie cofniętej homologacji typu, państwo członkowskie musi posługiwać się kopią tego świadectwa.
+ŚWIADECTWO HOMOLOGACJI TYPU
+Nazwa właściwej jednostki administracyjnej …
+Zgłoszenie dotyczące
+(
+2
+)
+:
+—
+homologacji typu urządzenia rejestrującego
+—
+cofnięcia homologacji typu urządzenia rejestrującego
+—
+homologacji typu wzoru wykresówki
+—
+cofnięcia homologacji typu wzoru wykresówki
+…
+Homologacja typu nr …
+1.
+Znak handlowy lub nazwa handlowa …
+2.
+Nazwa typu lub wzoru …
+3.
+Nazwa producenta …
+4.
+Adres producenta …
+5.
+Zgłoszono do homologacji typu w dniu …
+6.
+Zbadano w …
+7.
+Data i numer badania/badań …
+8.
+Data homologacji typu …
+9.
+Data cofnięcia homologacji typu …
+10.
+Typ lub typy urządzeń rejestrujących, dla których przeznaczona jest wykresówka …
+11.
+Miejscowość …
+12.
+Data …
+13.
+Załączone dokumenty opisowe …
+14.
+Uwagi (w tym, w odpowiednich przypadkach, o umiejscowieniu plomb)
+…
+(Podpis)
+III.   ŚWIADECTWO HOMOLOGACJI TYPU DLA TACHOGRAFÓW CYFROWYCH
+Państwo członkowskie, które udzieliło homologacji typu, wystawia wnioskodawcy świadectwo homologacji typu, którego wzór przedstawiono poniżej. Informując inne państwa członkowskie o wydanej lub ewentualnie cofniętej homologacji typu, państwo członkowskie musi posługiwać się kopią tego świadectwa.
+ŚWIADECTWO HOMOLOGACJI TYPU DLA TACHOGRAFÓW CYFROWYCH
+Nazwa właściwej jednostki administracyjnej …
+Zgłoszenie dotyczące
+(
+3
+)
+:
+
+homologacji typu:
+
+cofnięcia homologacji typu:
+
+wzoru urządzenia rejestrującego
+
+elementu składowego urządzenia rejestrującego
+(
+4
+)
+
+karty kierowcy
+
+karty warsztatowej
+
+karty przedsiębiorstwa
+
+karty kontrolera
+…
+Homologacja typu nr …
+1.
+Znak handlowy lub nazwa handlowa …
+2.
+Nazwa wzoru …
+3.
+Nazwa producenta …
+4.
+Adres producenta …
+5.
+Zgłoszono do homologacji typu w dniu …
+6.
+Laboratorium/laboratoria …
+7.
+Data i numer protokołu badań …
+8.
+Data homologacji typu …
+9.
+Data cofnięcia homologacji typu …
+10.
+Model urządzenia rejestrującego/urządzeń rejestrujących, z którym(-i) ma współpracować element składowy …
+11.
+Miejscowość …
+12.
+Data …
+13.
+Załączone dokumenty opisowe …
+14.
+Uwagi
+…
+(Podpis)
+(
+1
+)
+Dane podane orientacyjnie.
+(
+2
+)
+Niepotrzebne skreślić.
+(
+3
+)
+Proszę zaznaczyć właściwe pola.
+(
+4
+)
+Wskazać element składowy, o którym mowa w zgłoszeniu.
