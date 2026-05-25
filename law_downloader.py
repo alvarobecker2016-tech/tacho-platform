@@ -1,50 +1,48 @@
+import os
 import requests
-from bs4 import BeautifulSoup
-import pdfplumber
-import io
 
-def pobierz_eurlex_tekst(celex_id):
-    print(f"Pobieranie dokumentu {celex_id} z EUR-Lex...")
-    url = f"https://eur-lex.europa.eu/legal-content/PL/TXT/HTML/?uri=CELEX:{celex_id}"
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.content, 'html.parser')
-    for element in soup(["script", "style", "meta", "noscript"]):
-        element.decompose()
-    tekst = soup.get_text(separator='\n\n', strip=True)
-    tekst = '\n'.join([line for line in tekst.split('\n') if line.strip() != ''])
-    return tekst
+def pobierz_z_eurlex():
+    print("\n--- Uruchamiam Automatycznego Pobieracza Prawa (EUR-Lex) ---")
 
-def pobierz_isap_tekst(pdf_url):
-    print(f"Pobieranie i analizowanie PDF z ISAP: {pdf_url}")
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    response = requests.get(pdf_url, headers=headers)
-    response.raise_for_status()
-    pdf_file = io.BytesIO(response.content)
-    tekst_calkowity = ""
-    with pdfplumber.open(pdf_file) as pdf:
-        for strona in pdf.pages:
-            strona_tekst = strona.extract_text()
-            if strona_tekst:
-                tekst_calkowity += strona_tekst + "\n\n"
-    return tekst_calkowity
+    # 1. Upewniamy się, że folder 'data' istnieje
+    if not os.path.exists("data"):
+        os.makedirs("data")
+
+    # 2. Słownik z najważniejszymi rozporządzeniami 
+    # (Klucz: nazwa pliku na Twoim dysku, Wartość: numer CELEX z EUR-Lex)
+    ustawy = {
+        "rozp_561_2006_czas_pracy.pdf": "32006R0561",
+        "rozp_165_2014_tachografy.pdf": "32014R0165",
+        "rozp_1054_2020_pakiet_mobilnosci.pdf": "32020R1054"
+    }
+
+    # 3. Oficjalny link do pobierania PDF z EUR-Lex w języku polskim (PL)
+    base_url = "https://eur-lex.europa.eu/legal-content/PL/TXT/PDF/?uri=CELEX:"
+
+    # 4. Pętla pobierająca każdy plik ze słownika
+    for nazwa_pliku, celex in ustawy.items():
+        url = base_url + celex
+        sciezka_zapisu = os.path.join("data", nazwa_pliku)
+        
+        print(f"\nPobieranie: {nazwa_pliku} (CELEX: {celex})...")
+        
+        try:
+            # Używamy nagłówka 'User-Agent', aby serwer UE widział nas jako normalną przeglądarkę, a nie bota atakującego serwer
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+            response = requests.get(url, headers=headers)
+            
+            # Jeśli serwer odpowiedział kodem 200 (OK), zapisujemy plik
+            if response.status_code == 200:
+                with open(sciezka_zapisu, 'wb') as f:
+                    f.write(response.content)
+                print(f"✅ Sukces! Zapisano bezpośrednio w: {sciezka_zapisu}")
+            else:
+                print(f"❌ Błąd pobierania. Serwer zwrócił kod: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Wystąpił krytyczny błąd podczas pobierania {nazwa_pliku}: {e}")
+
+    print("\n--- Zakończono operację! Twój system jest gotowy na wektoryzację nowej wiedzy. ---")
 
 if __name__ == "__main__":
-    celex_tachografy = "32014R0165" 
-    try:
-        tekst_ue = pobierz_eurlex_tekst(celex_tachografy)
-        with open("ue_rozporzadzenie_165_2014.txt", "w", encoding="utf-8") as f:
-            f.write(tekst_ue)
-        print("Pobrano przepisy UE. Liczba znaków:", len(tekst_ue))
-    except Exception as e:
-        print("Błąd pobierania EUR-Lex:", e)
-
-    url_isap_ustawa = "https://isap.sejm.gov.pl/isap.nsf/download.xsp/WDU20180001480/U/D20181480Lj.pdf"
-    try:
-        tekst_pl = pobierz_isap_tekst(url_isap_ustawa)
-        with open("pl_ustawa_o_tachografach.txt", "w", encoding="utf-8") as f:
-            f.write(tekst_pl)
-        print("Pobrano ustawę z ISAP. Liczba znaków:", len(tekst_pl))
-    except Exception as e:
-        print("Błąd pobierania ISAP:", e)
+    pobierz_z_eurlex()
