@@ -1,0 +1,15 @@
+[theme]
+# Główny kolor akcentów (np. przyciski, paski ładowania) - Profesjonalny Granat
+primaryColor = "#004B87"
+
+# Główny kolor tła (bardzo jasny, chłodny szary - nie męczy wzroku tak jak czysta biel)
+backgroundColor = "#F4F6F9"
+
+# Kolor tła panelu bocznego (Ciemny, elegancki odcień łupku/granatu)
+secondaryBackgroundColor = "#1E293B"
+
+# Kolor tekstu (Ciemny grafit, bardziej elegancki niż czysty czarny)
+textColor = "#1E293B"
+
+# Rodzaj czcionki
+font = "sans serif"
