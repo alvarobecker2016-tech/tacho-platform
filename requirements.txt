@@ -2,10 +2,8 @@ streamlit
 openai
 langchain-openai
 langchain-community
+langchain-core
+langchain-text-splitters
 chromadb
-protobuf==3.20.3
-opentelemetry-api
-opentelemetry-sdk
-numpy<2.0.0
-requests
-beautifulsoup4
+pypdf
+reportlab
