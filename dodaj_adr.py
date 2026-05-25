@@ -1,36 +1,57 @@
-import requests
-from bs4 import BeautifulSoup
-from rag_engine import TachografRAG, chunk_legal_text
+import os
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from rag_engine import TachografRAG
 
-def pobierz_eurlex_tekst(celex_id):
-    print(f"Pobieranie dyrektywy ADR {celex_id} z EUR-Lex...")
-    url = f"https://eur-lex.europa.eu/legal-content/PL/TXT/HTML/?uri=CELEX:{celex_id}"
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.content, 'html.parser')
-    for element in soup(["script", "style", "meta", "noscript"]):
-        element.decompose()
-    tekst = soup.get_text(separator='\n\n', strip=True)
-    tekst = '\n'.join([line for line in tekst.split('\n') if line.strip() != ''])
-    return tekst
+def main():
+    print("\n--- Rozpoczynam ładowanie ADR ---")
+    
+    file_path1 = "data/t1.pdf"
+    file_path2 = "data/t2.pdf"
+    
+    if not os.path.exists(file_path1) or not os.path.exists(file_path2):
+        print(f"BŁĄD: Nie znaleziono plików w folderze 'data'. Upewnij się, że nazywają się t1.pdf i t2.pdf")
+        return
 
-if __name__ == "__main__":
-    celex_adr = "32008L0068" # Dyrektywa UE 2008/68/WE (Towary niebezpieczne)
+    print("[1/2] Czytam Tom I...")
+    loader1 = PyPDFLoader(file_path1)
+    pages1 = loader1.load()
+    
+    print("[2/2] Czytam Tom II...")
+    loader2 = PyPDFLoader(file_path2)
+    pages2 = loader2.load()
+    
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    
+    print("Dzielenie tekstu na fragmenty...")
+    chunki_tom1 = text_splitter.split_documents(pages1)
+    chunki_tom2 = text_splitter.split_documents(pages2)
+    
+    wszystkie_chunki = chunki_tom1 + chunki_tom2
+    
+    print(f"\nSukces! Przygotowano łącznie {len(wszystkie_chunki)} fragmentów z CAŁEJ umowy ADR.")
+    print("Trwa tłumaczenie formatu dla bazy wektorowej...")
+    
+    # --- NOWY KOD: Tłumaczenie obiektów Document na słowniki dla RAG Engine ---
+    gotowe_do_bazy = []
+    for doc in wszystkie_chunki:
+        gotowe_do_bazy.append({
+            "text": doc.page_content,
+            "metadata": {"source": doc.metadata.get("source", "Umowa ADR 2023")}
+        })
+    
+    print("Trwa ładowanie i wektoryzacja w OpenAI... To potrwa kilka minut. Proszę czekać.")
     
     try:
-        tekst_adr = pobierz_eurlex_tekst(celex_adr)
-        print("Pobrano przepisy ADR. Liczba znaków:", len(tekst_adr))
-        
-        print("Tnę przepisy na fragmenty...")
-        chunki_adr = chunk_legal_text(tekst_adr, "Dyrektywa UE 2008/68/WE (ADR)")
-        
-        print(f"Przygotowano {len(chunki_adr)} paragrafów. Ładowanie do bazy...")
         rag_system = TachografRAG()
-        rag_system.initialize_database(chunki_adr)
+        # Wysyłamy nasze przetłumaczone słowniki:
+        rag_system.initialize_database(gotowe_do_bazy)
         
-        print("\n=== SUKCES! ===")
-        print("Baza wiedzy zaktualizowana. Twoja baza ChromaDB ma teraz przepisy o tachografach ORAZ o ADR!")
-        
+        print("\n=== ABSOLUTNY SUKCES ===")
+        print("Tysiące stron przepisów ADR zostało wstrzyknięte do bazy ChromaDB.")
     except Exception as e:
-        print("Wystąpił błąd:", e)
+        print(f"\n[X] WYSTĄPIŁ BŁĄD KRYTYCZNY:")
+        print(f"Szczegóły błędu: {e}")
+
+if __name__ == "__main__":
+    main()
