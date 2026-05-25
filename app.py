@@ -40,25 +40,28 @@ footer {visibility: hidden;}
     margin-bottom: 3vh;
     text-align: center;
 }
-/* Naprawione Logo - Niezawodne CSS zamiast zewnętrznego obrazka */
-.highway-logo {
+
+/* ZMIANA: Puste Czerwone Kółko (Usunięto zdjęcie) */
+.highway-logo-container {
     width: 140px;
     height: 140px;
     border-radius: 50%;
-    border: 3px solid #D32F2F;
+    border: 3px solid #D32F2F; /* Czerwony pierścień */
     box-shadow: 0 0 25px rgba(211, 47, 47, 0.3);
     margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    background-color: #121212;
+    background-color: transparent; /* Puste w środku */
 }
+
 .welcome-text {
     font-size: 2.2rem;
     font-weight: 700;
     color: #FFFFFF;
     letter-spacing: 1px;
+}
+
+/* Pasek boczny (Sidebar) - kolory tekstu */
+[data-testid="stSidebar"] * {
+    color: #FFFFFF !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -70,10 +73,10 @@ if "logged_in" not in st.session_state:
     st.session_state.user_data = None
 
 if not st.session_state.logged_in:
+    # Ekran powitalny przy logowaniu
     st.markdown("""
     <div class='welcome-container'>
-        <div class='highway-logo'>🛣️</div>
-        <div class='welcome-text'>POCKET DGSA & TACHO</div>
+        <div class='highway-logo-container'></div> <div class='welcome-text'>POCKET DGSA & TACHO</div>
         <p style='color: #A0A0A0; font-size: 1.1rem; margin-top: 5px;'>Profesjonalny System Prawny B2B</p>
     </div>
     """, unsafe_allow_html=True)
@@ -153,12 +156,12 @@ if "messages" not in st.session_state: st.session_state.messages = []
 if "show_adr" not in st.session_state: st.session_state.show_adr = False
 if "show_pasy" not in st.session_state: st.session_state.show_pasy = False
 
+# MAGICZNY EKRAN POWITALNY (Tylko gdy czat jest pusty i nie włączono kalkulatorów)
 if not st.session_state.messages and not st.session_state.show_adr and not st.session_state.show_pasy:
     st.markdown(f"""
     <div class='welcome-container'>
-        <div class='highway-logo'>🛣️</div>
-        <div class='welcome-text'>GOTOWY DO TRASY, {imie_uzytkownika.upper()}?</div>
-        <p style='color: #707070;'>Wpisz naruszenie, poproś o pismo lub użyj aparatu poniżej.</p>
+        <div class='highway-logo-container'></div> <div class='welcome-text'>GOTOWY DO TRASY, {imie_uzytkownika.upper()}?</div>
+        <p style='color: #707070;'>Wpisz naruszenie, poproś o pismo lub użyj przycisku '📎' poniżej, aby wrzucić dokument.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -202,23 +205,21 @@ for message in st.session_state.messages:
         if message.get("pdf_bytes"):
             st.download_button("⬇️ POBIERZ DOKUMENT PDF", data=message["pdf_bytes"], file_name="Oswiadczenie.pdf", mime="application/pdf", key=str(hash(message["content"])))
 
-# --- NOWOŚĆ: MODUŁ ZAŁĄCZNIKÓW (APARAT / GALERIA) ---
-# Umieszczony idealnie nad paskiem tekstowym
-with st.popover("📎 Dodaj zdjęcie (Aparat / Galeria)"):
-    st.markdown("**Wyślij dowód / mandat do analizy AI:**")
-    zdjecie_kamera = st.camera_input("Zrób zdjęcie teraz")
-    zdjecie_galeria = st.file_uploader("Lub wybierz z telefonu", type=["jpg", "png", "jpeg"])
+# --- NOWOŚĆ: POPUP ZAŁĄCZNIKÓW TUŻ PRZY PASKU CZATU ---
+with st.popover("📎 Mikrofon / Aparat / Pliki"):
+    st.markdown("**Dodaj dowód lub naruszenie:**")
     
-    plik_do_analizy = zdjecie_kamera or zdjecie_galeria
-    
-    if plik_do_analizy and st.button("WYŚLIJ DO AUDYTU", type="primary"):
-        with st.spinner("Ekstrakcja danych OCR..."):
-            odczyt_ocr = rag_system.read_image(plik_do_analizy.read())
-            st.session_state.messages.append({"role": "user", "content": f"[SKAN DOKUMENTU]\n{odczyt_ocr}\n\nSprawdź ten dokument pod kątem błędów i prawa."})
+    uploaded_file = st.file_uploader("Wrzuć zdjęcie (Tacho, CMR, Mandat)", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
+    if uploaded_file and st.button("PRZEKAŻ DO ANALIZY AI", type="primary", use_container_width=True):
+        with st.spinner("Ekstrakcja danych ze zdjęcia..."):
+            odczyt_ocr = rag_system.read_image(uploaded_file.read())
+            st.session_state.messages.append({"role": "user", "content": f"[SKAN DOKUMENTU]\n{odczyt_ocr}\n\nWykonaj pełny audyt prawny tego dokumentu."})
             st.rerun()
+    
+    st.warning("Obsługa mikrofonu/głosu wymaga dodatkowych modułów.")
 
-# --- GŁÓWNY PASEK TEKSTOWY ---
-if user_query := st.chat_input("Napisz problem lub polecenie..."):
+# Główny pasek tekstowy (Czat)
+if user_query := st.chat_input("Zgłoś problem lub poproś o pismo..."):
     st.session_state.messages.append({"role": "user", "content": user_query})
     with st.chat_message("user"):
         st.markdown(user_query)
@@ -235,7 +236,7 @@ if user_query := st.chat_input("Napisz problem lub polecenie..."):
                     response = rag_system.generate_defense_statement(user_query, jezyk_pism)
                     pdf_bytes_to_save = create_defense_pdf(response, user_info['full_name'], user_info['company_name'])
                     st.markdown(response)
-                    st.download_button("⬇️ POBIERZ DOKUMENT PDF", data=pdf_bytes_to_save, file_name="Oswiadczenie.pdf", mime="application/pdf")
+                    st.download_button("⬇️ POBIERZ WYGENEROWANY DOKUMENT PDF", data=pdf_bytes_to_save, file_name="Oswiadczenie.pdf", mime="application/pdf")
                     
                 elif "KARY" in intencja:
                     response = rag_system.calculate_penalty(user_query)
@@ -244,14 +245,14 @@ if user_query := st.chat_input("Napisz problem lub polecenie..."):
                 elif "ADR" in intencja:
                     st.session_state.show_adr = True
                     st.session_state.show_pasy = False
-                    response = "Uruchomiono moduł ADR."
+                    response = "Uruchomiono moduł ADR powyżej."
                     st.markdown(response)
                     st.rerun()
                     
                 elif "PASY" in intencja:
                     st.session_state.show_pasy = True
                     st.session_state.show_adr = False
-                    response = "Uruchomiono moduł mocowania ładunków."
+                    response = "Uruchomiono kalkulator mocowania ładunków powyżej."
                     st.markdown(response)
                     st.rerun()
                     
