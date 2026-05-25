@@ -1,6 +1,7 @@
 import os
 import re
 import base64
+import io
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -34,7 +35,6 @@ class TachografRAG:
         retriever = self.vectorstore.as_retriever(search_kwargs={"k": 20})
         llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
         
-        # DODANO: Dyrektywa Wielojęzyczności (Punkt 4)
         template = """Jesteś wybitnym ekspertem ds. europejskiego prawa transportowego i głównym doradcą DGSA.
 Twoim zadaniem jest odpowiadanie na pytania użytkowników WYŁĄCZNIE na podstawie dostarczonego poniżej KONTEKSTU.
 
@@ -42,7 +42,7 @@ ZASADY BEZWZGLĘDNE:
 1. BRAK ZGADYWANIA: Jeśli w kontekście NIE MA odpowiedzi, powiedz wprost o braku artykułu.
 2. PRECYZJA: Opieraj się na konkretnych artykułach i kodach.
 3. CYTOWANIE: Zawsze dodaj: [ŹRÓDŁO: nazwa dokumentu z metadanych].
-4. WIELOJĘZYCZNOŚĆ: ZAWSZE odpowiadaj dokładnie w tym samym języku, w którym użytkownik zadał pytanie (jeśli zapyta po ukraińsku, odpowiedz po ukraińsku; jeśli po hiszpańsku, to po hiszpańsku), tłumacząc fakty z polskiej bazy wiedzy.
+4. WIELOJĘZYCZNOŚĆ: ZAWSZE odpowiadaj dokładnie w tym samym języku, w którym użytkownik zadał pytanie.
 
 KONTEKST PRAWNY:
 {context}
@@ -78,6 +78,8 @@ ODPOWIEDŹ:"""
         if not self.chain: raise ValueError("Brak bazy!")
         return self.chain.invoke(question)
 
+    # --- NOWE FUNKCJE MULTIMEDIALNE ---
+    
     def read_image(self, image_bytes):
         base64_image = base64.b64encode(image_bytes).decode('utf-8')
         chat = ChatOpenAI(model="gpt-4o-mini", max_tokens=1000)
@@ -89,12 +91,36 @@ ODPOWIEDŹ:"""
         ])
         return msg.content
 
+    def read_pdf(self, file_obj):
+        import PyPDF2
+        reader = PyPDF2.PdfReader(file_obj)
+        text = ""
+        for page in reader.pages:
+            extr = page.extract_text()
+            if extr: text += extr + "\n"
+        return text
+
+    def read_docx(self, file_obj):
+        import docx
+        doc = docx.Document(io.BytesIO(file_obj.read()))
+        return "\n".join([p.text for p in doc.paragraphs])
+
+    def transcribe_audio(self, audio_file_obj):
+        from openai import OpenAI
+        client = OpenAI()
+        audio_file_obj.name = "audio.wav" # Wymóg API OpenAI
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file_obj
+        )
+        return transcript.text
+
+    # --- FUNKCJE PRAWNE ---
+
     def calculate_penalty(self, violation_description: str) -> str:
         from openai import OpenAI
         results = self.vectorstore.similarity_search(violation_description, k=6)
         context_text = "\n\n---\n\n".join([f"Tekst: {doc.page_content}\nŹródło: {doc.metadata.get('source', 'Brak źródła')}" for doc in results])
-        
-        # DODANO: Wielojęzyczność
         system_prompt = """
         Jesteś Inspektorem ITD/BAG i ekspertem ds. ryzyka finansowego w transporcie.
         Wykonaj wycenę naruszenia na podstawie kontekstu.
@@ -114,12 +140,10 @@ ODPOWIEDŹ:"""
         except Exception as e:
             return f"Błąd modułu finansowego: {str(e)}"
 
-    # ZMIANA: Dodano parametr 'target_language'
     def generate_defense_statement(self, incident_description: str, target_language: str = "Polski") -> str:
         from openai import OpenAI
         results = self.vectorstore.similarity_search(incident_description, k=8)
         context_text = "\n\n---\n\n".join([f"Tekst: {doc.page_content}\nŹródło: {doc.metadata.get('source', 'Brak źródła')}" for doc in results])
-        
         system_prompt = f"""
         Jesteś wybitnym Adwokatem specjalizującym się w prawie transportowym.
         Twoim zadaniem jest wygenerowanie profesjonalnego oświadczenia dla kierowcy (np. na podstawie Art. 12 Rozporządzenia 561/2006).
@@ -131,7 +155,6 @@ ODPOWIEDŹ:"""
         4. Zwracaj gotowy tekst pisma, luki oznacz jako [Imię i Nazwisko], [Data].
         5. Pod pismem dodaj krótką notatkę dla kierowcy W JĘZYKU POLSKIM, wyjaśniającą, dlaczego taka linia obrony została przyjęta.
         """
-        
         try:
             client = OpenAI()
             response = client.chat.completions.create(
@@ -145,14 +168,3 @@ ODPOWIEDŹ:"""
             return response.choices[0].message.content
         except Exception as e:
             return f"Błąd modułu prawniczego: {str(e)}"
-
-def chunk_legal_text(raw_text, source_title):
-    pattern = r'(?=Art\.\s*\d+[a-z]*\.)'
-    raw_chunks = re.split(pattern, raw_text)
-    results = []
-    for c in raw_chunks:
-        clean_c = c.strip()
-        if clean_c:
-            typ_tekstu = 'Artykuł' if clean_c.startswith('Art.') else 'Sekcja'
-            results.append({"text": f"[ŹRÓDŁO: {source_title}]\n[{typ_tekstu}]\n---\n{clean_c}", "metadata": {"source": source_title}})
-    return results
