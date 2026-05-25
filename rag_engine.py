@@ -31,7 +31,7 @@ class TachografRAG:
         return False
 
     def _build_rag_chain(self):
-        retriever = self.vectorstore.as_retriever(search_kwargs={"k": 4})
+        retriever = self.vectorstore.as_retriever(search_kwargs={"k": 15})
         
         # WAŻNE: Zmieniamy temperaturę na 0.0 (AI staje się bezlitosnym, logicznym robotem bez fantazji)
         llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
