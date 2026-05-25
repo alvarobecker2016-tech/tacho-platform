@@ -40,14 +40,19 @@ footer {visibility: hidden;}
     margin-bottom: 3vh;
     text-align: center;
 }
+/* Naprawione Logo - Niezawodne CSS zamiast zewnętrznego obrazka */
 .highway-logo {
     width: 140px;
     height: 140px;
     border-radius: 50%;
-    object-fit: cover;
     border: 3px solid #D32F2F;
     box-shadow: 0 0 25px rgba(211, 47, 47, 0.3);
     margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    background-color: #121212;
 }
 .welcome-text {
     font-size: 2.2rem;
@@ -55,8 +60,6 @@ footer {visibility: hidden;}
     color: #FFFFFF;
     letter-spacing: 1px;
 }
-/* Mniejsze marginesy w panelu bocznym */
-.css-1d391kg {padding-top: 2rem;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -69,7 +72,7 @@ if "logged_in" not in st.session_state:
 if not st.session_state.logged_in:
     st.markdown("""
     <div class='welcome-container'>
-        <img src='https://images.unsplash.com/photo-1415356588265-45cd650f96e1?q=80&w=300&auto=format&fit=crop' class='highway-logo'>
+        <div class='highway-logo'>🛣️</div>
         <div class='welcome-text'>POCKET DGSA & TACHO</div>
         <p style='color: #A0A0A0; font-size: 1.1rem; margin-top: 5px;'>Profesjonalny System Prawny B2B</p>
     </div>
@@ -132,59 +135,20 @@ def classify_intent(text):
 user_info = st.session_state.user_data
 imie_uzytkownika = user_info['full_name'].split()[0]
 
-# --- PANEL BOCZNY MULTIMEDIALNY ---
 with st.sidebar:
     st.markdown(f"### {user_info['full_name']}")
     st.caption(f"Status: {user_info['company_name']}")
+    st.divider()
     
     st.markdown("**KONFIGURACJA PISM**")
-    jezyk_pism = st.selectbox("Organ kontrolny:", ["Niemiecki (BAG)", "Polski (ITD)", "Angielski (DVSA)", "Francuski (DREAL)"])
+    jezyk_pism = st.selectbox("Wybór organu kontrolnego:", ["Niemiecki (BAG)", "Polski (ITD)", "Angielski (DVSA)", "Francuski (DREAL)"])
     
-    st.divider()
-    st.markdown("### 📥 WPROWADZANIE DANYCH")
-    
-    # 1. MIKROFON (Nowość w Streamlit)
-    st.markdown("**🎙️ Asystent Głosowy**")
-    nagranie = st.audio_input("Nagraj problem głosowo")
-    if nagranie and st.button("WYŚLIJ NAGRANIE", type="primary", use_container_width=True):
-        with st.spinner("Przetwarzam głos na tekst..."):
-            tekst_z_glosu = rag_system.transcribe_audio(nagranie)
-            st.session_state.messages.append({"role": "user", "content": tekst_z_glosu})
-            st.rerun()
-
-    # 2. ZDJĘCIE Z APARATU
-    st.markdown("**📸 Aparat (Zdjęcie z ręki)**")
-    zdjecie_aparat = st.camera_input("Zrób zdjęcie", label_visibility="collapsed")
-    if zdjecie_aparat and st.button("WYŚLIJ ZDJĘCIE", type="primary", use_container_width=True):
-        with st.spinner("Oczy AI analizują zdjęcie..."):
-            odczyt_ocr = rag_system.read_image(zdjecie_aparat.read())
-            st.session_state.messages.append({"role": "user", "content": f"[ZDJĘCIE Z APARATU]\n{odczyt_ocr}\n\nPrzeanalizuj to zdjęcie."})
-            st.rerun()
-
-    # 3. GALERIA, PDF, WORD
-    st.markdown("**📂 Pliki (Galeria / PDF / Word)**")
-    uploaded_file = st.file_uploader("Wgraj z urządzenia", type=["jpg", "png", "jpeg", "pdf", "docx"], label_visibility="collapsed")
-    if uploaded_file and st.button("ANALIZUJ PLIK", type="primary", use_container_width=True):
-        with st.spinner("Czytam dokument..."):
-            nazwa = uploaded_file.name.lower()
-            if nazwa.endswith(".pdf"):
-                tekst = rag_system.read_pdf(uploaded_file)
-                st.session_state.messages.append({"role": "user", "content": f"[DOKUMENT PDF]\n{tekst}\n\nWykonaj pełny audyt dokumentu."})
-            elif nazwa.endswith(".docx"):
-                tekst = rag_system.read_docx(uploaded_file)
-                st.session_state.messages.append({"role": "user", "content": f"[DOKUMENT WORD]\n{tekst}\n\nWykonaj pełny audyt dokumentu."})
-            else:
-                tekst = rag_system.read_image(uploaded_file.read())
-                st.session_state.messages.append({"role": "user", "content": f"[ZESKANOWANY OBRAZ]\n{tekst}\n\nPrzeanalizuj to zdjęcie."})
-            st.rerun()
-
     st.divider()
     if st.button("WYLOGUJ", use_container_width=True):
         st.session_state.logged_in = False
         st.session_state.user_data = None
         st.rerun()
 
-# --- GŁÓWNY INTERFEJS CZATU ---
 if "messages" not in st.session_state: st.session_state.messages = []
 if "show_adr" not in st.session_state: st.session_state.show_adr = False
 if "show_pasy" not in st.session_state: st.session_state.show_pasy = False
@@ -192,9 +156,9 @@ if "show_pasy" not in st.session_state: st.session_state.show_pasy = False
 if not st.session_state.messages and not st.session_state.show_adr and not st.session_state.show_pasy:
     st.markdown(f"""
     <div class='welcome-container'>
-        <img src='https://images.unsplash.com/photo-1415356588265-45cd650f96e1?q=80&w=300&auto=format&fit=crop' class='highway-logo'>
+        <div class='highway-logo'>🛣️</div>
         <div class='welcome-text'>GOTOWY DO TRASY, {imie_uzytkownika.upper()}?</div>
-        <p style='color: #707070;'>Wpisz naruszenie, nagraj problem głosowo lub zrób zdjęcie tacho.</p>
+        <p style='color: #707070;'>Wpisz naruszenie, poproś o pismo lub użyj aparatu poniżej.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -231,13 +195,30 @@ if st.session_state.show_pasy:
         st.session_state.show_pasy = False
         st.rerun()
 
+# Wyświetlanie czatu
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         if message.get("pdf_bytes"):
             st.download_button("⬇️ POBIERZ DOKUMENT PDF", data=message["pdf_bytes"], file_name="Oswiadczenie.pdf", mime="application/pdf", key=str(hash(message["content"])))
 
-if user_query := st.chat_input("Napisz problem..."):
+# --- NOWOŚĆ: MODUŁ ZAŁĄCZNIKÓW (APARAT / GALERIA) ---
+# Umieszczony idealnie nad paskiem tekstowym
+with st.popover("📎 Dodaj zdjęcie (Aparat / Galeria)"):
+    st.markdown("**Wyślij dowód / mandat do analizy AI:**")
+    zdjecie_kamera = st.camera_input("Zrób zdjęcie teraz")
+    zdjecie_galeria = st.file_uploader("Lub wybierz z telefonu", type=["jpg", "png", "jpeg"])
+    
+    plik_do_analizy = zdjecie_kamera or zdjecie_galeria
+    
+    if plik_do_analizy and st.button("WYŚLIJ DO AUDYTU", type="primary"):
+        with st.spinner("Ekstrakcja danych OCR..."):
+            odczyt_ocr = rag_system.read_image(plik_do_analizy.read())
+            st.session_state.messages.append({"role": "user", "content": f"[SKAN DOKUMENTU]\n{odczyt_ocr}\n\nSprawdź ten dokument pod kątem błędów i prawa."})
+            st.rerun()
+
+# --- GŁÓWNY PASEK TEKSTOWY ---
+if user_query := st.chat_input("Napisz problem lub polecenie..."):
     st.session_state.messages.append({"role": "user", "content": user_query})
     with st.chat_message("user"):
         st.markdown(user_query)
