@@ -6,13 +6,9 @@ from cargo_calculator import oblicz_pasy_docisk, WSPOLCZYNNIKI_TARCIA
 import auth_db
 from pdf_generator import create_defense_pdf
 
-# 1. Konfiguracja strony musi być pierwsza!
 st.set_page_config(page_title="Pocket DGSA & Tacho Ultimate", layout="wide")
-
-# Inicjalizacja bazy użytkowników
 auth_db.init_db()
 
-# --- SYSTEM LOGOWANIA I REJESTRACJI ---
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.user_data = None
@@ -24,8 +20,6 @@ if not st.session_state.logged_in:
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         tab_log, tab_reg = st.tabs(["Logowanie", "Nowe Konto"])
-        
-        # LOGOWANIE
         with tab_log:
             log_user = st.text_input("Nazwa użytkownika")
             log_pass = st.text_input("Hasło", type="password")
@@ -38,17 +32,13 @@ if not st.session_state.logged_in:
                 else:
                     st.error("❌ Błędny login lub hasło!")
                     
-        # REJESTRACJA B2B & B2C
         with tab_reg:
             st.info("Konto dla firm transportowych oraz niezależnych kierowców zawodowych.")
-            
             typ_konta = st.radio("Wybierz typ konta:", ["Kierowca Indywidualny", "Firma Transportowa (Przewoźnik)"])
-            
             reg_user = st.text_input("Wybierz login")
             reg_pass = st.text_input("Wybierz hasło", type="password")
             reg_name = st.text_input("Imię i Nazwisko (do dokumentów PDF)")
             
-            # Jeśli wybrano firmę, pokazujemy pole. Jeśli nie, automatycznie w tle przypisujemy status.
             if typ_konta == "Firma Transportowa (Przewoźnik)":
                 reg_comp = st.text_input("Nazwa Firmy Przewozowej")
             else:
@@ -65,27 +55,22 @@ if not st.session_state.logged_in:
                             st.error("⚠️ Użytkownik o takiej nazwie już istnieje! Wybierz inny login.")
                 else:
                     st.warning("Wypełnij przynajmniej Login, Hasło oraz Imię i Nazwisko.")
-    
-    st.stop() # Ta linijka zatrzymuje resztę kodu dla niezalogowanych!
+    st.stop()
 
-# --- PANEL BOCZNY (PO ZALOGOWANIU) ---
+# --- PANEL BOCZNY ---
 user_info = st.session_state.user_data
 with st.sidebar:
     st.success(f"👤 Zalogowano jako: **{user_info['full_name']}**")
-    
-    # Inteligentne wyświetlanie profilu B2B / B2C
     if user_info['company_name'] == "Kierowca Indywidualny":
         st.info("🚛 Profil: Kierowca Indywidualny")
     else:
         st.info(f"🏢 Firma: {user_info['company_name']}")
-        
     st.divider()
     if st.button("🚪 Wyloguj się", use_container_width=True):
         st.session_state.logged_in = False
         st.session_state.user_data = None
         st.rerun()
 
-# --- GŁÓWNA APLIKACJA ---
 st.title("🚚 Pocket DGSA & Tacho Ultimate")
 st.caption("Platforma Poziomu Enterprise | Zalogowany użytkownik posiada dostęp Premium")
 
@@ -98,7 +83,6 @@ def get_rag_system():
 
 rag_system = get_rag_system()
 
-# Zakładki
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "💬 Audytor AI", "🛡️ Linia Obrony (PDF)", "💰 Kalkulator Kar", "📊 ADR 1.1.3.6", 
     "📸 Skaner (OCR)", "🗺️ GPS Granice", "✍️ Wpisy Manualne", "⛓️ Pasy (EN 12195)"
@@ -107,38 +91,43 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
 # --- ZAKŁADKA 1: AUDYTOR AI ---
 with tab1:
     st.header("Swobodny Audyt Prawny")
+    st.success("🌍 AI Multilanguage Engine aktywny! Możesz pisać i pytać w dowolnym języku (np. 🇬🇧, 🇩🇪, 🇺🇦, 🇪🇸). AI odpowie w tym samym języku.")
     if "messages" not in st.session_state:
         st.session_state.messages = []
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-    if user_query := st.chat_input("Zadaj pytanie prawne...", key="audytor_input"):
+    if user_query := st.chat_input("Zadaj pytanie (Ask question / Ставити питання)...", key="audytor_input"):
         with st.chat_message("user"):
             st.markdown(user_query)
         st.session_state.messages.append({"role": "user", "content": user_query})
         with st.chat_message("assistant"):
             if rag_system:
-                with st.spinner("Ekspert AI analizuje akty prawne..."):
+                with st.spinner("Analiza..."):
                     response = rag_system.ask(user_query)
             else:
                 response = "❌ Błąd bazy danych."
             st.markdown(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
 
-# --- ZAKŁADKA 2: LINIA OBRONY Z EKSPORTEM PDF ---
+# --- ZAKŁADKA 2: LINIA OBRONY ---
 with tab2:
     st.header("🛡️ Generator Oświadczeń (Art. 12)")
     
-    # Indywidualny komunikat o generowaniu
     naglowek = f"**{user_info['full_name']}**"
     if user_info['company_name'] != "Kierowca Indywidualny":
         naglowek += f" ({user_info['company_name']})"
     else:
         naglowek += " (Kierowca Niezależny)"
-        
     st.info(f"Oświadczenie zostanie wygenerowane oficjalnie na dane: {naglowek}")
     
-    opis_incydentu = st.text_area("Opisz sytuację awaryjną do Adwokata (np. brak parkingu na A2):", height=100)
+    opis_incydentu = st.text_area("Opisz sytuację awaryjną (możesz opisać ją we własnym języku):", height=100)
+    
+    # NOWOŚĆ: SELEKTOR JĘZYKA URZĘDOWEGO
+    jezyk_docelowy = st.selectbox(
+        "Dla jakiego organu kontrolnego generujesz dokument?",
+        ["Polski (ITD)", "Niemiecki (BAG / BALM)", "Angielski (Uniwersalny / DVSA)", "Francuski (DREAL)", "Hiszpański (Guardia Civil)"]
+    )
     
     if "pdf_ready" not in st.session_state:
         st.session_state.pdf_ready = False
@@ -149,20 +138,20 @@ with tab2:
         if not opis_incydentu:
             st.warning("Uzupełnij opis incydentu przed wygenerowaniem pisma.")
         else:
-            with st.spinner("Adwokat AI konstruuje linię obrony..."):
-                odpowiedz = rag_system.generate_defense_statement(opis_incydentu)
+            with st.spinner(f"Adwokat AI tłumaczy zawiłości na język: {jezyk_docelowy}..."):
+                odpowiedz = rag_system.generate_defense_statement(opis_incydentu, jezyk_docelowy)
                 pdf_data = create_defense_pdf(odpowiedz, user_info['full_name'], user_info['company_name'])
                 
                 st.session_state.pdf_text = odpowiedz
                 st.session_state.pdf_bytes = pdf_data
                 st.session_state.pdf_ready = True
-                st.success("Dokument wygenerowany z sukcesem!")
+                st.success("Dokument prawny wygenerowany z sukcesem!")
 
     if st.session_state.pdf_ready:
         st.markdown(st.session_state.pdf_text)
         st.divider()
         st.download_button(
-            label="📄 POBIERZ DOKUMENT PDF (GOTOWY DO DRUKU)",
+            label="📄 POBIERZ DOKUMENT PDF DO KONTROLI",
             data=st.session_state.pdf_bytes,
             file_name=f"Oswiadczenie_{user_info['full_name'].replace(' ', '_')}.pdf",
             mime="application/pdf",
@@ -173,6 +162,7 @@ with tab2:
 # --- ZAKŁADKA 3: KALKULATOR KAR ---
 with tab3:
     st.header("💰 Wycena Ryzyka i Taryfikator ITD/BAG")
+    st.info("System obsługuje dowolny język. Wpisz naruszenie np. po angielsku, a system oceni kary po angielsku.")
     opis_naruszenia = st.text_area("Opisz naruszenie (np. brak wpisu manualnego):", height=100)
     if st.button("🚨 Rozpocznij Audyt Finansowy", type="primary", use_container_width=True):
         with st.spinner("Inspektor AI ocenia kary..."):
