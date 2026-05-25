@@ -75,22 +75,23 @@ footer {visibility: hidden;}
 
 auth_db.init_db()
 
-# --- WYBÓR JĘZYKA ---
+# --- DOMYŚLNY JĘZYK: ANGIELSKI ---
 if "lang" not in st.session_state:
-    st.session_state.lang = "🇵🇱 PL"
-
-col_space, col_lang = st.columns([8, 2])
-with col_lang:
-    st.session_state.lang = st.selectbox("🌐", list(UI.keys()), index=list(UI.keys()).index(st.session_state.lang), label_visibility="collapsed")
-
-lang = st.session_state.lang
-t = UI[lang]
+    st.session_state.lang = "🇬🇧 EN"
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.user_data = None
 
 if not st.session_state.logged_in:
+    # --- OGROMNY SELEKTOR JĘZYKA NAD LOGOWANIEM ---
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        wybrany_jezyk = st.selectbox("🌐 LANGUAGE / JĘZYK / SPRACHE", list(UI.keys()), index=list(UI.keys()).index(st.session_state.lang))
+        st.session_state.lang = wybrany_jezyk
+        
+    t = UI[st.session_state.lang]
+
     st.markdown(f"""
     <div class='welcome-container'>
         <div class='highway-logo-container'></div>
@@ -99,7 +100,6 @@ if not st.session_state.logged_in:
     </div>
     """, unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         tab_log, tab_reg = st.tabs([t['log_tab'], t['reg_tab']])
         with tab_log:
@@ -132,6 +132,9 @@ if not st.session_state.logged_in:
                     st.warning(t['req_f'])
     st.stop()
 
+# --- PO ZALOGOWANIU ---
+t = UI[st.session_state.lang]
+
 @st.cache_resource
 def get_rag_system():
     rag = TachografRAG()
@@ -163,6 +166,14 @@ with st.sidebar:
     st.info(f"🏢 {user_info['company_name']}")
     st.divider()
     
+    # --- SELEKTOR JĘZYKA W PANELU BOCZNYM ---
+    st.markdown("**🌐 APP LANGUAGE / JĘZYK:**")
+    nowy_jezyk = st.selectbox("", list(UI.keys()), index=list(UI.keys()).index(st.session_state.lang), label_visibility="collapsed")
+    if nowy_jezyk != st.session_state.lang:
+        st.session_state.lang = nowy_jezyk
+        st.rerun()
+
+    st.divider()
     st.markdown(f"**{t['cfg']}**")
     jezyk_pism = st.selectbox("", ["Niemiecki (BAG)", "Polski (ITD)", "Angielski (DVSA)", "Francuski (DREAL)", "Hiszpański (Guardia Civil)"], label_visibility="collapsed")
     
