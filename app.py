@@ -20,12 +20,13 @@ def get_rag_system():
 
 rag_system = get_rag_system()
 
-# 3. Tworzenie zakładek dokładnie według Twojego interfejsu graficznego
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+# 3. Zaktualizowane Zakładki - Poziom Enterprise (8 modułów)
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "💬 Audytor AI", 
-    "📸 Skaner (Tacho/CMR)", 
+    "🛡️ Linia Obrony (Adwokat)",
+    "💰 Kalkulator Kar (Inspektor)",
     "📊 ADR 1.1.3.6", 
-    "🛑 Art. 12 (Nocny)", 
+    "📸 Skaner (Tacho/CMR)", 
     "🗺️ GPS Granice", 
     "✍️ Wpisy Manualne", 
     "⛓️ Pasy (EN 12195)"
@@ -33,12 +34,9 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
 
 # --- ZAKŁADKA 1: AUDYTOR AI ---
 with tab1:
-    st.header("Swobodny Audyt Prawny (W tym Pora Nocna i IMI)")
+    st.header("Swobodny Audyt Prawny")
+    st.info("💡 Zapytaj o konkretny przypadek prawny (np. 'Kiedy kierowca musi zgłosić się w systemie IMI?'). Zgodnie z wytycznymi, sztuczna inteligencja będzie odpowiadać wyłącznie na podstawie dostarczonych aktów prawnych.")
     
-    # Nowa, zaktualizowana podpowiedź pasująca do rygorystycznego systemu RAG
-    st.info("💡 Spróbuj zapytać o konkretny przypadek, np.: 'Co ile tygodni kierowca musi wrócić do bazy firmy według Pakietu Mobilności?' lub 'Jakie są ogólne wyłączenia z przepisów ADR?'")
-    
-    # Historia chatu w sesji
     if "messages" not in st.session_state:
         st.session_state.messages = []
         
@@ -46,8 +44,7 @@ with tab1:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
             
-    # Reakcja na pytanie użytkownika
-    if user_query := st.chat_input("Zadaj pytanie prawne..."):
+    if user_query := st.chat_input("Zadaj pytanie prawne...", key="audytor_input"):
         with st.chat_message("user"):
             st.markdown(user_query)
         st.session_state.messages.append({"role": "user", "content": user_query})
@@ -57,61 +54,87 @@ with tab1:
                 with st.spinner("Ekspert AI analizuje wgrane akty prawne..."):
                     response = rag_system.ask(user_query)
             else:
-                response = "❌ Błąd: Nie znaleziono lokalnej bazy danych ChromaDB. Uruchom najpierw skrypty dodające dokumenty."
-            
+                response = "❌ Błąd: Nie znaleziono lokalnej bazy danych ChromaDB."
             st.markdown(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
 
-# --- ZAKŁADKA 3: DETERMINISTYCZNY KALKULATOR ADR 1.1.3.6 ---
+# --- ZAKŁADKA 2: LINIA OBRONY (NOWY MODUŁ) ---
+with tab2:
+    st.header("🛡️ Generator Oświadczeń i Linii Obrony (np. Art. 12)")
+    st.info("Opisz dokładnie sytuację awaryjną. Adwokat AI wygeneruje formalne, prawnicze oświadczenie gotowe do podpisania podczas kontroli BAG/ITD.")
+    
+    opis_incydentu = st.text_area("Opisz sytuację (np. 'Zabrakło mi czasu na dojazd do bazy przez wypadek na A2, przekroczyłem czas jazdy o 40 minut'):", height=100)
+    
+    if st.button("⚖️ Wygeneruj Oświadczenie", type="primary", use_container_width=True):
+        if not rag_system:
+            st.error("Błąd bazy danych.")
+        elif not opis_incydentu:
+            st.warning("Proszę najpierw opisać sytuację.")
+        else:
+            with st.spinner("Adwokat AI konstruuje linię obrony i dobiera paragrafy..."):
+                odpowiedz_prawnika = rag_system.generate_defense_statement(opis_incydentu)
+                st.success("Dokument wygenerowany pomyślnie!")
+                st.markdown(odpowiedz_prawnika)
+
+# --- ZAKŁADKA 3: KALKULATOR KAR (NOWY MODUŁ) ---
 with tab3:
+    st.header("💰 Wycena Ryzyka i Taryfikator ITD/BAG")
+    st.info("Podaj naruszenie, które chcesz zweryfikować. Inspektor AI przeszuka taryfikatory i oceni potencjalną karę oraz ryzyko utraty licencji (BPN/PPN).")
+    
+    opis_naruszenia = st.text_area("Opisz naruszenie (np. 'Skrócenie odpoczynku tygodniowego regularnego o 4 godziny bez rekompensaty'):", height=100)
+    
+    if st.button("🚨 Rozpocznij Audyt Finansowy", type="primary", use_container_width=True):
+        if not rag_system:
+            st.error("Błąd bazy danych.")
+        elif not opis_naruszenia:
+            st.warning("Proszę wpisać opis naruszenia.")
+        else:
+            with st.spinner("Inspektor AI przeszukuje taryfikatory i klasyfikację UE..."):
+                odpowiedz_inspektora = rag_system.calculate_penalty(opis_naruszenia)
+                st.error("Raport z wyceną ryzyka wygenerowany!")
+                st.markdown(odpowiedz_inspektora)
+
+# --- ZAKŁADKA 4: KALKULATOR ADR 1.1.3.6 ---
+with tab4:
     st.header("📊 Kalkulator Wyłączenia ADR na punkty (Tabela A)")
     st.write("Wprowadź towary niebezpieczne z listu przewozowego (CMR), aby sprawdzić, czy transport przekracza limit 1000 punktów.")
     
-    # Inicjalizacja listy ładunków w pamięci podręcznej sesji
     if "adr_loads" not in st.session_state:
         st.session_state.adr_loads = []
         
-    # Formularz dodawania towaru
     col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
         wybrany_un = st.selectbox(
             "Wybierz towar niebezpieczny (Numer UN)", 
             options=list(TABELA_A.keys()), 
-            format_func=lambda x: f"UN {x} - {TABELA_A[x]['nazwa']} (Kategoria transportowa: {TABELA_A[x]['kategoria']})"
+            format_func=lambda x: f"UN {x} - {TABELA_A[x]['nazwa']} (Kat: {TABELA_A[x]['kategoria']})"
         )
     with col2:
         ilosc = st.number_input("Ilość (Litrów lub Kilogramów)", min_value=1, value=100, step=10)
     with col3:
-        st.write("##")  # Mały trik wyrównujący przycisk w dół
+        st.write("##")
         if st.button("➕ Dodaj do zestawienia", use_container_width=True):
             st.session_state.adr_loads.append({"un": wybrany_un, "ilosc": ilosc})
             st.toast(f"Dodano UN {wybrany_un} do kalkulatora!")
 
-    # Wyświetlanie aktywnego zestawienia i wyników
     if st.session_state.adr_loads:
         st.write("### 📋 Bieżący ładunek na pojeździe:")
-        
-        # Obliczenia za pomocą naszego bezpiecznego modułu matematycznego
         wynik = oblicz_1136(st.session_state.adr_loads)
         
         if "error" in wynik:
             st.error(wynik["error"])
         else:
-            # Przygotowanie czytelnej tabeli dla użytkownika
             tabela_wyswietl = []
             for item in wynik["szczegoly"]:
                 tabela_wyswietl.append({
                     "Numer UN": f"UN {item['un']}",
                     "Nazwa towaru": item["nazwa"],
                     "Kat. Transportowa": item["kategoria"],
-                    "Zadeklarowana ilość": f"{item['ilosc']} L/kg",
-                    "Mnożnik ADR": f"x {item['mnoznik']}",
-                    "Punkty obliczone": int(item["punkty"])
+                    "Ilość": f"{item['ilosc']} L/kg",
+                    "Punkty": int(item["punkty"])
                 })
             
             st.table(tabela_wyswietl)
-            
-            # Sekcja podsumowania punktowego
             st.write("---")
             suma_pkt = wynik["suma_punktow"]
             
@@ -120,25 +143,21 @@ with tab3:
                 st.metric(label="SUMA PUNKTÓW ADR", value=f"{int(suma_pkt)} / 1000")
             with c2:
                 if wynik["zwolniony"]:
-                    st.success("✅ TRANSPORT ZWOLNIONY! Ładunek kwalifikuje się do wyłączenia zgodnie z 1.1.3.6 ADR. Brak wymogu pomarańczowych tablic i pełnych uprawnień kierowcy.")
+                    st.success("✅ TRANSPORT ZWOLNIONY! Brak wymogu pełnych uprawnień.")
                 else:
-                    st.error("🚨 PEŁNY ADR! Limit 1000 punktów został przekroczony. Wymagane pomarańczowe tablice, kierowca z zaświadczeniem ADR oraz pełne wyposażenie pojazdu.")
+                    st.error("🚨 PEŁNY ADR! Wymagane tablice i zaświadczenie.")
             
-            # Wizualny pasek postępu limitu
-            procent_paska = min(float(suma_pkt / 1000), 1.0)
-            st.progress(procent_paska)
+            st.progress(min(float(suma_pkt / 1000), 1.0))
             
-        # Przycisk czyszczenia pamięci podręcznej
-        if st.button("🗑️ Wyczyść całe zestawienie ładunków", type="secondary"):
+        if st.button("🗑️ Wyczyść zestawienie", type="secondary"):
             st.session_state.adr_loads = []
             st.rerun()
     else:
-        st.info("Kalkulator jest pusty. Wybierz towar z listy i kliknij przycisk, aby rozpocząć kalkulację punktów.")
+        st.info("Kalkulator jest pusty.")
 
-# --- POZOSTAŁE ZAKŁADKI (Makiety przygotowane pod dalszy rozwój projektu) ---
-for tab, nazwa_modulu in zip([tab2, tab4, tab5, tab6, tab7], [
+# --- POZOSTAŁE ZAKŁADKI (Makiety) ---
+for tab, nazwa_modulu in zip([tab5, tab6, tab7, tab8], [
     "📸 Zaawansowany Skaner dokumentów przewozowych OCR", 
-    "🛑 Moduł weryfikacji Pracy w Porze Nocnej", 
     "🗺️ Kontrola GPS i Przekroczenia Granic", 
     "✍️ Weryfikacja Wpisów Manualnych w Tachografie", 
     "⛓️ Kalkulator Siły Mocowania Ładunków (Norma EN 12195)"
