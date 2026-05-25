@@ -32,14 +32,20 @@ class TachografRAG:
 
     def _build_rag_chain(self):
         retriever = self.vectorstore.as_retriever(search_kwargs={"k": 4})
-        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.1)
         
-        template = """Jesteś audytorem ds. prawa transportowego.
-Odpowiedz na pytanie lub przeanalizuj podane dane wyłącznie w oparciu o dostarczony kontekst prawny.
-Zawsze cytuj artykuł lub źródło. Wskaż ewentualne naruszenia lub potwierdź zgodność.
-Jeśli przepisy o tym nie mówią, poinformuj o tym.
+        # Zmieniamy temperaturę na 0.0 (AI staje się bezlitosnym, logicznym robotem)
+        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
+        
+        # Nasz potężny System Prompt
+        template = """Jesteś wybitnym ekspertem ds. europejskiego prawa transportowego i głównym doradcą DGSA.
+Twoim zadaniem jest odpowiadanie na pytania użytkowników WYŁĄCZNIE na podstawie dostarczonego poniżej KONTEKSTU z bazy danych (przepisów ADR, Pakietu Mobilności, rozporządzeń 561/2006, 165/2014 itp.).
 
-KONTEKST PRAWNY:
+ZASADY BEZWZGLĘDNE:
+1. BRAK ZGADYWANIA: Jeśli w dostarczonym kontekście NIE MA odpowiedzi na pytanie, powiedz wprost: "Zgodnie z wgraną bazą wiedzy nie posiadam obecnie artykułu, który o tym mówi". Pod żadnym pozorem nie używaj wiedzy spoza dostarczonego kontekstu.
+2. PRECYZJA: Opieraj się na konkretnych artykułach, punktach, przepisach szczególnych (SP) i kodach (np. UN 1203). Rozpisuj skomplikowane procesy na czytelne punkty.
+3. CYTOWANIE: Na samym końcu swojej odpowiedzi ZAWSZE dodaj nową linijkę i wypisz źródła, z których skorzystałeś, używając formatu: [ŹRÓDŁO: nazwa pliku/dokumentu].
+
+KONTEKST PRAWNY (Dokumenty z Twojej bazy RAG):
 {context}
 
 ZAPYTANIE UŻYTKOWNIKA (lub dane z dokumentu):
@@ -47,7 +53,13 @@ ZAPYTANIE UŻYTKOWNIKA (lub dane z dokumentu):
 ODPOWIEDŹ:"""
         
         prompt = ChatPromptTemplate.from_template(template)
-        def format_docs(docs): return "\n\n=== KOLEJNY PRZEPIS ===\n\n".join(doc.page_content for doc in docs)
+        
+        # Naprawiamy formatowanie: Teraz AI "widzi" skąd pochodzi dany kawałek tekstu
+        def format_docs(docs): 
+            return "\n\n=== KOLEJNY PRZEPIS ===\n\n".join(
+                f"Tekst: {doc.page_content}\nŹródło: {doc.metadata.get('source', 'Nieznane źródło')}" 
+                for doc in docs
+            )
         
         self.chain = (
             {"context": retriever | format_docs, "question": RunnablePassthrough()}
