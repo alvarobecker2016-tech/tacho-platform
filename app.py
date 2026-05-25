@@ -7,73 +7,78 @@ from cargo_calculator import oblicz_pasy_docisk, WSPOLCZYNNIKI_TARCIA
 import auth_db
 from pdf_generator import create_defense_pdf
 
-# 1. Konfiguracja strony - Ukryty pasek boczny na start (jak w aplikacji mobilnej)
-st.set_page_config(page_title="Pocket AI", page_icon="✨", layout="centered", initial_sidebar_state="collapsed")
+# 1. Konfiguracja strony
+st.set_page_config(page_title="Pocket DGSA", page_icon="🛣️", layout="centered", initial_sidebar_state="collapsed")
 
-# --- CSS: MAGICZNY MINIMALIZM ---
+# --- CSS: CZERŃ, BIEL I CZERWIEŃ ---
 st.markdown("""
 <style>
-/* Ukrycie domyślnych pasków Streamlit */
 header {visibility: hidden;}
 footer {visibility: hidden;}
-
-/* Zrobienie miejsca na dole, by czat nie zasłaniał treści */
 .block-container {
-    padding-top: 2rem !important;
+    padding-top: 1rem !important;
     padding-bottom: 5rem !important;
 }
-
-/* Wygładzenie przycisków */
 .stButton>button {
-    border-radius: 20px;
-    font-weight: 600;
+    border-radius: 8px;
+    font-weight: bold;
     border: none;
     transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 .stButton>button:hover {
-    transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
 }
-
-/* Centralne powitanie - stylizacja */
 .welcome-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 40vh;
+    margin-top: 5vh;
+    margin-bottom: 3vh;
     text-align: center;
 }
-.welcome-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    background: -webkit-linear-gradient(45deg, #3B82F6, #8B5CF6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.highway-logo {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #D32F2F;
+    box-shadow: 0 0 25px rgba(211, 47, 47, 0.3);
+    margin-bottom: 1.5rem;
 }
 .welcome-text {
     font-size: 2.2rem;
-    font-weight: 500;
+    font-weight: 700;
     color: #FFFFFF;
+    letter-spacing: 1px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# Inicjalizacja bazy użytkowników
 auth_db.init_db()
 
-# --- SYSTEM LOGOWANIA ---
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.user_data = None
 
 if not st.session_state.logged_in:
-    st.markdown("<div class='welcome-container'><div class='welcome-icon'>✨</div><div class='welcome-text'>Pocket DGSA & Tacho</div><p style='color: #9CA3AF; margin-top: 10px;'>Twój inteligentny asystent transportowy</p></div>", unsafe_allow_html=True)
+    # Nowy, realistyczny logotyp pobierany z darmowej bazy Unsplash (nocna autostrada)
+    st.markdown("""
+    <div class='welcome-container'>
+        <img src='https://images.unsplash.com/photo-1415356588265-45cd650f96e1?q=80&w=300&auto=format&fit=crop' class='highway-logo'>
+        <div class='welcome-text'>POCKET DGSA & TACHO</div>
+        <p style='color: #A0A0A0; font-size: 1.1rem; margin-top: 5px;'>Profesjonalny System Prawny B2B</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    tab_log, tab_reg = st.tabs(["Logowanie", "Rejestracja"])
+    tab_log, tab_reg = st.tabs(["LOGOWANIE", "REJESTRACJA"])
     with tab_log:
-        log_user = st.text_input("Identyfikator")
+        log_user = st.text_input("Adres Email / Identyfikator")
         log_pass = st.text_input("Hasło", type="password")
-        if st.button("Wejdź", type="primary", use_container_width=True):
+        if st.button("WEJDŹ DO SYSTEMU", type="primary", use_container_width=True):
             user_info = auth_db.verify_login(log_user, log_pass)
             if user_info:
                 st.session_state.logged_in = True
@@ -83,23 +88,22 @@ if not st.session_state.logged_in:
                 st.error("Błędny identyfikator lub hasło.")
                 
     with tab_reg:
-        typ_konta = st.radio("Typ profilu:", ["Kierowca Indywidualny", "Firma Transportowa"])
-        reg_user = st.text_input("Nowy identyfikator")
+        typ_konta = st.radio("Rodzaj subskrypcji:", ["Kierowca Indywidualny", "Firma Transportowa"])
+        reg_user = st.text_input("Nowy Email / Identyfikator")
         reg_pass = st.text_input("Nowe hasło", type="password")
-        reg_name = st.text_input("Twoje Imię (np. Rafał)")
-        reg_comp = st.text_input("Nazwa Firmy") if typ_konta == "Firma Transportowa" else "Kierowca Indywidualny"
+        reg_name = st.text_input("Imię i Nazwisko (do pism)")
+        reg_comp = st.text_input("Nazwa Firmy (Opcjonalnie)") if typ_konta == "Firma Transportowa" else "Kierowca Indywidualny"
         
-        if st.button("Utwórz profil", use_container_width=True):
+        if st.button("UTWÓRZ KONTO TESTOWE", use_container_width=True):
             if reg_user and reg_pass and reg_name:
                 if auth_db.register_user(reg_user, reg_pass, reg_name, reg_comp):
-                    st.success("Konto gotowe. Możesz się zalogować.")
+                    st.success("Konto utworzone. Przejdź do logowania.")
                 else:
                     st.error("Użytkownik już istnieje.")
             else:
                 st.warning("Wypełnij wymagane pola.")
     st.stop()
 
-# --- ŁADOWANIE SILNIKA ---
 @st.cache_resource
 def get_rag_system():
     rag = TachografRAG()
@@ -109,7 +113,6 @@ def get_rag_system():
 
 rag_system = get_rag_system()
 
-# --- INTENT ROUTER ---
 def classify_intent(text):
     try:
         client = OpenAI()
@@ -125,102 +128,94 @@ def classify_intent(text):
     except:
         return "OGOLNE"
 
-# --- PANEL BOCZNY (Ukryty pod ikoną w lewym górnym rogu) ---
 user_info = st.session_state.user_data
-imie_uzytkownika = user_info['full_name'].split()[0] # Wyciągamy samo imię
+imie_uzytkownika = user_info['full_name'].split()[0]
 
 with st.sidebar:
-    st.markdown(f"### 👤 {user_info['full_name']}")
-    st.caption(f"Profil: {user_info['company_name']}")
+    st.markdown(f"### {user_info['full_name']}")
+    st.caption(f"Status: {user_info['company_name']}")
     st.divider()
     
-    st.markdown("**Ustawienia Asystenta**")
-    jezyk_pism = st.selectbox("Język pism urzędowych:", ["Niemiecki (BAG)", "Polski (ITD)", "Angielski (DVSA)", "Francuski (DREAL)"])
+    st.markdown("**KONFIGURACJA PISM**")
+    jezyk_pism = st.selectbox("Wybór organu kontrolnego:", ["Niemiecki (BAG)", "Polski (ITD)", "Angielski (DVSA)", "Francuski (DREAL)"])
     
     st.divider()
-    st.markdown("**Skaner Dowodów (Zdjęcie)**")
-    uploaded_file = st.file_uploader("Wgraj zdjęcie", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
-    if uploaded_file and st.button("Wyślij do AI", type="primary"):
-        with st.spinner("Analizuję obraz..."):
+    st.markdown("**SKANER DOKUMENTÓW**")
+    uploaded_file = st.file_uploader("Wgraj dowód / mandat", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
+    if uploaded_file and st.button("ANALIZUJ OBRAZ", type="primary"):
+        with st.spinner("Skanowanie dowodu..."):
             odczyt_ocr = rag_system.read_image(uploaded_file.read())
-            st.session_state.messages.append({"role": "user", "content": f"[ZESKANOWANY DOKUMENT]\n{odczyt_ocr}\n\nCo to za dokument i czy są błędy?"})
+            st.session_state.messages.append({"role": "user", "content": f"[SKAN DOKUMENTU]\n{odczyt_ocr}\n\nWykonaj pełny audyt tego dokumentu."})
             st.rerun()
 
     st.divider()
-    if st.button("Wyloguj", use_container_width=True):
+    if st.button("WYLOGUJ", use_container_width=True):
         st.session_state.logged_in = False
         st.session_state.user_data = None
         st.rerun()
 
-# --- GŁÓWNY INTERFEJS ---
-
-# Inicjalizacja historii i widoków
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+if "messages" not in st.session_state: st.session_state.messages = []
 if "show_adr" not in st.session_state: st.session_state.show_adr = False
 if "show_pasy" not in st.session_state: st.session_state.show_pasy = False
 
-# MAGICZNY EKRAN POWITALNY (Tylko gdy czat jest pusty i nie włączono kalkulatorów)
 if not st.session_state.messages and not st.session_state.show_adr and not st.session_state.show_pasy:
     st.markdown(f"""
     <div class='welcome-container'>
-        <div class='welcome-icon'>✨</div>
-        <div class='welcome-text'>W czym mogę pomóc, {imie_uzytkownika}?</div>
+        <img src='https://images.unsplash.com/photo-1415356588265-45cd650f96e1?q=80&w=300&auto=format&fit=crop' class='highway-logo'>
+        <div class='welcome-text'>GOTOWY DO TRASY, {imie_uzytkownika.upper()}?</div>
+        <p style='color: #707070;'>Wpisz naruszenie, wrzuć zdjęcie tacho lub poproś o pismo.</p>
     </div>
     """, unsafe_allow_html=True)
 
-# Kalkulatory (pojawiają się tylko, gdy AI je wywoła)
 if st.session_state.show_adr:
-    st.markdown("### 📊 Kalkulator ADR (Wywołany przez asystenta)")
+    st.markdown("### 🛑 KALKULATOR ADR")
     if "adr_loads" not in st.session_state: st.session_state.adr_loads = []
     c1, c2, c3 = st.columns([2, 1, 1])
     wybrany_un = c1.selectbox("Kod UN", options=list(TABELA_A.keys()))
     ilosc = c2.number_input("Ilość", min_value=1, value=100)
-    if c3.button("Dodaj"):
+    if c3.button("DODAJ"):
         st.session_state.adr_loads.append({"un": wybrany_un, "ilosc": ilosc})
     if st.session_state.adr_loads:
         wynik = oblicz_1136(st.session_state.adr_loads)
         if "error" not in wynik:
             st.table([{"UN": i['un'], "Ilość": i['ilosc'], "Punkty": int(i['punkty'])} for i in wynik["szczegoly"]])
-            st.info(f"Suma: {int(wynik['suma_punktow'])} / 1000")
-        if st.button("Zamknij kalkulator"):
+            st.info(f"SUMA PUNKTÓW: {int(wynik['suma_punktow'])} / 1000")
+        if st.button("ZAMKNIJ MODUŁ"):
             st.session_state.show_adr = False
             st.session_state.adr_loads = []
             st.rerun()
 
 if st.session_state.show_pasy:
-    st.markdown("### ⛓️ Fizyka Docisku (Wywołana przez asystenta)")
+    st.markdown("### ⛓️ FIZYKA DOCISKU (EN-12195)")
     c1, c2 = st.columns(2)
-    waga = c1.number_input("Waga (kg)", value=2500, step=100)
-    stf = c1.number_input("STF pasa (daN)", value=500, step=50)
-    tarcie = c2.selectbox("Tarcie", options=list(WSPOLCZYNNIKI_TARCIA.keys()))
-    kat = c2.slider("Kąt (alfa)", 10, 90, 60)
-    if st.button("Oblicz", type="primary"):
+    waga = c1.number_input("Waga ładunku (kg)", value=2500, step=100)
+    stf = c1.number_input("Naciąg pasa STF (daN)", value=500, step=50)
+    tarcie = c2.selectbox("Powierzchnia styku", options=list(WSPOLCZYNNIKI_TARCIA.keys()))
+    kat = c2.slider("Kąt mocowania (stopnie)", 10, 90, 60)
+    if st.button("OBLICZ MINIMUM PASÓW", type="primary"):
         wynik = oblicz_pasy_docisk(waga, WSPOLCZYNNIKI_TARCIA[tarcie], stf, kat)
         if "error" not in wynik:
-            st.success(f"Minimalna liczba pasów: {wynik['pasy']}")
-    if st.button("Zamknij kalkulator"):
+            st.success(f"Wymagana ilość pasów: {wynik['pasy']}")
+    if st.button("ZAMKNIJ MODUŁ"):
         st.session_state.show_pasy = False
         st.rerun()
 
-# Wyświetlanie historii czatu
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         if message.get("pdf_bytes"):
-            st.download_button("📄 POBIERZ DOKUMENT PDF", data=message["pdf_bytes"], file_name="Oswiadczenie.pdf", mime="application/pdf", key=str(hash(message["content"])))
+            st.download_button("⬇️ POBIERZ DOKUMENT PDF", data=message["pdf_bytes"], file_name="Oswiadczenie.pdf", mime="application/pdf", key=str(hash(message["content"])))
 
-# Główne pole na dole (Zawsze przyklejone do dołu przez Streamlit)
-if user_query := st.chat_input("Pytaj, zlecaj analizy i generuj dokumenty..."):
+if user_query := st.chat_input("Zgłoś problem lub poproś o pismo..."):
     st.session_state.messages.append({"role": "user", "content": user_query})
     with st.chat_message("user"):
         st.markdown(user_query)
         
     with st.chat_message("assistant"):
         if not rag_system:
-            st.error("Brak połączenia z bazą prawną.")
+            st.error("Brak połączenia z systemem prawnym.")
         else:
-            with st.spinner("Myślę..."):
+            with st.spinner("Przetwarzanie danych..."):
                 intencja = classify_intent(user_query)
                 pdf_bytes_to_save = None
                 
@@ -228,7 +223,7 @@ if user_query := st.chat_input("Pytaj, zlecaj analizy i generuj dokumenty..."):
                     response = rag_system.generate_defense_statement(user_query, jezyk_pism)
                     pdf_bytes_to_save = create_defense_pdf(response, user_info['full_name'], user_info['company_name'])
                     st.markdown(response)
-                    st.download_button("📄 POBIERZ DOKUMENT PDF", data=pdf_bytes_to_save, file_name="Oswiadczenie.pdf", mime="application/pdf")
+                    st.download_button("⬇️ POBIERZ DOKUMENT PDF", data=pdf_bytes_to_save, file_name="Oswiadczenie.pdf", mime="application/pdf")
                     
                 elif "KARY" in intencja:
                     response = rag_system.calculate_penalty(user_query)
@@ -237,14 +232,14 @@ if user_query := st.chat_input("Pytaj, zlecaj analizy i generuj dokumenty..."):
                 elif "ADR" in intencja:
                     st.session_state.show_adr = True
                     st.session_state.show_pasy = False
-                    response = "Uruchomiłem kalkulator ADR powyżej. Wprowadź ładunek."
+                    response = "Uruchomiono moduł ADR."
                     st.markdown(response)
                     st.rerun()
                     
                 elif "PASY" in intencja:
                     st.session_state.show_pasy = True
                     st.session_state.show_adr = False
-                    response = "Uruchomiłem moduł inżynieryjny EN-12195 powyżej. Sprawdź pasy."
+                    response = "Uruchomiono moduł mocowania ładunków."
                     st.markdown(response)
                     st.rerun()
                     

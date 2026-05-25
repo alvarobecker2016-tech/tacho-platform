@@ -1,11 +1,11 @@
 [theme]
 base = "dark"
-# Neonowy, nowoczesny błękit dla przycisków i akcentów
-primaryColor = "#3B82F6"
-# Głęboka czerń (jak w nowoczesnych aplikacjach AI na telefon)
-backgroundColor = "#0B0F19"
-# Ciemny grafit dla wyskakujących okienek i paska bocznego
-secondaryBackgroundColor = "#111827"
-# Czysta biel dla tekstu
-textColor = "#F9FAFB"
+# Krwista czerwień dla przycisków akcji
+primaryColor = "#D32F2F"
+# Prawdziwa, głęboka czerń (jak w nocy)
+backgroundColor = "#000000"
+# Ciemny grafit dla kontrastu (zakładki, pola tekstowe)
+secondaryBackgroundColor = "#121212"
+# Czysta biel dla idealnej czytelności tekstu
+textColor = "#FFFFFF"
 font = "sans serif"
