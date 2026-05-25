@@ -155,13 +155,44 @@ with tab4:
     else:
         st.info("Kalkulator jest pusty.")
 
+# --- ZAKŁADKA 5: ZAAWANSOWANY SKANER OCR (WIZJA AI) ---
+with tab5:
+    st.header("📸 Skaner Dowodów (Wydruki Tacho / CMR)")
+    st.info("Wgraj zdjęcie dokumentu przewozowego lub wydruku z tachografu. Oczy AI (Vision) odczytają surowe dane, a następnie zlecą Audytorowi ich analizę prawną.")
+    
+    uploaded_file = st.file_uploader("Wybierz zdjęcie dowodu (JPG/PNG)", type=["jpg", "jpeg", "png"])
+    
+    if uploaded_file is not None:
+        st.image(uploaded_file, caption="Wgrany dokument dowodowy", use_container_width=True)
+        
+        if st.button("🔍 Skanuj i Analizuj Dokument", type="primary", use_container_width=True):
+            if not rag_system:
+                st.error("Błąd bazy danych.")
+            else:
+                # KROK 1: Odczyt danych z obrazka
+                with st.spinner("Oczy AI skanują dokument (Ekstrakcja OCR)..."):
+                    image_bytes = uploaded_file.read()
+                    extracted_text = rag_system.read_image(image_bytes)
+                
+                st.success("Dokument zdekodowany pomyślnie!")
+                
+                with st.expander("Kliknij, aby zobaczyć surowe dane z odczytu (Raw Text)"):
+                    st.text(extracted_text)
+                
+                # KROK 2: Automatyczna analiza wyciągniętego tekstu przez silnik prawny
+                with st.spinner("Silnik LegalTech analizuje odczytane dane pod kątem naruszeń..."):
+                    prompt_dla_audytora = f"Przeanalizuj pod kątem zgodności z prawem transportowym następujące dane odczytane ze zdjęcia dokumentu:\n\n{extracted_text}"
+                    analiza = rag_system.ask(prompt_dla_audytora)
+                
+                st.write("### ⚖️ Audyt Prawny Dokumentu:")
+                st.markdown(analiza)
+
 # --- POZOSTAŁE ZAKŁADKI (Makiety) ---
-for tab, nazwa_modulu in zip([tab5, tab6, tab7, tab8], [
-    "📸 Zaawansowany Skaner dokumentów przewozowych OCR", 
+for tab, nazwa_modulu in zip([tab6, tab7, tab8], [
     "🗺️ Kontrola GPS i Przekroczenia Granic", 
     "✍️ Weryfikacja Wpisów Manualnych w Tachografie", 
     "⛓️ Kalkulator Siły Mocowania Ładunków (Norma EN 12195)"
 ]):
     with tab:
         st.subheader(nazwa_modulu)
-        st.write("Moduł rdzeniowy platformy. Oczekuje na aktywację i podpięcie dedykowanych baz danych.")
+        st.write("Moduł oczekuje na wdrożenie silnika przestrzennego (Geospatial) i nowych algorytmów.")
