@@ -95,6 +95,69 @@ ODPOWIEDŹ:"""
         ])
         return msg.content
 
+    # === NOWY MODUŁ 1: Wycena Ryzyka (Inspektor Finansowy) ===
+    def calculate_penalty(self, violation_description: str) -> str:
+        from openai import OpenAI
+        results = self.vectorstore.similarity_search(violation_description, k=6)
+        context_text = "\n\n---\n\n".join([f"Tekst: {doc.page_content}\nŹródło: {doc.metadata.get('source', 'Brak źródła')}" for doc in results])
+        
+        system_prompt = """
+        Jesteś bezlitosnym Inspektorem ITD/BAG i ekspertem ds. ryzyka finansowego w transporcie.
+        Twoim zadaniem jest ocenić naruszenie opisane przez użytkownika na podstawie dostarczonych taryfikatorów.
+        
+        WYTYCZNE:
+        1. Określ potencjalną karę finansową (np. w PLN lub EUR).
+        2. Określ wagę naruszenia wg klasyfikacji UE (BPN - bardzo poważne, PPN - poważne, NPN - najpoważniejsze).
+        3. Jeśli nie ma wprost kwoty dla tego przypadku w kontekście, podaj widełki dla podobnych naruszeń lub poinformuj o braku danych.
+        4. Na końcu ZAWSZE podaj [ŹRÓDŁO: ...].
+        """
+        
+        try:
+            client = OpenAI()
+            response = client.chat.completions.create(
+                model="gpt-4o", 
+                temperature=0.0,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": f"Oto taryfikatory i klasyfikacje (Kontekst):\n{context_text}\n\nZidentyfikuj i wyceń naruszenie: {violation_description}"}
+                ]
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            return f"Błąd modułu finansowego: {str(e)}"
+
+    # === NOWY MODUŁ 2: Linia Obrony (Adwokat Transportowy) ===
+    def generate_defense_statement(self, incident_description: str) -> str:
+        from openai import OpenAI
+        results = self.vectorstore.similarity_search(incident_description, k=8)
+        context_text = "\n\n---\n\n".join([f"Tekst: {doc.page_content}\nŹródło: {doc.metadata.get('source', 'Brak źródła')}" for doc in results])
+        
+        system_prompt = """
+        Jesteś wybitnym Adwokatem specjalizującym się w europejskim prawie transportowym.
+        Twoim zadaniem jest wygenerowanie profesjonalnego, formalnego oświadczenia dla kierowcy (np. na podstawie Art. 12 Rozporządzenia 561/2006 lub incydentu z CMR), które uchroni go przed mandatem podczas kontroli BAG/ITD.
+        
+        WYTYCZNE DO PISMA:
+        1. Napisz to w tonie oficjalnego dokumentu prawnego.
+        2. Powołaj się na konkretne artykuły, punkty i wyjątki z dostarczonego kontekstu.
+        3. Pismo ma być gotowe do podpisania przez kierowcę i wręczenia inspektorowi.
+        4. Zachowaj luki na dane (np. [Imię i Nazwisko Kierowcy], [Numer Rejestracyjny]).
+        5. Pod pismem wyjaśnij krótko użytkownikowi (po polsku), dlaczego taka linia obrony została przyjęta, używając formatu [UZASADNIENIE: ...].
+        """
+        
+        try:
+            client = OpenAI()
+            response = client.chat.completions.create(
+                model="gpt-4o", 
+                temperature=0.2,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": f"Oto przepisy prawne (Kontekst):\n{context_text}\n\nWygeneruj oświadczenie obronne dla tej sytuacji: {incident_description}"}
+                ]
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            return f"Błąd modułu prawniczego: {str(e)}"
+
 # Część wykonawcza (na potrzeby wektoryzacji z terminala)
 def chunk_legal_text(raw_text, source_title):
     pattern = r'(?=Art\.\s*\d+[a-z]*\.)'
