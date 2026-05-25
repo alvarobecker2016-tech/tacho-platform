@@ -9,7 +9,7 @@ from pdf_generator import create_defense_pdf
 
 st.set_page_config(page_title="Pocket DGSA", page_icon="🛣️", layout="wide", initial_sidebar_state="collapsed")
 
-# --- PEŁNY SŁOWNIK GLOBALNY (44 JĘZYKI) - USUNIĘTO SŁOWO B2B ---
+# --- PEŁNY SŁOWNIK GLOBALNY ---
 UI = {
     "🇵🇱 PL": {"sub": "Profesjonalny System Prawny", "log_tab": "LOGOWANIE", "reg_tab": "REJESTRACJA", "email": "Adres Email / ID", "pass": "Hasło", "btn_log": "WEJDŹ DO SYSTEMU", "type": "Rodzaj profilu:", "type_drv": "Kierowca Indywidualny", "type_cmp": "Firma Transportowa", "name": "Imię i Nazwisko", "cmp_name": "Nazwa Firmy", "btn_reg": "ZAREJESTRUJ PROFIL", "err_log": "Błędny identyfikator lub hasło.", "err_reg": "Użytkownik już istnieje.", "ok_reg": "Konto utworzone.", "req_f": "Wypełnij wymagane pola.", "ready": "GOTOWY DO TRASY", "desc": "Wpisz problem lub użyj przycisku '📎'.", "chat_ph": "Napisz problem...", "attach": "📎 Mikrofon / Aparat / Pliki", "logout": "WYLOGUJ", "cfg": "WYBÓR ORGANU:"},
     "🇬🇧 EN": {"sub": "Professional Legal System", "log_tab": "LOGIN", "reg_tab": "REGISTER", "email": "Email / ID", "pass": "Password", "btn_log": "ENTER SYSTEM", "type": "Profile type:", "type_drv": "Independent Driver", "type_cmp": "Transport Company", "name": "Full Name", "cmp_name": "Company Name", "btn_reg": "CREATE ACCOUNT", "err_log": "Invalid ID or password.", "err_reg": "User exists.", "ok_reg": "Account created.", "req_f": "Fill required fields.", "ready": "READY FOR THE ROAD", "desc": "Type your problem or use '📎'.", "chat_ph": "Describe problem...", "attach": "📎 Mic / Camera", "logout": "LOGOUT", "cfg": "SELECT AUTHORITY:"},
@@ -70,6 +70,7 @@ footer {visibility: hidden;}
 .welcome-text { font-size: 2.8rem; font-weight: 800; color: #FFFFFF; letter-spacing: 1px; background: -webkit-linear-gradient(45deg, #FFFFFF, #D32F2F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 [data-testid="stSidebar"] * { color: #FFFFFF !important; }
 .stChatInputContainer input { color: #000000 !important; }
+.paywall-box { background-color: #111111; border: 2px solid #D32F2F; border-radius: 10px; padding: 2rem; text-align: center; margin-top: 2rem; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -85,7 +86,6 @@ if "logged_in" not in st.session_state:
 
 if not st.session_state.logged_in:
     
-    # 1. NAJPIERW SELEKTOR JĘZYKA W PRAWYM GÓRNYM ROGU (Dyskretny)
     col_empty, col_lang = st.columns([7, 3])
     with col_lang:
         wybrany_jezyk = st.selectbox("🌐", list(UI.keys()), index=list(UI.keys()).index(st.session_state.lang), label_visibility="collapsed")
@@ -93,7 +93,6 @@ if not st.session_state.logged_in:
 
     t = UI[st.session_state.lang]
 
-    # 2. POTEM CENTRALNE KÓŁKO I TEKST
     st.markdown(f"""
     <div class='welcome-container'>
         <div class='highway-logo-container'></div>
@@ -102,7 +101,6 @@ if not st.session_state.logged_in:
     </div>
     """, unsafe_allow_html=True)
     
-    # 3. NA SAMYM DOLE FORMULARZ LOGOWANIA
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         tab_log, tab_reg = st.tabs([t['log_tab'], t['reg_tab']])
@@ -162,12 +160,20 @@ def classify_intent(text):
 
 user_info = st.session_state.user_data
 imie_uzytkownika = user_info['full_name'].split()[0]
+kredyty_kierowcy = user_info.get('credits', 0)
+czy_premium = user_info.get('is_premium', False)
 
 with st.sidebar:
     st.markdown("<h2 style='text-align: center; color: white;'>Panel</h2>", unsafe_allow_html=True)
     st.divider()
     st.success(f"👤 **{user_info['full_name']}**")
-    st.info(f"🏢 {user_info['company_name']}")
+    
+    # --- NOWOŚĆ: WYŚWIETLANIE ŻETONÓW W PANELU ---
+    if czy_premium:
+        st.info("👑 KONTO PREMIUM")
+    else:
+        st.warning(f"🪙 Pozostało pytań: **{kredyty_kierowcy}**")
+        
     st.divider()
     
     st.markdown("**🌐 APP LANGUAGE:**")
@@ -199,6 +205,25 @@ if not st.session_state.messages and not st.session_state.show_adr and not st.se
     </div>
     """, unsafe_allow_html=True)
 
+# --- SYSTEM BLOKOWANIA DARMOWICZÓW (PAYWALL) ---
+if not czy_premium and kredyty_kierowcy <= 0:
+    st.markdown("""
+    <div class='paywall-box'>
+        <h2 style='color: #D32F2F;'>🛑 WYCZERPAŁEŚ DARMOWY LIMIT</h2>
+        <p style='color: #FFFFFF; font-size: 1.2rem;'>Zużyłeś wszystkie darmowe żetony. Odblokuj pełen dostęp, aby dalej generować pisma i unikać mandatów.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("💳 KUP PAKIET 24H - 2.99€", type="primary", use_container_width=True):
+            st.info("Trwa podpinanie płatności Stripe...")
+        if st.button("👑 KUP SUBSKRYPCJĘ MIESIĘCZNĄ - 14.99€", use_container_width=True):
+            st.info("Trwa podpinanie płatności Stripe...")
+    st.stop() # Ta funkcja zamraża całą aplikację poniżej tego miejsca!
+
+# Tędy przejdą tylko osoby z żetonami lub kontem Premium:
 if st.session_state.show_adr:
     with st.expander("🛑 KALKULATOR ADR", expanded=True):
         if "adr_loads" not in st.session_state: st.session_state.adr_loads = []
@@ -235,19 +260,44 @@ for message in st.session_state.messages:
             st.download_button("⬇️ PDF", data=message["pdf_bytes"], file_name="Oswiadczenie_Kierowcy.pdf", mime="application/pdf", key=str(hash(message["content"])))
 
 with st.popover(t['attach']):
-    tab_skan, tab_audio = st.tabs(["📸 OCR", "🎤 AUDIO"])
-    with tab_skan:
-        uploaded_file = st.file_uploader("", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
-        if uploaded_file and st.button("ANALIZUJ / ANALYZE", type="primary", use_container_width=True):
+    tab_cam, tab_gal, tab_audio = st.tabs(["📸 CAMERA", "📁 FILES", "🎤 AUDIO"])
+    
+    with tab_cam:
+        zdjecie_kamera = st.camera_input("Zrób zdjęcie z aplikacji", label_visibility="collapsed")
+        if zdjecie_kamera and st.button("ANALIZUJ", type="primary", use_container_width=True, key="btn_cam"):
             with st.spinner("..."):
+                # Pobieramy żeton przy analizie obrazu
+                nowe_kredyty = auth_db.use_credit(user_info['username'])
+                if nowe_kredyty is not None:
+                    st.session_state.user_data['credits'] = nowe_kredyty
+                    
+                odczyt_ocr = rag_system.read_image(zdjecie_kamera.read())
+                st.session_state.messages.append({"role": "user", "content": f"[SKAN DOKUMENTU]\n{odczyt_ocr}\n\nAudyt / Audit:"})
+                st.rerun()
+
+    with tab_gal:
+        uploaded_file = st.file_uploader("Wgraj z urządzenia", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
+        if uploaded_file and st.button("ANALIZUJ", type="primary", use_container_width=True, key="btn_gal"):
+            with st.spinner("..."):
+                nowe_kredyty = auth_db.use_credit(user_info['username'])
+                if nowe_kredyty is not None:
+                    st.session_state.user_data['credits'] = nowe_kredyty
+                    
                 odczyt_ocr = rag_system.read_image(uploaded_file.read())
                 st.session_state.messages.append({"role": "user", "content": f"[SKAN DOKUMENTU]\n{odczyt_ocr}\n\nAudyt / Audit:"})
                 st.rerun()
+                
     with tab_audio:
         st.warning("🔜")
 
 if user_query := st.chat_input(t['chat_ph']):
     st.session_state.messages.append({"role": "user", "content": user_query})
+    
+    # Pobieramy żeton przy każdym pytaniu
+    nowe_kredyty = auth_db.use_credit(user_info['username'])
+    if nowe_kredyty is not None:
+        st.session_state.user_data['credits'] = nowe_kredyty
+        
     with st.chat_message("user"):
         st.markdown(user_query)
         
@@ -280,3 +330,5 @@ if user_query := st.chat_input(t['chat_ph']):
                     st.markdown(response)
                     
             st.session_state.messages.append({"role": "assistant", "content": response, "pdf_bytes": pdf_bytes_to_save})
+            # Ostatni rerun, żeby odświeżyć licznik w lewym panelu
+            st.rerun()
