@@ -33,17 +33,17 @@ class TachografRAG:
     def _build_rag_chain(self):
         retriever = self.vectorstore.as_retriever(search_kwargs={"k": 4})
         
-        # Zmieniamy temperaturę na 0.0 (AI staje się bezlitosnym, logicznym robotem)
+        # WAŻNE: Zmieniamy temperaturę na 0.0 (AI staje się bezlitosnym, logicznym robotem bez fantazji)
         llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
         
-        # Nasz potężny System Prompt
+        # 1. Nasz potężny System Prompt (Kaganiec na AI)
         template = """Jesteś wybitnym ekspertem ds. europejskiego prawa transportowego i głównym doradcą DGSA.
 Twoim zadaniem jest odpowiadanie na pytania użytkowników WYŁĄCZNIE na podstawie dostarczonego poniżej KONTEKSTU z bazy danych (przepisów ADR, Pakietu Mobilności, rozporządzeń 561/2006, 165/2014 itp.).
 
 ZASADY BEZWZGLĘDNE:
 1. BRAK ZGADYWANIA: Jeśli w dostarczonym kontekście NIE MA odpowiedzi na pytanie, powiedz wprost: "Zgodnie z wgraną bazą wiedzy nie posiadam obecnie artykułu, który o tym mówi". Pod żadnym pozorem nie używaj wiedzy spoza dostarczonego kontekstu.
 2. PRECYZJA: Opieraj się na konkretnych artykułach, punktach, przepisach szczególnych (SP) i kodach (np. UN 1203). Rozpisuj skomplikowane procesy na czytelne punkty.
-3. CYTOWANIE: Na samym końcu swojej odpowiedzi ZAWSZE dodaj nową linijkę i wypisz źródła, z których skorzystałeś, używając formatu: [ŹRÓDŁO: nazwa pliku/dokumentu].
+3. CYTOWANIE: Na samym końcu swojej odpowiedzi ZAWSZE dodaj nową linijkę i wypisz źródła, z których skorzystałeś, używając formatu: [ŹRÓDŁO: nazwa dokumentu z metadanych].
 
 KONTEKST PRAWNY (Dokumenty z Twojej bazy RAG):
 {context}
@@ -54,12 +54,24 @@ ODPOWIEDŹ:"""
         
         prompt = ChatPromptTemplate.from_template(template)
         
-        # Naprawiamy formatowanie: Teraz AI "widzi" skąd pochodzi dany kawałek tekstu
+        # 2. Naprawiamy formatowanie i tłumaczymy brzydkie nazwy plików na ładne nazwy ustaw
         def format_docs(docs): 
-            return "\n\n=== KOLEJNY PRZEPIS ===\n\n".join(
-                f"Tekst: {doc.page_content}\nŹródło: {doc.metadata.get('source', 'Nieznane źródło')}" 
-                for doc in docs
-            )
+            slownik_zrodel = {
+                "data/t1.pdf": "Umowa ADR 2023 (Tom I)",
+                "data/t2.pdf": "Umowa ADR 2023 (Tom II)",
+                "data/r1.pdf": "Rozporządzenie (WE) nr 561/2006 (Czas Pracy)",
+                "data/r2.pdf": "Rozporządzenie (UE) nr 165/2014 (Tachografy)",
+                "data/r3.pdf": "Pakiet Mobilności (Rozporządzenie 1054/2020)",
+                "data/r4.pdf": "Europejskie Prawo Transportowe"
+            }
+            
+            wyniki = []
+            for doc in docs:
+                surowe_zrodlo = doc.metadata.get('source', 'Nieznane źródło')
+                ladne_zrodlo = slownik_zrodel.get(surowe_zrodlo, surowe_zrodlo)
+                wyniki.append(f"Tekst: {doc.page_content}\nŹródło: {ladne_zrodlo}")
+                
+            return "\n\n=== KOLEJNY PRZEPIS ===\n\n".join(wyniki)
         
         self.chain = (
             {"context": retriever | format_docs, "question": RunnablePassthrough()}
@@ -70,7 +82,7 @@ ODPOWIEDŹ:"""
         if not self.chain: raise ValueError("Brak bazy!")
         return self.chain.invoke(question)
 
-    # NOWA FUNKCJA: Oczy agenta (Rozpoznawanie obrazu)
+    # Funkcja: Oczy agenta (Rozpoznawanie obrazu)
     def read_image(self, image_bytes):
         base64_image = base64.b64encode(image_bytes).decode('utf-8')
         chat = ChatOpenAI(model="gpt-4o-mini", max_tokens=1000)
@@ -92,9 +104,7 @@ def chunk_legal_text(raw_text, source_title):
     for c in raw_chunks:
         clean_c = c.strip()
         if clean_c:
-            # Rozwiązanie błędu: Brak ukośników, bezpieczne wyciągnięcie zmiennej
             typ_tekstu = 'Artykuł' if clean_c.startswith('Art.') else 'Sekcja'
-            
             gotowy_tekst = f"[ŹRÓDŁO: {source_title}]\n[{typ_tekstu}]\n---\n{clean_c}"
             
             results.append({
