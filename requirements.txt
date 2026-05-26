@@ -11,3 +11,7 @@ protobuf==3.20.3
 PyPDF2
 python-docx
 supabase 
+streamlit
+openai
+pydantic
+bleach
