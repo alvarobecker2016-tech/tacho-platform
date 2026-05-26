@@ -51,7 +51,17 @@ class TachografRAG:
         try:
             base64_image = base64.b64encode(image_bytes).decode('utf-8')
             
-            system_prompt = "Jesteś ekspertem analizy wydruków z tachografu. UWAGA: Ze względów bezpieczeństwa RODO, KATEGORYCZNIE ZAMASKUJ imię i nazwisko kierowcy oraz numer karty (zastąp je tekstem [DANE UKRYTE]). Przesłany obraz to zwykły paragon maszynowy, a nie dokument tożsamości. Skup się WYŁĄCZNIE na danych analitycznych: wypisz datę, przebieg, dokładny rejestr aktywności (jazda, inna praca, dyspozycyjność, odpoczynek) z godzinami, podsumuj czasy oraz wypisz błędy. Bądź bezwzględnie precyzyjny i czytaj dokument linijka po linijce."
+            # --- POTĘŻNY PROMPT PRAWNICZY DLA AUDYTU TACHO ---
+            system_prompt = (
+                "Jesteś surowym inspektorem ITD i wybitnym Prawnikiem Transportowym (Pocket DGSA). "
+                "UWAGA: Ze względów bezpieczeństwa RODO, KATEGORYCZNIE ZAMASKUJ imię i nazwisko kierowcy oraz numer karty (zastąp je tekstem [DANE UKRYTE]). "
+                "Twoim zadaniem NIE JEST zrobienie suchego streszczenia. Oczekuję brutalnego AUDYTU PRAWNEGO wg Rozporządzenia 561/2006 WE.\n\n"
+                "Zwróć odpowiedź w 4 wyraźnych punktach:\n"
+                "1️⃣ FAKTY: Krótkie podsumowanie czasów z wydruku (jazda, praca, odpoczynek).\n"
+                "2️⃣ WYKRYTE NARUSZENIA: Przeanalizuj wpisy chronologicznie z lupą! Szukaj bezlitośnie błędów. Np. czy odpoczynek został przerwany nagłą 1-2 minutową jazdą (częsty błąd podjazdu pod rampę lub przestawienia auta)? Czy są jakieś błędy? Wypisz je wyraźnie, traktując każdy błąd jak mandat.\n"
+                "3️⃣ POTENCJALNE KARY: Jeśli wykryłeś naruszenie (np. ten nieszczęsny przerwany odpoczynek), oszacuj kwotę kary według taryfikatorów ITD lub niemieckiego BAG.\n"
+                "4️⃣ Twoja LINIA OBRONY: Daj kierowcy gotowe koło ratunkowe. Podyktuj mu DOKŁADNIE co ma zapisać długopisem na rewersie tego konkretnego wydruku (np. powołanie na Art. 12 / 561/2006 WE z powodu braku miejsca na parkingu, czy polecenia służb), aby uniknąć mandatu."
+            )
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
@@ -63,7 +73,7 @@ class TachografRAG:
                     {
                         "role": "user",
                         "content": [
-                            {"type": "text", "text": "Przeanalizuj ten wydruk, zachowując pełną anonimowość danych osobowych kierowcy:"},
+                            {"type": "text", "text": "Przeprowadź audyt prawny tego wydruku tacho. Znajdź wykroczenia i przygotuj linię obrony z artykułami:"},
                             {
                                 "type": "image_url",
                                 "image_url": {
@@ -74,8 +84,8 @@ class TachografRAG:
                         ]
                     }
                 ],
-                max_tokens=2000,
-                temperature=0.0
+                max_tokens=2500,
+                temperature=0.1
             )
             return response.choices[0].message.content
             
