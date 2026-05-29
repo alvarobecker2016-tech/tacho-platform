@@ -1,115 +1,93 @@
 # =========================================================
 # utils/helpers.py
-# ENTERPRISE SAFE HELPERS & RECONSTRUCTION ENGINE
+# ENTERPRISE DATE RECONSTRUCTION ENGINE
 # =========================================================
 
 import re
+import logging
 import hashlib
 import uuid
 from datetime import datetime, timezone, timedelta
 from typing import List
-from dateutil import parser  # Potężna broń do automatycznego parsowania dat
 
 from models.domain import OCRTimelineEvent, TimelineEvent
 
-# =========================================================
-# MASKOWANIE DANYCH WRAŻLIWYCH
-# =========================================================
-def mask_sensitive_data(value: str) -> str:
-    """Maskuje dane osobowe kierowcy lub numery kart."""
-    if not value:
-        return "[DANE UKRYTE]"
-    val_str = str(value).strip()
-    if len(val_str) < 4:
-        return "[DANE UKRYTE]"
-    return val_str[:2] + "*" * (len(val_str) - 4) + val_str[-2:]
+logger = logging.getLogger(__name__)
 
-# =========================================================
-# KRYPTOGRAFICZNY PODPIS INTEGRALNOŚCI (SHA-256)
-# =========================================================
+def mask_sensitive_data(text: str) -> str:
+    """Maskowanie danych wrażliwych."""
+    if not text:
+        return ""
+    text_str = str(text).strip()
+    if len(text_str) <= 4:
+        return "***"
+    return text_str[:2] + "***"
+
 def generate_integrity_hash(start_time, end_time, activity, duration):
-    """Generuje unikalny hash dla odcinka aktywności, gwarantując niezmienność danych."""
+    """Kryptograficzny podpis dowodu naruszenia."""
     payload = f"{start_time}{end_time}{activity}{duration}"
     return hashlib.sha256(payload.encode()).hexdigest()
 
-# =========================================================
-# SILNIK REKONSTRUKCJI CZASU (KULOODPORNY)
-# =========================================================
 class DateTimeReconstructor:
+    """Pancerny parser OCR dla tachografów."""
+    
+    DATE_PATTERNS = [
+        r"(\d{2}\.\d{2}\.\d{4})",
+        r"(\d{2}/\d{2}/\d{4})",
+        r"(\d{4}-\d{2}-\d{2})",
+    ]
 
-    @staticmethod
-    def _fallback_date() -> datetime:
-        """Zwraca bezpieczną datę awaryjną (wczoraj o północy w formacie UTC)."""
-        return datetime.now(timezone.utc).replace(
-            hour=0, minute=0, second=0, microsecond=0
-        ) - timedelta(days=1)
-
-    @staticmethod
-    def _parse_dirty_date(raw_date_str: str) -> datetime:
-        """
-        Pancerny parser daty. Wyciąga z tekstu OCR samą datę,
-        czyści śmieci (typu '29') i bezpiecznie konwertuje na datetime UTC.
-        """
-        fallback = DateTimeReconstructor._fallback_date()
-
-        if not raw_date_str:
-            return fallback
-
-        try:
-            # 1. REGEX EXTRACTION - Wyłuskujemy wyłącznie sam wzorzec daty ze śmieci OCR
-            match = re.search(
-                r'(\d{2}[./-]\d{2}[./-]\d{4}|\d{4}[./-]\d{2}[./-]\d{2})',
-                str(raw_date_str)
-            )
-
-            if not match:
-                # Jeśli regex nie znalazł wzorca, próbujemy bezpośrednio przepuścić przez dateutil
-                parsed = parser.parse(str(raw_date_str), fuzzy=True)
-                return parsed.replace(tzinfo=timezone.utc)
-
-            # 2. SANITIZATION - Standaryzujemy separatory na kropki i czyścimy tekst
-            clean_date = match.group(1).replace("-", ".").replace("/", ".")
-
-            # 3. SMART PARSING - dateutil automatycznie rozpozna układ DD.MM.YYYY lub YYYY.MM.DD
-            parsed = parser.parse(clean_date, dayfirst=(clean_date[2] == '.'))
-            
-            # 4. OFFSET-AWARE PROTECTION - Wymuszamy strefę UTC, zapobiegając crashom przy porównaniach
-            return parsed.replace(tzinfo=timezone.utc, hour=0, minute=0, second=0, microsecond=0)
-
-        except Exception as e:
-            print(f"[WARNING] DATE PARSING FAILED FOR '{raw_date_str}': {e}")
-            return fallback
+    DATE_FORMATS = [
+        "%d.%m.%Y",
+        "%d/%m/%Y",
+        "%Y-%m-%d",
+    ]
 
     @classmethod
-    def reconstruct(
-        cls,
-        document_date: str,
-        raw_events: List[OCRTimelineEvent]
-    ) -> List[TimelineEvent]:
-        """
-        Rekonstruuje pełną, chronologiczną oś czasu z podpisami kryptograficznymi.
-        Obsługuje bezpiecznie przejścia przez północ (Midnight Rollover).
-        """
-        print(f"[DEBUG] DOCUMENT DATE RAW FROM OCR = [{document_date}]")
+    def extract_clean_date(cls, raw_date: str) -> datetime:
+        if not raw_date:
+            raise ValueError("Empty document date")
+
+        raw_date = str(raw_date).strip()
+        logger.info(f"RAW OCR DATE => [{raw_date}]")
+
+        raw_date = raw_date.replace("\n", " ").replace("\r", " ")
+        raw_date = re.sub(r"\s+", " ", raw_date)
+
+        for pattern in cls.DATE_PATTERNS:
+            match = re.search(pattern, raw_date)
+            if match:
+                clean_date = match.group(1)
+                logger.info(f"CLEAN DATE => [{clean_date}]")
+                for fmt in cls.DATE_FORMATS:
+                    try:
+                        parsed = datetime.strptime(clean_date, fmt)
+                        return parsed.replace(tzinfo=timezone.utc, hour=0, minute=0, second=0, microsecond=0)
+                    except ValueError:
+                        continue
         
-        # Inicjalizacja bezpieczną, przefiltrowaną datą początkową
-        current_date = cls._parse_dirty_date(document_date)
+        raise ValueError(f"Cannot parse OCR date: {raw_date}")
+
+    @classmethod
+    def reconstruct(cls, document_date: str, raw_events: List) -> List[TimelineEvent]:
+        try:
+            current_date = cls.extract_clean_date(document_date)
+        except Exception as e:
+            logger.error(f"DATE PARSE ERROR: {e}")
+            # Fallback na wczoraj, jeśli OCR wypluł kompletną bzdurę
+            current_date = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
+
         reconstructed_events = []
         previous_start = None
 
-        # Bezpieczne sortowanie chronologiczne zdarzeń z OCR (jeśli posiadają pole startu)
+        # Sortowanie (jeśli OCR zwrócił zdarzenia nie po kolei)
         try:
-            raw_events = sorted(
-                raw_events,
-                key=lambda e: getattr(e, 'start_time_raw', '00:00')
-            )
-        except Exception as e:
-            print(f"[WARNING] EVENTS SORTING FAILED: {e}")
+            raw_events = sorted(raw_events, key=lambda e: getattr(e, 'start_time_raw', '00:00'))
+        except Exception:
+            pass
 
-        # Pętla rekonstrukcji zdarzeń
         for idx, raw_event in enumerate(raw_events):
             try:
-                # Pobranie surowych czasów rozpoczęcia i zakończenia zdarzenia
                 start_raw = getattr(raw_event, 'start_time_raw', None)
                 end_raw = getattr(raw_event, 'end_time_raw', None)
                 activity = getattr(raw_event, 'activity', 'UNKNOWN')
@@ -118,40 +96,30 @@ class DateTimeReconstructor:
                 if not start_raw or not end_raw:
                     continue
 
-                # Rozbicie na godziny i minuty z twardą walidacją
                 sh, sm = map(int, start_raw.split(":"))
                 eh, em = map(int, end_raw.split(":"))
 
                 if sh > 23 or sm > 59 or eh > 23 or em > 59:
-                    print(f"⚠️ [WARNING] Absurdalne wartości godzin zignorowane: {start_raw} - {end_raw}")
                     continue
 
-                # Składanie pełnego obiektu datetime w bezpiecznej strefie UTC
-                start_dt = current_date.replace(hour=sh, minute=sm, second=0, microsecond=0, tzinfo=timezone.utc)
-                end_dt = current_date.replace(hour=eh, minute=em, second=0, microsecond=0, tzinfo=timezone.utc)
+                start_dt = current_date.replace(hour=sh, minute=sm)
+                end_dt = current_date.replace(hour=eh, minute=em)
 
-                # --- PRZESKOK PRZEZ PÓŁNOC (Midnight Rollover) ---
+                # Przejście przez północ
                 if previous_start and start_dt < previous_start:
                     current_date += timedelta(days=1)
                     start_dt += timedelta(days=1)
                     end_dt += timedelta(days=1)
 
-                # Jeśli samo zdarzenie kończy się już po północy (np. start 23:00, koniec 01:00)
                 if end_dt < start_dt:
                     end_dt += timedelta(days=1)
 
-                # Wyliczenie twardej matematycznej długości trwania odcinka w minutach
                 duration = int((end_dt - start_dt).total_seconds() / 60)
-
-                # Bezpiecznik przed błędnymi odczytami wielodniowymi
                 if duration < 0 or duration > 1440:
-                    print(f"⚠️ [WARNING] Pominięto podejrzany czas trwania zdarzenia: {duration} min.")
                     continue
 
-                # Generowanie podpisu cyfrowego zabezpieczającego dowód przed manipulacją
                 integrity_hash = generate_integrity_hash(start_dt, end_dt, activity, duration)
 
-                # Tworzenie ostatecznego obiektu biznesowego dla Maszyny Stanów i Reguł ITD
                 reconstructed_events.append(
                     TimelineEvent(
                         event_id=f"evt_{idx}_{str(uuid.uuid4())[:8]}",
@@ -168,7 +136,7 @@ class DateTimeReconstructor:
                 previous_start = start_dt
 
             except Exception as e:
-                print(f"[WARNING] SINGLE EVENT RECONSTRUCTION FAILED: {e}")
-                continue
+                logger.warning(f"EVENT RECONSTRUCTION ERROR: {e}")
 
+        logger.info(f"TIMELINE RECONSTRUCTED: {len(reconstructed_events)} events")
         return reconstructed_events
