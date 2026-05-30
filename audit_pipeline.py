@@ -1,7 +1,7 @@
 # =========================================================
 # POCKET DGSA & TACHO
-# ENTERPRISE COMPLIANCE AI ENGINE v23
-# DETERMINISTIC EXTRACTION & EXPERT RULE CORE
+# ENTERPRISE COMPLIANCE AI ENGINE v24
+# BULLETPROOF EXTRACTION & REPORTING CORE
 # =========================================================
 
 import base64
@@ -171,7 +171,7 @@ class AuditReport(BaseModel):
     trace: AuditTrace
 
 # =========================================================
-# 4. SERVICE LAYER: REPOSITORY & DETERMINISTIC OCR
+# 4. SERVICE LAYER: REPOSITORY & ROBUST OCR
 # =========================================================
 
 class TimelineRepository(ABC):
@@ -194,7 +194,6 @@ class PostgresMockTimelineRepository(TimelineRepository):
         return events
 
 class OCRTimelineEvent(BaseModel):
-    # KRYTYCZNA ZMIANA: Model OCR wyciąga DURATION zamiast END TIME, co likwiduje halucynacje matematyczne
     start_time_raw: str
     duration_raw: str
     activity: EventType
@@ -208,10 +207,8 @@ class OCRTimelineEvent(BaseModel):
 
     @field_validator("start_time_raw", "duration_raw", mode="before")
     @classmethod
-    def validate_time(cls, value):
-        val = str(value).replace("h", ":").replace("H", ":").strip()
-        if not re.match(r"^\d{2}:\d{2}$", val): raise ValueError(f"Invalid format: {val}")
-        return val
+    def allow_all_strings(cls, value):
+        return str(value).strip()
 
 class OCRExtractionResult(BaseModel):
     driver_name: Optional[str] = "Nieznany"
@@ -224,30 +221,39 @@ class OCRService:
         b64 = base64.b64encode(image_bytes).decode("utf-8")
         system_prompt = """
         Analyze tachograph printout. STRICT RULES:
-        1. Extract the TIMELINE section only. Ignore the summary block starting with '--- Σ ---'.
-        2. Read each line exactly as printed. Extract 'start_time' and 'duration' (e.g., if printed '* 22:39 00h59', start is '22:39', duration is '00:59').
-        3. Never invent data or perform math.
-        4. Extract the driver's name if visible at the top.
+        1. Extract the TIMELINE section only. 
+        2. CRITICAL: STOP EXTRACTION immediately when you see the line '--- Σ ---' or the sum symbol. Do NOT extract any data from the summary block at the bottom.
+        3. Read each line exactly as printed. Extract 'start_time_raw' and 'duration_raw'.
+        4. Extract the driver's name if visible.
         """
         res = client.beta.chat.completions.parse(
             model=OPENAI_MODEL_VISION,
             messages=[{"role": "system", "content": system_prompt},
-                      {"role": "user", "content": [{"type": "text", "text": "Extract timeline and driver name."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
+                      {"role": "user", "content": [{"type": "text", "text": "Extract timeline. Stop at summary block."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
             response_format=OCRExtractionResult, temperature=0
         )
         parsed = res.choices[0].message.parsed
         d_name = parsed.driver_name if parsed.driver_name else "Nieznany"
-        if len(d_name) > 4 and d_name != "Nieznany":
-            d_name = d_name.split()[0]
+        if len(d_name) > 4 and d_name != "Nieznany": d_name = d_name.split()[0]
         return parsed.document_date, parsed.events, parsed.overall_confidence, d_name
 
 # =========================================================
-# 5. SERVICE LAYER: TIMELINE RECONSTRUCTION
+# 5. SERVICE LAYER: TIMELINE RECONSTRUCTION (BULLETPROOF PARSER)
 # =========================================================
 
 class TimelineService:
     def __init__(self, repo: TimelineRepository):
         self.repo = repo
+
+    def parse_time(self, raw: str) -> Tuple[int, int]:
+        clean = str(raw).lower().replace("h", ":").replace("m", "").strip()
+        if ":" in clean:
+            h, m = clean.split(":", 1)
+            return int(h), int(m)
+        elif len(clean) == 4 and clean.isdigit():
+            return int(clean[:2]), int(clean[2:])
+        else:
+            return 0, int(clean)
 
     def process_and_save(self, audit_id: str, driver_id: str, doc_date: str, raw_events: List[OCRTimelineEvent]) -> Tuple[List[TimelineEvent], List[AuditFlag], ReconstructionStats]:
         clean_date = datetime.strptime(re.search(r"(\d{2}[./-]\d{2}[./-]\d{4})", doc_date).group(1).replace("-", ".").replace("/", "."), "%d.%m.%Y").replace(tzinfo=timezone.utc)
@@ -259,20 +265,18 @@ class TimelineService:
         prev_start = None
         for r in raw_events:
             try:
-                sh, sm = map(int, r.start_time_raw.split(":"))
-                dh, dm = map(int, r.duration_raw.split(":"))
+                sh, sm = self.parse_time(r.start_time_raw)
+                dh, dm = self.parse_time(r.duration_raw)
                 
                 s_dt = clean_date.replace(hour=sh, minute=sm)
                 if prev_start and s_dt < prev_start: 
                     clean_date += timedelta(days=1)
                     s_dt += timedelta(days=1)
                     
-                # Twarda matematyka zamiast halucynacji LLM
                 e_dt = s_dt + timedelta(hours=dh, minutes=dm)
-                
                 parsed_events.append({"s": s_dt, "e": e_dt, "act": r.activity, "conf": r.confidence, "is_corr": False, "reason": None, "orig_s": None, "orig_e": None})
                 prev_start = s_dt
-            except:
+            except Exception as e:
                 stats.events_dropped += 1
                 continue
 
@@ -286,7 +290,6 @@ class TimelineService:
             prev = healed[-1]
 
             if p["s"] == prev["s"] and p["e"] == prev["e"] and p["act"] == prev["act"]:
-                add_flag("DEDUPLICATION_APPLIED", Severity.LOW, "Usunięto duplikaty OCR.")
                 stats.duplicates_removed += 1
                 continue
 
@@ -346,9 +349,9 @@ class RuleService:
         
         for idx, ev in enumerate(timeline):
             # ---------------------------------------------------------
-            # EKSPERCKA REGUŁA BEHAWIORALNA: Błąd selektora (1 min łóżka)
+            # ART. 34: BŁĄD SELEKTORA (1 min łóżka po zalogowaniu)
             # ---------------------------------------------------------
-            if ev.activity == EventType.REST and 0 < ev.duration_minutes <= 5:
+            if ev.activity == EventType.REST and 0 < ev.duration_minutes <= 15:
                 prev_ev = timeline[idx-1] if idx > 0 else None
                 next_ev = timeline[idx+1] if idx + 1 < len(timeline) else None
                 
@@ -361,32 +364,26 @@ class RuleService:
                 if is_shift_start and next_ev and next_ev.activity in [EventType.OTHER_WORK, EventType.DRIVING]:
                     rule_key = f"ART34_{ev.event_id}"
                     if rule_key not in ctx.triggered_rules:
-                        # Gotowy, wyrafinowany materiał dowodowy wprowadzony z logiki biznesowej
                         s_time = ev.start_time_utc.strftime("%H:%M")
                         e_time = ev.end_time_utc.strftime("%H:%M")
+                        doc_d = ev.start_time_utc.strftime('%d.%m.%Y')
                         
-                        explanation = f"""**Błąd formalny - fałszowanie ewidencji:**
-Zamiast natychmiastowego ustawienia 'innej pracy' (młotki) w celu przygotowania pojazdu i obsługi tachografu, zarejestrowano odpoczynek. Jest to traktowane jako uchybienie.
+                        explanation = f"""**Błąd formalny - niewłaściwe użycie selektora:**
+Zamiast natychmiastowego ustawienia 'innej pracy' (młotki) w celu przygotowania pojazdu i obsługi tachografu po włożeniu karty, urządzenie zarejestrowało odpoczynek. Służby kontrolne traktują to jako uchybienie proceduralne.
 
-**Europejska Podstawa Prawna do obrony:**
-- Rozp. (UE) nr 165/2014, Art. 34 ust. 3 (Prawo do ręcznej korekty błędu zapisu)
-- Rozp. (UE) nr 1266/2009 (Reguła 1 minuty - technologiczne ograniczenie urządzenia)
-- Art. 92c Ustawy o transporcie drogowym (Znikomy wpływ na bezpieczeństwo)
-
-**SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (Wymagane natychmiast):**
-> **Data i czas zdarzenia:** {ev.start_time_utc.strftime('%d.%m.%Y')}, godz. {s_time} – {e_time}
+**SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU:**
+> **Data i czas zdarzenia:** {doc_d}, godz. {s_time} – {e_time}
 > **Prawidłowa czynność:** Inna praca (młotki)
-> **Wyjaśnienie:** Omyłkowe użycie selektora grup czasowych / błąd zapisu podczas logowania karty. Zamiast innej pracy (obsługa codzienna), tachograf zarejestrował {ev.duration_minutes} min odpoczynku.
-> **Podstawa prawna:** Korekta zapisu zgodnie z Art. 34 ust. 3 Rozporządzenia (UE) 165/2014.
-> *[Czytelny podpis kierowcy]*"""
+> **Wyjaśnienie:** Omyłkowe użycie selektora / błąd techniczny zapisu podczas logowania karty. Zamiast innej pracy, tachograf zarejestrował {ev.duration_minutes} min odpoczynku.
+> **Podstawa prawna:** Korekta zapisu zgodnie z Art. 34 ust. 3 Rozporządzenia (UE) 165/2014."""
 
                         violations.append(Violation(
                             violation_id=str(uuid.uuid4()), rule_id="ART34", article="Art. 34 ust. 5 lit. b", regulation="165/2014",
-                            description="Niewłaściwe użycie selektora: zarejestrowano odpoczynek tuż po włożeniu karty.",
+                            description="Zarejestrowano odpoczynek tuż po włożeniu karty (zamiast innej pracy).",
                             explanation=explanation,
                             severity=Severity.MEDIUM, estimated_fine_eur=pack.calculate_fine("ART34_SELECTOR_ERROR", 0),
                             confidence=ev.confidence, defense_possible=True, defense_score=0.95,
-                            defense_strategy="Bardzo silna linia obrony przy użyciu wpisu na odwrocie wydruku wg szablonu.",
+                            defense_strategy="Bardzo silna obrona przy zastosowaniu odręcznego wpisu na wydruku (zgodnie z załączonym szablonem).",
                             evidence_event_ids=[ev.event_id], triggered_at=datetime.now(timezone.utc)
                         ))
                         ctx.triggered_rules.append(rule_key)
@@ -402,13 +399,13 @@ Zamiast natychmiastowego ustawienia 'innej pracy' (młotki) w celu przygotowania
                         description=f"Brak danych z tachografu przez {ev.duration_minutes} min.",
                         explanation=f"Wykryto faktyczną lukę. Kierowca musi posiadać dowód na wpis manualny z tego okresu.",
                         severity=Severity.MEDIUM, estimated_fine_eur=pack.calculate_fine("DATA_GAP_RULE", 0),
-                        confidence=1.0, defense_possible=True, defense_score=0.0, defense_strategy="Zapasowy wpis manualny (Manual Entry).",
+                        confidence=1.0, defense_possible=True, defense_score=0.0, defense_strategy="Zapasowy wpis manualny.",
                         evidence_event_ids=[ev.event_id], triggered_at=datetime.now(timezone.utc)
                     ))
                     ctx.triggered_rules.append(rule_key)
 
             # ---------------------------------------------------------
-            # CONTINUOUS DRIVING TRACKER (Art. 7)
+            # LIMIT RULES: Art. 7 (Continuous)
             # ---------------------------------------------------------
             if ev.activity == EventType.DRIVING:
                 ctx.continuous_driving_minutes += ev.duration_minutes
@@ -453,7 +450,7 @@ class DefenseService:
     def assess(self, violations: List[Violation], evidence: ExternalEvidence) -> List[Violation]:
         for v in violations:
             if not v.defense_possible: continue
-            if v.rule_id == "ART34": continue # Omija reguły kontekstowe wycenione w RuleEngine
+            if v.rule_id == "ART34": continue # Omijamy reguły eksperckie zdefiniowane twardo w silniku
                 
             score = 0.10
             strategy = []
@@ -479,7 +476,7 @@ class ReportService:
     def __init__(self):
         self.client = client
 
-    def generate(self, audit_id: str, driver_name: str, violations: List[Violation], trace: AuditTrace, ocr_conf: float) -> AuditReport:
+    def generate(self, audit_id: str, driver_name: str, doc_date: str, violations: List[Violation], trace: AuditTrace, ocr_conf: float) -> AuditReport:
         d_name = driver_name if driver_name and driver_name.lower() != "nieznany" else "Kierowco"
         
         if not violations:
@@ -490,11 +487,12 @@ class ReportService:
                 confidence_score=ocr_conf, trace=trace
             )
             
-        system_prompt = f"""Jesteś Głównym Inspektorem ITD. Napisz raport dla kierowcy (Panie/Pani {d_name}).
+        system_prompt = f"""Jesteś Inspektorem ITD i doradcą DGSA. Napisz raport dla kierowcy (Panie/Pani {d_name}).
 ZASADY KRYTYCZNE:
-1. Używaj DOKŁADNIE argumentów z pola 'explanation' dostarczonego JSONa.
-2. Jeśli 'explanation' zawiera SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (zaczynający się od znaków >), MUSISZ go przekleić kropka w kropkę w sekcji obrony bez żadnych modyfikacji. To twardy wymóg prawny.
-3. Zachowaj formę Markdown.
+1. Data wygenerowania wydruku to: {doc_date}. NIE UŻYWAJ dzisiejszej daty do opisu zdarzeń z wydruku!
+2. Używaj DOKŁADNIE argumentów z pola 'explanation' dostarczonego JSONa. Nie zmyślaj nowych naruszeń.
+3. Jeśli 'explanation' zawiera SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (zaczynający się od znaków >), MUSISZ go przekleić w całości, słowo w słowo. To twardy wymóg prawny.
+4. Formatuj tekst w Markdown (pogrubienia, sekcje).
 Dane: {[v.model_dump() for v in violations]}"""
 
         try:
@@ -568,13 +566,14 @@ class AuditService:
         trace.finished_at = datetime.now(timezone.utc)
         trace.legal_engine_latency_ms = (time.time() - legal_start) * 1000
 
-        return self.report_svc.generate(audit_id, ext_name, defended_violations, trace, ocr_conf)
+        # PRZEKAZANIE TWARDEJ DATY DOKUMENTU DO LLM
+        return self.report_svc.generate(audit_id, ext_name, doc_date, defended_violations, trace, ocr_conf)
         
     def _early_exit(self, audit_id, trace, status, message, conf) -> dict:
         return {"status": status, "message": message}
 
 # =========================================================
-# BACKWARD COMPATIBILITY ADAPTER
+# BACKWARD COMPATIBILITY ADAPTER (FASADA DLA APP.PY)
 # =========================================================
 
 class AuditPipeline:
