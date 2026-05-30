@@ -8,6 +8,8 @@ class TimelineEvent(BaseModel):
     end: datetime
     duration: int
     activity: EventType
+    confidence: float
+    pictogram_raw: str
 
 class Violation(BaseModel):
     rule_id: str
