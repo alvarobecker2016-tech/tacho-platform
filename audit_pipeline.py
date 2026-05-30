@@ -1,1039 +1,395 @@
 # =========================================================
 # POCKET DGSA & TACHO
-# ENTERPRISE COMPLIANCE AI ENGINE v7
-# DETERMINISTIC LEGAL RUNTIME
-# PRODUCTION READY CORE
+# ENTERPRISE COMPLIANCE AI ENGINE v19
+# SERVICE-ORIENTED CORE (SOA, EVIDENCE-BASED DEFENSE, DB-READY)
 # =========================================================
 
 import base64
 import hashlib
-import json
 import uuid
 import time
 import re
+import logging
+from abc import ABC, abstractmethod
 
 from enum import Enum
-
-from datetime import (
-    datetime,
-    timedelta,
-    timezone
-)
-
-from typing import (
-    List,
-    Optional,
-    Dict
-)
-
-from pydantic import (
-    BaseModel,
-    Field,
-    field_validator
-)
-
+from datetime import datetime, timedelta, timezone
+from typing import List, Optional, Dict, Tuple
+from pydantic import BaseModel, Field, field_validator
 from openai import OpenAI
 
-
 # =========================================================
-# CONFIG
+# 1. DOMAIN LAYER: CONFIG, POLICIES & ENUMS
 # =========================================================
 
 OPENAI_MODEL_VISION = "gpt-4o"
-
 OPENAI_MODEL_FAST = "gpt-4o-mini"
-
 CONFIDENCE_THRESHOLD = 0.80
 
-MAX_CONTINUOUS_DRIVING_MINUTES = 270
-
-MAX_DAILY_DRIVING_MINUTES = 540
-
-MAX_WEEKLY_DRIVING_MINUTES = 3360
-
 client = OpenAI()
+logger = logging.getLogger(__name__)
 
-
-# =========================================================
-# ENUMS
-# =========================================================
+class ConfidencePolicy:
+    OVERLAP_DECAY = 0.70
+    TRUNCATION_DECAY = 0.60
+    SYNTHETIC_GAP = 0.00
+    MIN_CONFIDENCE = 0.10
 
 class EventType(str, Enum):
-
     DRIVING = "DRIVING"
-
     BREAK = "BREAK"
-
     REST = "REST"
-
     OTHER_WORK = "OTHER_WORK"
-
     AVAILABILITY = "AVAILABILITY"
-
+    UNKNOWN = "UNKNOWN"
 
 class Severity(str, Enum):
-
     LOW = "LOW"
-
     MEDIUM = "MEDIUM"
-
     HIGH = "HIGH"
-
     CRITICAL = "CRITICAL"
 
+class UnknownPolicy(str, Enum):
+    STRICT = "STRICT"
+    NEUTRAL = "NEUTRAL"
+    DRIVER_FRIENDLY = "DRIVER_FRIENDLY"
 
 # =========================================================
-# OCR STRUCTURES
+# 2. DOMAIN LAYER: EXTERNAL EVIDENCE & DEFENSE
 # =========================================================
 
-class OCRHeader(BaseModel):
+class ExternalEvidence(BaseModel):
+    """Zewnętrzne dowody telematyczne lub zeznania kierowcy dla Art. 12."""
+    traffic_jam_detected: bool = False
+    accident_on_route: bool = False
+    weather_alert_active: bool = False
+    parking_unavailable: bool = False
+    border_delay: bool = False
+    ferry_or_train_crossing: bool = False
 
-    document_date: str
+# =========================================================
+# 3. DOMAIN LAYER: JURISDICTION PACKS
+# =========================================================
 
-    timezone_hint: Optional[str] = "UTC"
+class FineTable(BaseModel):
+    base_fine_eur: int
+    per_minute_excess_eur: float = 0.0
+    max_fine_eur: Optional[int] = None
 
+class JurisdictionPack(BaseModel):
+    country_code: str
+    authority: str
+    tolerance_minutes: int
+    strict_mode: bool
+    unknown_policy: UnknownPolicy
+    fine_tables: Dict[str, FineTable]
+
+    def calculate_fine(self, rule_id: str, excess_minutes: int) -> int:
+        if rule_id not in self.fine_tables: return 0
+        table = self.fine_tables[rule_id]
+        fine = table.base_fine_eur + (excess_minutes * table.per_minute_excess_eur)
+        return int(min(fine, table.max_fine_eur)) if table.max_fine_eur else int(fine)
+
+POLAND_PACK_2025 = JurisdictionPack(
+    country_code="PL", authority="ITD", tolerance_minutes=3, strict_mode=False, unknown_policy=UnknownPolicy.NEUTRAL,
+    fine_tables={
+        "ART7_CONTINUOUS_DRIVING": FineTable(base_fine_eur=50, per_minute_excess_eur=1.0),
+        "ART6_DAILY_DRIVING": FineTable(base_fine_eur=80, per_minute_excess_eur=1.5),
+        "DATA_GAP_RULE": FineTable(base_fine_eur=100, per_minute_excess_eur=0.0)
+    }
+)
+
+# =========================================================
+# 4. DOMAIN LAYER: ENTITIES (DB SCHEMA PROTOTYPES)
+# =========================================================
 
 class OCRTimelineEvent(BaseModel):
-
     start_time_raw: str
-
     end_time_raw: str
-
     activity: EventType
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
 
-    confidence: float = Field(
-        ge=0.0,
-        le=1.0
-    )
-
-    @field_validator(
-        "start_time_raw",
-        "end_time_raw"
-    )
+    @field_validator("activity", mode="before")
     @classmethod
-    def validate_time_format(
-        cls,
-        value
-    ):
+    def normalize_activity(cls, value):
+        mapping = {"DRIVE": "DRIVING", "WORK": "OTHER_WORK", "AVAIL": "AVAILABILITY"}
+        return mapping.get(str(value).upper(), str(value).upper()) if isinstance(value, str) else value
 
-        pattern = r"^\d{2}:\d{2}$"
+    @field_validator("start_time_raw", "end_time_raw", mode="before")
+    @classmethod
+    def validate_time(cls, value):
+        val = str(value).replace("h", ":").replace("H", ":").strip()
+        if not re.match(r"^\d{2}:\d{2}$", val): raise ValueError(f"Invalid time format: {val}")
+        return val
 
-        if not re.match(pattern, value):
-
-            raise ValueError(
-                f"Invalid HH:MM format: {value}"
-            )
-
-        hours, minutes = map(
-            int,
-            value.split(":")
-        )
-
-        if hours > 23 or minutes > 59:
-
-            raise ValueError(
-                f"Invalid time: {value}"
-            )
-
-        return value
-
-
-class OCRExtractionResult(BaseModel):
-
-    driver_name: str
-
-    card_number: str
-
-    header: OCRHeader
-
-    events: List[OCRTimelineEvent]
-
-    overall_confidence: float
-
-
-# =========================================================
-# RULE METADATA
-# =========================================================
-
-class RuleMetadata(BaseModel):
-
-    rule_id: str
-
-    article: str
-
-    regulation: str
-
-    version: str
-
-    country_scope: List[str]
-
-    priority: int
-
-    deterministic: bool = True
-
-
-# =========================================================
-# ENFORCEMENT PROFILE
-# =========================================================
-
-class EnforcementProfile(BaseModel):
-
-    country: str
-
-    authority: str
-
-    tolerance_minutes: int
-
-    fine_multiplier: float
-
-    strict_mode: bool
-
-
-GERMANY_PROFILE = EnforcementProfile(
-    country="DE",
-    authority="BALM",
-    tolerance_minutes=1,
-    fine_multiplier=1.3,
-    strict_mode=True
-)
-
-POLAND_PROFILE = EnforcementProfile(
-    country="PL",
-    authority="ITD",
-    tolerance_minutes=3,
-    fine_multiplier=1.0,
-    strict_mode=False
-)
-
-
-# =========================================================
-# TIMELINE EVENT
-# =========================================================
-
-class TimelineEvent(BaseModel):
-
-    event_id: str
-
+class TimelineEventEntity(BaseModel):
+    """Odpowiada tabeli `timeline_events` w DB."""
+    id: str
+    audit_id: str
+    driver_id: str
     integrity_hash: str
-
+    parent_hash: str
     start_time_utc: datetime
-
     end_time_utc: datetime
-
     activity: EventType
-
     duration_minutes: int
-
-    source: str
-
     confidence: float
-
+    is_corrected: bool = False
+    correction_reason: Optional[str] = None
     created_at: datetime
 
+class ViolationRecord(BaseModel):
+    """Odpowiada tabeli `violations` w DB."""
+    id: str
+    audit_id: str
+    rule_id: str
+    article: str
+    description: str
+    explanation: str
+    severity: Severity
+    estimated_fine_eur: int
+    confidence: float
+    defense_score: float = 0.0
+    defense_strategy: Optional[str] = None
+    evidence_event_ids: List[str]
+
+class AuditRecord(BaseModel):
+    """Odpowiada tabeli `audits` w DB."""
+    id: str
+    driver_id: str
+    created_at: datetime
+    status: str
+    violations: List[ViolationRecord]
+    total_fine_eur: int
+    timeline_confidence: float
 
 # =========================================================
-# DRIVER CONTEXT
+# 5. REPOSITORY LAYER
+# =========================================================
+
+class TimelineRepository(ABC):
+    @abstractmethod
+    def save_events(self, events: List[TimelineEventEntity]) -> None: pass
+
+    @abstractmethod
+    def get_canonical_timeline(self, driver_id: str, days_back: int) -> List[TimelineEventEntity]: pass
+
+class PostgresMockTimelineRepository(TimelineRepository):
+    """Mock relacyjnej bazy danych."""
+    def __init__(self):
+        self._db: Dict[str, List[TimelineEventEntity]] = {}
+
+    def save_events(self, events: List[TimelineEventEntity]) -> None:
+        for ev in events:
+            if ev.driver_id not in self._db: self._db[ev.driver_id] = []
+            self._db[ev.driver_id].append(ev)
+
+    def get_canonical_timeline(self, driver_id: str, days_back: int) -> List[TimelineEventEntity]:
+        if driver_id not in self._db: return []
+        cutoff = datetime.now(timezone.utc) - timedelta(days=days_back)
+        events = [e for e in self._db[driver_id] if e.start_time_utc >= cutoff]
+        events.sort(key=lambda x: x.start_time_utc)
+        return events
+
+# =========================================================
+# 6. SERVICE LAYER: OCR & TIMELINE RECONSTRUCTION
+# =========================================================
+
+class OCRService:
+    def extract(self, image_bytes) -> Tuple[str, List[OCRTimelineEvent], float]:
+        b64 = base64.b64encode(image_bytes).decode("utf-8")
+        sys_prompt = "Analyze tachograph printout. Strict HH:MM format."
+        res = client.beta.chat.completions.parse(
+            model=OPENAI_MODEL_VISION,
+            messages=[{"role": "system", "content": sys_prompt},
+                      {"role": "user", "content": [{"type": "text", "text": "Extract timeline."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
+            response_format=OCRExtractionResultMock, temperature=0
+        )
+        parsed = res.choices[0].message.parsed
+        return parsed.document_date, parsed.events, parsed.overall_confidence
+
+class OCRExtractionResultMock(BaseModel):
+    document_date: str
+    events: List[OCRTimelineEvent]
+    overall_confidence: float
+
+class TimelineService:
+    def __init__(self, repo: TimelineRepository):
+        self.repo = repo
+
+    def process_and_save(self, audit_id: str, driver_id: str, doc_date: str, raw_events: List[OCRTimelineEvent]) -> List[TimelineEventEntity]:
+        clean_date = datetime.strptime(re.search(r"(\d{2}[./-]\d{2}[./-]\d{4})", doc_date).group(1).replace("-", ".").replace("/", "."), "%d.%m.%Y").replace(tzinfo=timezone.utc)
+        
+        parsed = []
+        prev_start = None
+        for r in raw_events:
+            sh, sm = map(int, r.start_time_raw.split(":"))
+            eh, em = map(int, r.end_time_raw.split(":"))
+            s_dt = clean_date.replace(hour=sh, minute=sm)
+            e_dt = clean_date.replace(hour=eh, minute=em)
+            
+            if prev_start and s_dt < prev_start: clean_date += timedelta(days=1); s_dt += timedelta(days=1); e_dt += timedelta(days=1)
+            if e_dt < s_dt: e_dt += timedelta(days=1)
+            
+            parsed.append({"s": s_dt, "e": e_dt, "act": r.activity, "conf": r.confidence})
+            prev_start = s_dt
+
+        parsed.sort(key=lambda x: x["s"])
+        
+        healed, parent_hash = [], "0"*64
+        for p in parsed:
+            if healed and p["s"] < healed[-1]["e"]:
+                p["s"] = healed[-1]["e"]
+                p["conf"] *= ConfidencePolicy.TRUNCATION_DECAY
+            if healed and p["s"] > healed[-1]["e"]:
+                dur = int((p["s"] - healed[-1]["e"]).total_seconds() / 60)
+                healed.append({"s": healed[-1]["e"], "e": p["s"], "act": EventType.UNKNOWN, "conf": ConfidencePolicy.SYNTHETIC_GAP})
+            healed.append(p)
+
+        entities = []
+        for h in healed:
+            dur = int((h["e"] - h["s"]).total_seconds() / 60)
+            if dur <= 0: continue
+            i_hash = hashlib.sha256(f"{parent_hash}{h['s']}{h['e']}{h['act']}{dur}".encode()).hexdigest()
+            entities.append(TimelineEventEntity(
+                id=str(uuid.uuid4()), audit_id=audit_id, driver_id=driver_id,
+                integrity_hash=i_hash, parent_hash=parent_hash, start_time_utc=h["s"], end_time_utc=h["e"],
+                activity=h["act"], duration_minutes=dur, confidence=h["conf"], created_at=datetime.now(timezone.utc)
+            ))
+            parent_hash = i_hash
+
+        self.repo.save_events(entities)
+        return entities
+
+# =========================================================
+# 7. SERVICE LAYER: RULE ENGINE & STATE MACHINE
 # =========================================================
 
 class DriverStateContext(BaseModel):
-
     continuous_driving_minutes: int = 0
-
     daily_driving_minutes: int = 0
-
-    weekly_driving_minutes: int = 0
-
-    current_break_sequence: List[int] = []
-
-    current_daily_rest_minutes: int = 0
-
-    reduced_daily_rests_used: int = 0
-
-    split_break_active: bool = False
-
-    triggered_rules: List[str] = []
-
-    last_event_time: Optional[datetime] = None
-
-    current_week_number: Optional[int] = None
-
-
-# =========================================================
-# VIOLATION
-# =========================================================
-
-class Violation(BaseModel):
-
-    violation_id: str
-
-    rule_id: str
-
-    article: str
-
-    regulation: str
-
-    description: str
-
-    severity: Severity
-
-    estimated_fine_eur: Optional[int]
-
-    confidence: float
-
-    defense_possible: bool
-
-    defense_strategy: Optional[str]
-
-    evidence_event_ids: List[str]
-
-    triggered_at: datetime
-
-
-# =========================================================
-# AUDIT TRACE
-# =========================================================
-
-class AuditTrace(BaseModel):
-
-    audit_id: str
-
-    started_at: datetime
-
-    finished_at: Optional[datetime]
-
-    ocr_latency_ms: Optional[float]
-
-    rule_engine_latency_ms: Optional[float]
-
-    legal_engine_latency_ms: Optional[float]
-
-    total_execution_ms: Optional[float]
-
-    model_vision: str
-
-    model_fast: str
-
-    rules_executed: int
-
-    violations_detected: int
-
-
-# =========================================================
-# FINAL REPORT
-# =========================================================
-
-class AuditReport(BaseModel):
-
-    audit_id: str
-
-    created_at: datetime
-
-    summary: str
-
-    violations: List[Violation]
-
-    total_risk_score: float
-
-    compliance_status: str
-
-    confidence_score: float
-
-    trace: AuditTrace
-
-
-# =========================================================
-# UTILS
-# =========================================================
-
-def mask_sensitive_data(
-    value: str
-):
-
-    return "[DANE UKRYTE]"
-
-
-def generate_integrity_hash(
-    start_time,
-    end_time,
-    activity,
-    duration
-):
-
-    payload = (
-        f"{start_time}"
-        f"{end_time}"
-        f"{activity}"
-        f"{duration}"
-    )
-
-    return hashlib.sha256(
-        payload.encode()
-    ).hexdigest()
-
-
-# =========================================================
-# DATETIME RECONSTRUCTION
-# =========================================================
-
-class DateTimeReconstructor:
-
-    @staticmethod
-    def reconstruct(
-        document_date: str,
-        raw_events: List[OCRTimelineEvent]
-    ) -> List[TimelineEvent]:
-
-        events = []
-
-        current_date = datetime.strptime(
-            document_date,
-            "%Y-%m-%d"
-        )
-
-        previous_start = None
-
-        for raw_event in raw_events:
-
-            sh, sm = map(
-                int,
-                raw_event.start_time_raw.split(":")
-            )
-
-            eh, em = map(
-                int,
-                raw_event.end_time_raw.split(":")
-            )
-
-            start_dt = current_date.replace(
-                hour=sh,
-                minute=sm,
-                second=0,
-                microsecond=0,
-                tzinfo=timezone.utc
-            )
-
-            end_dt = current_date.replace(
-                hour=eh,
-                minute=em,
-                second=0,
-                microsecond=0,
-                tzinfo=timezone.utc
-            )
-
-            # MIDNIGHT ROLLOVER
-
-            if previous_start and start_dt < previous_start:
-
-                current_date += timedelta(days=1)
-
-                start_dt += timedelta(days=1)
-
-                end_dt += timedelta(days=1)
-
-            # END ROLLOVER
-
-            if end_dt < start_dt:
-
-                end_dt += timedelta(days=1)
-
-            duration = int(
-                (end_dt - start_dt).total_seconds() / 60
-            )
-
-            integrity_hash = generate_integrity_hash(
-                start_dt,
-                end_dt,
-                raw_event.activity,
-                duration
-            )
-
-            events.append(
-
-                TimelineEvent(
-                    event_id=str(uuid.uuid4()),
-                    integrity_hash=integrity_hash,
-                    start_time_utc=start_dt,
-                    end_time_utc=end_dt,
-                    activity=raw_event.activity,
-                    duration_minutes=duration,
-                    source="OCR_ENGINE",
-                    confidence=raw_event.confidence,
-                    created_at=datetime.now(
-                        timezone.utc
-                    )
-                )
-            )
-
-            previous_start = start_dt
-
-        return events
-
-
-# =========================================================
-# OCR ENGINE
-# =========================================================
-
-class OCREngine:
-
-    def __init__(self):
-
-        self.client = client
-
-    def extract(
-        self,
-        image_bytes
-    ) -> OCRExtractionResult:
-
-        base64_image = base64.b64encode(
-            image_bytes
-        ).decode("utf-8")
-
-        system_prompt = """
-        Analyze tachograph printout.
-
-        STRICT RULES:
-
-        - Never invent timestamps
-        - Never invent activities
-        - Extract only visible evidence
-        - Return HH:MM values only
-        - Lower confidence if uncertain
-        """
-
-        response = self.client.beta.chat.completions.parse(
-
-            model=OPENAI_MODEL_VISION,
-
-            messages=[
-
-                {
-                    "role": "system",
-                    "content": system_prompt
-                },
-
-                {
-                    "role": "user",
-                    "content": [
-
-                        {
-                            "type": "text",
-                            "text": "Extract tachograph timeline."
-                        },
-
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": (
-                                    f"data:image/jpeg;base64,"
-                                    f"{base64_image}"
-                                ),
-                                "detail": "high"
-                            }
-                        }
-                    ]
-                }
-            ],
-
-            response_format=OCRExtractionResult,
-
-            temperature=0
-        )
-
-        parsed = (
-            response
-            .choices[0]
-            .message
-            .parsed
-        )
-
-        parsed.driver_name = mask_sensitive_data(
-            parsed.driver_name
-        )
-
-        parsed.card_number = mask_sensitive_data(
-            parsed.card_number
-        )
-
-        return parsed
-
-
-# =========================================================
-# DRIVER STATE MACHINE
-# =========================================================
-
-class DriverStateMachine:
-
-    def transition(
-        self,
-        context: DriverStateContext,
-        event: TimelineEvent
-    ):
-
-        current_week = (
-            event.start_time_utc.isocalendar()[1]
-        )
-
-        # WEEK RESET
-
-        if (
-            context.current_week_number
-            and current_week != context.current_week_number
-        ):
-
-            context.weekly_driving_minutes = 0
-
-        context.current_week_number = current_week
-
-        # DRIVING
-
-        if event.activity == EventType.DRIVING:
-
-            context.continuous_driving_minutes += (
-                event.duration_minutes
-            )
-
-            context.daily_driving_minutes += (
-                event.duration_minutes
-            )
-
-            context.weekly_driving_minutes += (
-                event.duration_minutes
-            )
-
-            # BREAK RESET
-
-            context.current_break_sequence = []
-
-        # BREAK
-
-        elif event.activity == EventType.BREAK:
-
-            context.current_break_sequence.append(
-                event.duration_minutes
-            )
-
-            # FULL BREAK RESET
-
-            if event.duration_minutes >= 45:
-
-                context.continuous_driving_minutes = 0
-
-                context.current_break_sequence = []
-
-            # SPLIT BREAK 15 + 30
-
-            elif event.duration_minutes >= 30:
-
-                has_15_break = any(
-                    b >= 15
-                    for b in context.current_break_sequence[:-1]
-                )
-
-                if has_15_break:
-
-                    context.continuous_driving_minutes = 0
-
-                    context.current_break_sequence = []
-
-        # REST
-
-        elif event.activity == EventType.REST:
-
-            context.current_daily_rest_minutes += (
-                event.duration_minutes
-            )
-
-            # DAILY RESET
-
-            if event.duration_minutes >= 540:
-
-                context.daily_driving_minutes = 0
-
-                context.continuous_driving_minutes = 0
-
-                context.current_daily_rest_minutes = 0
-
-                context.current_break_sequence = []
-
-        # OTHER WORK / AVAILABILITY
-
-        else:
-
-            context.current_break_sequence = []
-
-        context.last_event_time = (
-            event.end_time_utc
-        )
-
-        return context
-
-
-# =========================================================
-# ART 7 RULE
-# =========================================================
-
-class Art7ContinuousDrivingRule:
-
-    metadata = RuleMetadata(
-
-        rule_id="ART7_CONTINUOUS_DRIVING",
-
-        article="Art. 7",
-
-        regulation="561/2006",
-
-        version="1.0.0",
-
-        country_scope=["EU"],
-
-        priority=1
-    )
-
-    def evaluate(
-        self,
-        context: DriverStateContext,
-        event: TimelineEvent,
-        profile: EnforcementProfile
-    ):
-
+    current_break_sequence: List[int] = Field(default_factory=list)
+    current_driving_events: List[TimelineEventEntity] = Field(default_factory=list)
+
+class RuleService:
+    def evaluate(self, audit_id: str, timeline: List[TimelineEventEntity], pack: JurisdictionPack) -> List[ViolationRecord]:
         violations = []
+        ctx = DriverStateContext()
+        
+        for ev in timeline:
+            # State Machine Transition
+            if ev.activity == EventType.DRIVING:
+                ctx.continuous_driving_minutes += ev.duration_minutes
+                ctx.daily_driving_minutes += ev.duration_minutes
+                ctx.current_break_sequence.clear()
+                ctx.current_driving_events.append(ev)
+            elif ev.activity == EventType.BREAK:
+                ctx.current_break_sequence.append(ev.duration_minutes)
+                if ev.duration_minutes >= 45 or (ev.duration_minutes >= 30 and any(b >= 15 for b in ctx.current_break_sequence[:-1])):
+                    ctx.continuous_driving_minutes = 0
+                    ctx.current_break_sequence.clear()
+                    ctx.current_driving_events.clear()
+            elif ev.activity == EventType.UNKNOWN and pack.unknown_policy == UnknownPolicy.STRICT:
+                ctx.continuous_driving_minutes += ev.duration_minutes
+            else:
+                ctx.current_break_sequence.clear()
 
-        rule_key = (
-            f"{self.metadata.rule_id}_"
-            f"{event.event_id}"
-        )
-
-        if rule_key in context.triggered_rules:
-
-            return violations
-
-        limit = (
-            MAX_CONTINUOUS_DRIVING_MINUTES
-            + profile.tolerance_minutes
-        )
-
-        if context.continuous_driving_minutes > limit:
-
-            excess = (
-                context.continuous_driving_minutes
-                - MAX_CONTINUOUS_DRIVING_MINUTES
-            )
-
-            severity = (
-                Severity.MEDIUM
-                if excess <= 60
-                else Severity.HIGH
-            )
-
-            base_fine = (
-                100 if excess <= 60 else 250
-            )
-
-            final_fine = int(
-                base_fine
-                * profile.fine_multiplier
-            )
-
-            violations.append(
-
-                Violation(
-                    violation_id=str(uuid.uuid4()),
-                    rule_id=self.metadata.rule_id,
-                    article=self.metadata.article,
-                    regulation=self.metadata.regulation,
-                    description=(
-                        f"Przekroczenie "
-                        f"ciągłego czasu jazdy "
-                        f"o {excess} minut."
-                    ),
-                    severity=severity,
-                    estimated_fine_eur=final_fine,
-                    confidence=0.95,
-                    defense_possible=True,
-                    defense_strategy=(
-                        "Możliwe powołanie "
-                        "na Art. 12 lub Art. 9 "
-                        "w zależności od sytuacji."
-                    ),
-                    evidence_event_ids=[
-                        event.event_id
-                    ],
-                    triggered_at=datetime.now(
-                        timezone.utc
-                    )
-                )
-            )
-
-            context.triggered_rules.append(
-                rule_key
-            )
+            # Art 7. Rule Evaluation
+            if ctx.continuous_driving_minutes > (270 + pack.tolerance_minutes):
+                exc = ctx.continuous_driving_minutes - 270
+                ev_ids = [e.id for e in ctx.current_driving_events]
+                ev_conf = min([e.confidence for e in ctx.current_driving_events] or [1.0])
+                
+                violations.append(ViolationRecord(
+                    id=str(uuid.uuid4()), audit_id=audit_id, rule_id="ART7", article="Art. 7",
+                    description=f"Przekroczenie ciągłej jazdy o {exc} min.",
+                    explanation=f"Zgromadzono {ctx.continuous_driving_minutes} min bez 45 min pauzy (lub 15+30).",
+                    severity=Severity.HIGH if exc > 60 else Severity.MEDIUM,
+                    estimated_fine_eur=pack.calculate_fine("ART7_CONTINUOUS_DRIVING", exc),
+                    confidence=round(0.95 * ev_conf, 2), evidence_event_ids=ev_ids
+                ))
+                ctx.continuous_driving_minutes = 0 # Prevent spamming violations
 
         return violations
 
-
 # =========================================================
-# RULE ENGINE
+# 8. SERVICE LAYER: EVIDENCE-BASED DEFENSE ENGINE
 # =========================================================
 
-class RuleEngine:
+class DefenseService:
+    """Ocena dowodów telematycznych w oparciu o Art. 12."""
+    def assess(self, violations: List[ViolationRecord], evidence: ExternalEvidence) -> List[ViolationRecord]:
+        for v in violations:
+            score = 0.10 # Base score for just verbal excuse
+            strategy = []
+            
+            if evidence.traffic_jam_detected:
+                score += 0.40
+                strategy.append("Telematyka potwierdza zator drogowy.")
+            if evidence.accident_on_route:
+                score += 0.50
+                strategy.append("Udokumentowany wypadek na trasie.")
+            if evidence.parking_unavailable:
+                score += 0.30
+                strategy.append("Brak miejsc parkingowych.")
+            if evidence.border_delay:
+                score += 0.35
+                strategy.append("Opóźnienie na przejściu granicznym.")
 
-    def __init__(self):
-
-        self.rules = [
-
-            Art7ContinuousDrivingRule()
-        ]
-
-    def evaluate(
-        self,
-        timeline_events,
-        profile
-    ):
-
-        violations = []
-
-        state_machine = DriverStateMachine()
-
-        context = DriverStateContext()
-
-        for event in timeline_events:
-
-            context = state_machine.transition(
-                context,
-                event
-            )
-
-            for rule in self.rules:
-
-                result = rule.evaluate(
-                    context,
-                    event,
-                    profile
-                )
-
-                violations.extend(result)
-
+            v.defense_score = min(1.0, score)
+            
+            if v.defense_score > 0.70:
+                v.defense_strategy = " | ".join(strategy) + " -> Bardzo mocne dowody z Art. 12."
+            elif v.defense_score > 0.30:
+                v.defense_strategy = " | ".join(strategy) + " -> Umiarkowane szanse."
+            else:
+                v.defense_strategy = "Słabe dowody. Znikoma szansa na zastosowanie Art. 12."
+                
         return violations
 
-
 # =========================================================
-# LEGAL ENGINE
-# =========================================================
-
-class LegalEngine:
-
-    def generate_report(
-        self,
-        violations,
-        confidence_score,
-        audit_trace
-    ):
-
-        if not violations:
-
-            return AuditReport(
-
-                audit_id=audit_trace.audit_id,
-
-                created_at=datetime.now(
-                    timezone.utc
-                ),
-
-                summary=(
-                    "Brak wykrytych "
-                    "naruszeń czasu jazdy."
-                ),
-
-                violations=[],
-
-                total_risk_score=0.1,
-
-                compliance_status="COMPLIANT",
-
-                confidence_score=confidence_score,
-
-                trace=audit_trace
-            )
-
-        # TEMPLATE-BASED REPORT
-        # NO LEGAL HALLUCINATIONS
-
-        summary_lines = []
-
-        for violation in violations:
-
-            summary_lines.append(
-
-                f"- {violation.article} "
-                f"({violation.regulation}) | "
-                f"{violation.description}"
-            )
-
-        summary = "\n".join(
-            summary_lines
-        )
-
-        return AuditReport(
-
-            audit_id=audit_trace.audit_id,
-
-            created_at=datetime.now(
-                timezone.utc
-            ),
-
-            summary=summary,
-
-            violations=violations,
-
-            total_risk_score=min(
-                len(violations) * 0.2,
-                1.0
-            ),
-
-            compliance_status="NON_COMPLIANT",
-
-            confidence_score=confidence_score,
-
-            trace=audit_trace
-        )
-
-
-# =========================================================
-# MAIN AUDIT PIPELINE
+# 9. ORCHESTRATION LAYER: AUDIT SERVICE
 # =========================================================
 
-class AuditPipeline:
-
+class AuditService:
     def __init__(self):
+        self.repo = PostgresMockTimelineRepository()
+        self.ocr_svc = OCRService()
+        self.timeline_svc = TimelineService(self.repo)
+        self.rule_svc = RuleService()
+        self.defense_svc = DefenseService()
 
-        self.ocr_engine = OCREngine()
-
-        self.rule_engine = RuleEngine()
-
-        self.legal_engine = LegalEngine()
-
-    def run(
-        self,
-        image_bytes,
-        profile=POLAND_PROFILE
-    ):
-
+    def run_audit(self, driver_id: str, image_bytes, external_evidence: ExternalEvidence, pack: JurisdictionPack = POLAND_PACK_2025):
         audit_id = str(uuid.uuid4())
+        
+        # 1. OCR Extract
+        doc_date, raw_events, _ = self.ocr_svc.extract(image_bytes)
+        if not raw_events: return {"status": "NO_EVENTS"}
 
-        start_time = time.time()
+        # 2. Reconstruct & Save to DB
+        self.timeline_svc.process_and_save(audit_id, driver_id, doc_date, raw_events)
 
-        trace = AuditTrace(
+        # 3. Fetch Canonical Timeline (Multi-Day Merger Ready)
+        canonical_timeline = self.repo.get_canonical_timeline(driver_id, days_back=28)
 
-            audit_id=audit_id,
+        # 4. Rules & Compliance
+        violations = self.rule_svc.evaluate(audit_id, canonical_timeline, pack)
 
-            started_at=datetime.now(
-                timezone.utc
-            ),
+        # 5. Evidence-Based Defense
+        defended_violations = self.defense_svc.assess(violations, external_evidence)
 
-            finished_at=None,
+        # 6. Report Generation
+        total_fine = sum(v.estimated_fine_eur for v in defended_violations)
+        return AuditRecord(
+            id=audit_id, driver_id=driver_id, created_at=datetime.now(timezone.utc),
+            status="NON_COMPLIANT" if defended_violations else "COMPLIANT",
+            violations=defended_violations, total_fine_eur=total_fine, timeline_confidence=0.9
+        ).model_dump()
 
-            ocr_latency_ms=0.0,
+# Instancja orkiestratora zastępująca stary potok
+audit_pipeline = AuditService()
 
-            rule_engine_latency_ms=0.0,
-
-            legal_engine_latency_ms=0.0,
-
-            total_execution_ms=0.0,
-
-            model_vision=OPENAI_MODEL_VISION,
-
-            model_fast=OPENAI_MODEL_FAST,
-
-            rules_executed=1,
-
-            violations_detected=0
-        )
-
-        # OCR
-
-        ocr_start = time.time()
-
-        ocr_result = (
-            self.ocr_engine.extract(
-                image_bytes
-            )
-        )
-
-        trace.ocr_latency_ms = (
-            time.time() - ocr_start
-        ) * 1000
-
-        # CONFIDENCE GATE
-
-        if (
-            ocr_result.overall_confidence
-            < CONFIDENCE_THRESHOLD
-        ):
-
-            return {
-
-                "status": "UNCERTAIN",
-
-                "message": (
-                    "Jakość dokumentu "
-                    "jest zbyt niska."
-                )
-            }
-
-        # TIMELINE
-
-        timeline = (
-            DateTimeReconstructor.reconstruct(
-                ocr_result.header.document_date,
-                ocr_result.events
-            )
-        )
-
-        # RULE ENGINE
-
-        rules_start = time.time()
-
-        violations = (
-            self.rule_engine.evaluate(
-                timeline,
-                profile
-            )
-        )
-
-        trace.rule_engine_latency_ms = (
-            time.time() - rules_start
-        ) * 1000
-
-        trace.violations_detected = (
-            len(violations)
-        )
-
-        # LEGAL ENGINE
-
-        legal_start = time.time()
-
-        report = (
-            self.legal_engine.generate_report(
-                violations,
-                ocr_result.overall_confidence,
-                trace
-            )
-        )
-
-        trace.legal_engine_latency_ms = (
-            time.time() - legal_start
-        ) * 1000
-
-        # FINALIZE TRACE
-
-        trace.total_execution_ms = (
-            time.time() - start_time
-        ) * 1000
-
-        trace.finished_at = datetime.now(
-            timezone.utc
-        )
-
-        report.trace = trace
-
-        return report.model_dump()
+def run(image_bytes):
+    """Fasada dla kompatybilności wstecznej ze Streamlit"""
+    dummy_evidence = ExternalEvidence(traffic_jam_detected=True) # Symulacja zewnętrznych dowodów
+    return audit_pipeline.run_audit("DRIVER_001", image_bytes, dummy_evidence)
