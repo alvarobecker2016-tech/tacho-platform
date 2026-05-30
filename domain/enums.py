@@ -7,3 +7,9 @@ class EventType(str, Enum):
     OTHER_WORK = "OTHER_WORK"
     AVAILABILITY = "AVAILABILITY"
     UNKNOWN = "UNKNOWN"
+
+class Severity(str, Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
