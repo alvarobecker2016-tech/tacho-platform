@@ -1,5 +1,5 @@
 # =========================================================
-# POCKET DGSA & TACHO - ENTERPRISE FRONTEND v6.1 (Syntax Fix)
+# POCKET DGSA & TACHO - ENTERPRISE FRONTEND v6.2 (Key Fix)
 # =========================================================
 import streamlit as st
 import uuid
@@ -46,8 +46,8 @@ DEFAULT_SESSION = {
     "credits_locked": False,
     "show_adr": False,
     "show_pasy": False,
-    "file_bytes": None,  # Zabezpieczenie plików przed resetem karty
-    "cam_bytes": None    # Zabezpieczenie zdjęć aparatu przed resetem karty
+    "file_bytes": None,
+    "cam_bytes": None
 }
 
 for key, value in DEFAULT_SESSION.items():
@@ -114,20 +114,22 @@ def classify_intent(text):
     except: return "OGOLNE"
 
 # =========================================================
-# RENDEROWANIE RAPORTU AUDYTU (HTML) - ZABEZPIECZONY DTO
+# RENDEROWANIE RAPORTU AUDYTU (HTML) - FIXED KEY PARSING
 # =========================================================
 def render_audit_report(report_data):
-    status = report_data.get("status")
-    if status not in ["COMPLIANT", "NON_COMPLIANT"]:
+    # POPRAWKA: Pobieramy docelowy status z pełnego raportu
+    c_status = report_data.get('compliance_status')
+    
+    # Jeśli compliance_status nie istnieje, znaczy że silnik zwrócił błąd z _early_exit
+    if not c_status:
+        status = report_data.get("status", "UNKNOWN_ERROR")
         msg = report_data.get("message", "Wystąpił nieoczekiwany błąd podczas analizy wydruku.")
         return f"<div class='audit-box' style='border-left: 5px solid #ffcc00;'>⚠️ <b>ANALIZA ZATRZYMANA ({status})</b><br>{msg}</div>"
     
-    c_status = report_data.get('compliance_status', 'UNKNOWN')
+    # Pełny sukces - Przetwarzamy raport!
     conf_score = report_data.get('confidence_score', 0.0)
-    
     summary_raw = str(report_data.get('summary', ''))
     summary_html = sanitize_html(summary_raw).replace('\n', '<br>')
-    
     violations = report_data.get('violations', [])
     
     html = f"""
@@ -158,7 +160,6 @@ def render_audit_report(report_data):
             """
             
             if v.get('defense_possible') and defense:
-                # FIX SYNTAX ERROR: Operacja .replace('\n') wyciągnięta poza f-string
                 defense_html = sanitize_html(defense).replace('\n', '<br>')
                 html += f"""
                 <div style="background: #002200; border-left: 4px solid #4CAF50; padding: 12px; margin-top: 15px;">
