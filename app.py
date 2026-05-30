@@ -1,5 +1,5 @@
 # =========================================================
-# POCKET DGSA & TACHO - ENTERPRISE FRONTEND v6
+# POCKET DGSA & TACHO - ENTERPRISE FRONTEND v6.1 (Syntax Fix)
 # =========================================================
 import streamlit as st
 import uuid
@@ -80,7 +80,6 @@ header {visibility: hidden;} footer {visibility: hidden;}
 # =========================================================
 def sanitize_html(content):
     if not isinstance(content, str): return ""
-    # Chroni przed XSS, zachowuje dozwolone tagi
     clean_text = bleach.clean(content, tags=["b", "i", "strong", "em", "p", "br", "ul", "li"], strip=True)
     return clean_text
 
@@ -118,17 +117,14 @@ def classify_intent(text):
 # RENDEROWANIE RAPORTU AUDYTU (HTML) - ZABEZPIECZONY DTO
 # =========================================================
 def render_audit_report(report_data):
-    # KRYTYCZNE ZABEZPIECZENIE: Sprawdzenie czy mamy do czynienia z early_exit / errorem
     status = report_data.get("status")
     if status not in ["COMPLIANT", "NON_COMPLIANT"]:
         msg = report_data.get("message", "Wystąpił nieoczekiwany błąd podczas analizy wydruku.")
         return f"<div class='audit-box' style='border-left: 5px solid #ffcc00;'>⚠️ <b>ANALIZA ZATRZYMANA ({status})</b><br>{msg}</div>"
     
-    # BEZPIECZNE POBIERANIE KLUCZY DTO
     c_status = report_data.get('compliance_status', 'UNKNOWN')
     conf_score = report_data.get('confidence_score', 0.0)
     
-    # Zamiana znaków nowej linii z AI na <br> by zachować układ w HTML
     summary_raw = str(report_data.get('summary', ''))
     summary_html = sanitize_html(summary_raw).replace('\n', '<br>')
     
@@ -162,9 +158,11 @@ def render_audit_report(report_data):
             """
             
             if v.get('defense_possible') and defense:
+                # FIX SYNTAX ERROR: Operacja .replace('\n') wyciągnięta poza f-string
+                defense_html = sanitize_html(defense).replace('\n', '<br>')
                 html += f"""
                 <div style="background: #002200; border-left: 4px solid #4CAF50; padding: 12px; margin-top: 15px;">
-                    <p style="color: #81c784; margin: 0;"><strong>🛡️ KROKI ZARADCZE / OBRONA:</strong><br>{sanitize_html(defense).replace('\n', '<br>')}</p>
+                    <p style="color: #81c784; margin: 0;"><strong>🛡️ KROKI ZARADCZE / OBRONA:</strong><br>{defense_html}</p>
                 </div>
                 """
             html += "</div>"
@@ -293,14 +291,12 @@ for message in st.session_state.messages:
         if message.get("pdf_bytes"):
             st.download_button("⬇️ Pobierz Dokument PDF", data=message["pdf_bytes"], file_name="Oswiadczenie.pdf", mime="application/pdf", key=str(uuid.uuid4()))
 
-# --- INPUT ZDJĘĆ / PLIKÓW (Z ZABEZPIECZENIEM PRZED RESETEM SESJI) ---
+# --- INPUT ZDJĘĆ / PLIKÓW ---
 with st.popover(i18n.t(lang, 'chat.attach')):
     tab_cam, tab_gal = st.tabs(["📸 APARAT", "📁 PLIKI"])
     
     with tab_cam:
         zdjecie_kamera = st.camera_input("Zrób zdjęcie", label_visibility="collapsed")
-        
-        # Zapisz do sesji, by nie zniknęło po przełączeniu okna na telefonie
         if zdjecie_kamera is not None:
             st.session_state.cam_bytes = zdjecie_kamera.getvalue()
             
@@ -312,13 +308,11 @@ with st.popover(i18n.t(lang, 'chat.attach')):
                     html_raport = render_audit_report(raport_json)
                     st.session_state.messages.append({"role": "user", "content": "📸 *Zlecono audyt ze zdjęcia*"})
                     st.session_state.messages.append({"role": "assistant", "content": html_raport, "audit_id": audit_id})
-                    st.session_state.cam_bytes = None # Czyść po udanym przetworzeniu
+                    st.session_state.cam_bytes = None
                     st.rerun()
 
     with tab_gal:
         uploaded_file = st.file_uploader("Wgraj z urządzenia", type=["jpg", "png"], label_visibility="collapsed")
-        
-        # Zapisz do sesji, by nie zniknęło po przełączeniu okna
         if uploaded_file is not None:
             st.session_state.file_bytes = uploaded_file.getvalue()
             
@@ -330,7 +324,7 @@ with st.popover(i18n.t(lang, 'chat.attach')):
                     html_raport = render_audit_report(raport_json)
                     st.session_state.messages.append({"role": "user", "content": "📁 *Zlecono audyt z pliku*"})
                     st.session_state.messages.append({"role": "assistant", "content": html_raport, "audit_id": audit_id})
-                    st.session_state.file_bytes = None # Czyść po udanym przetworzeniu
+                    st.session_state.file_bytes = None
                     st.rerun()
 
 # --- INPUT TEKSTOWY (RAG ENGINE & ROUTER) ---
