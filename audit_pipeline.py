@@ -1,6 +1,6 @@
 # =========================================================
 # POCKET DGSA & TACHO
-# ENTERPRISE COMPLIANCE AI ENGINE v19
+# ENTERPRISE COMPLIANCE AI ENGINE v19 - INTEGRATED
 # SERVICE-ORIENTED CORE (SOA, EVIDENCE-BASED DEFENSE, DB-READY)
 # =========================================================
 
@@ -54,6 +54,12 @@ class UnknownPolicy(str, Enum):
     NEUTRAL = "NEUTRAL"
     DRIVER_FRIENDLY = "DRIVER_FRIENDLY"
 
+class RestType(str, Enum):
+    NONE = "NONE"
+    REGULAR_DAILY = "REGULAR_DAILY"
+    REDUCED_DAILY = "REDUCED_DAILY"
+    SPLIT_DAILY = "SPLIT_DAILY"
+
 # =========================================================
 # 2. DOMAIN LAYER: EXTERNAL EVIDENCE & DEFENSE
 # =========================================================
@@ -89,6 +95,15 @@ class JurisdictionPack(BaseModel):
         table = self.fine_tables[rule_id]
         fine = table.base_fine_eur + (excess_minutes * table.per_minute_excess_eur)
         return int(min(fine, table.max_fine_eur)) if table.max_fine_eur else int(fine)
+
+GERMANY_PACK_2025 = JurisdictionPack(
+    country_code="DE", authority="BALM", tolerance_minutes=1, strict_mode=True, unknown_policy=UnknownPolicy.STRICT,
+    fine_tables={
+        "ART7_CONTINUOUS_DRIVING": FineTable(base_fine_eur=100, per_minute_excess_eur=2.5),
+        "ART6_DAILY_DRIVING": FineTable(base_fine_eur=150, per_minute_excess_eur=3.0),
+        "DATA_GAP_RULE": FineTable(base_fine_eur=250, per_minute_excess_eur=0.0)
+    }
+)
 
 POLAND_PACK_2025 = JurisdictionPack(
     country_code="PL", authority="ITD", tolerance_minutes=3, strict_mode=False, unknown_policy=UnknownPolicy.NEUTRAL,
@@ -175,7 +190,7 @@ class TimelineRepository(ABC):
     def get_canonical_timeline(self, driver_id: str, days_back: int) -> List[TimelineEventEntity]: pass
 
 class PostgresMockTimelineRepository(TimelineRepository):
-    """Mock relacyjnej bazy danych."""
+    """Mock relacyjnej bazy danych działający w pamięci operacyjnej."""
     def __init__(self):
         self._db: Dict[str, List[TimelineEventEntity]] = {}
 
@@ -195,6 +210,11 @@ class PostgresMockTimelineRepository(TimelineRepository):
 # 6. SERVICE LAYER: OCR & TIMELINE RECONSTRUCTION
 # =========================================================
 
+class OCRExtractionResultMock(BaseModel):
+    document_date: str
+    events: List[OCRTimelineEvent]
+    overall_confidence: float
+
 class OCRService:
     def extract(self, image_bytes) -> Tuple[str, List[OCRTimelineEvent], float]:
         b64 = base64.b64encode(image_bytes).decode("utf-8")
@@ -207,11 +227,6 @@ class OCRService:
         )
         parsed = res.choices[0].message.parsed
         return parsed.document_date, parsed.events, parsed.overall_confidence
-
-class OCRExtractionResultMock(BaseModel):
-    document_date: str
-    events: List[OCRTimelineEvent]
-    overall_confidence: float
 
 class TimelineService:
     def __init__(self, repo: TimelineRepository):
@@ -277,7 +292,6 @@ class RuleService:
         ctx = DriverStateContext()
         
         for ev in timeline:
-            # State Machine Transition
             if ev.activity == EventType.DRIVING:
                 ctx.continuous_driving_minutes += ev.duration_minutes
                 ctx.daily_driving_minutes += ev.duration_minutes
@@ -294,7 +308,7 @@ class RuleService:
             else:
                 ctx.current_break_sequence.clear()
 
-            # Art 7. Rule Evaluation
+            # Art 7 Rule Evaluation
             if ctx.continuous_driving_minutes > (270 + pack.tolerance_minutes):
                 exc = ctx.continuous_driving_minutes - 270
                 ev_ids = [e.id for e in ctx.current_driving_events]
@@ -308,7 +322,7 @@ class RuleService:
                     estimated_fine_eur=pack.calculate_fine("ART7_CONTINUOUS_DRIVING", exc),
                     confidence=round(0.95 * ev_conf, 2), evidence_event_ids=ev_ids
                 ))
-                ctx.continuous_driving_minutes = 0 # Prevent spamming violations
+                ctx.continuous_driving_minutes = 0
 
         return violations
 
@@ -317,10 +331,9 @@ class RuleService:
 # =========================================================
 
 class DefenseService:
-    """Ocena dowodów telematycznych w oparciu o Art. 12."""
     def assess(self, violations: List[ViolationRecord], evidence: ExternalEvidence) -> List[ViolationRecord]:
         for v in violations:
-            score = 0.10 # Base score for just verbal excuse
+            score = 0.10
             strategy = []
             
             if evidence.traffic_jam_detected:
@@ -362,23 +375,14 @@ class AuditService:
     def run_audit(self, driver_id: str, image_bytes, external_evidence: ExternalEvidence, pack: JurisdictionPack = POLAND_PACK_2025):
         audit_id = str(uuid.uuid4())
         
-        # 1. OCR Extract
         doc_date, raw_events, _ = self.ocr_svc.extract(image_bytes)
         if not raw_events: return {"status": "NO_EVENTS"}
 
-        # 2. Reconstruct & Save to DB
         self.timeline_svc.process_and_save(audit_id, driver_id, doc_date, raw_events)
-
-        # 3. Fetch Canonical Timeline (Multi-Day Merger Ready)
         canonical_timeline = self.repo.get_canonical_timeline(driver_id, days_back=28)
-
-        # 4. Rules & Compliance
         violations = self.rule_svc.evaluate(audit_id, canonical_timeline, pack)
-
-        # 5. Evidence-Based Defense
         defended_violations = self.defense_svc.assess(violations, external_evidence)
 
-        # 6. Report Generation
         total_fine = sum(v.estimated_fine_eur for v in defended_violations)
         return AuditRecord(
             id=audit_id, driver_id=driver_id, created_at=datetime.now(timezone.utc),
@@ -386,10 +390,32 @@ class AuditService:
             violations=defended_violations, total_fine_eur=total_fine, timeline_confidence=0.9
         ).model_dump()
 
-# Instancja orkiestratora zastępująca stary potok
-audit_pipeline = AuditService()
+# =========================================================
+# BACKWARD COMPATIBILITY ADAPTER (FASADA DLA APP.PY)
+# =========================================================
+class AuditPipeline:
+    """
+    Adapter zachowujący pełną wsteczną kompatybilność ze Streamlit (app.py).
+    Kapsułkuje nowy AuditService, żeby front-end nie zauważył zmiany architektury.
+    """
+    def __init__(self):
+        self.service = AuditService()
 
-def run(image_bytes):
-    """Fasada dla kompatybilności wstecznej ze Streamlit"""
-    dummy_evidence = ExternalEvidence(traffic_jam_detected=True) # Symulacja zewnętrznych dowodów
-    return audit_pipeline.run_audit("DRIVER_001", image_bytes, dummy_evidence)
+    def run(self, image_bytes, profile=POLAND_PACK_2025):
+        # Domyślny, bezpieczny dowód telematyczny chroniący przed awarią interfejsu
+        fallback_evidence = ExternalEvidence(
+            traffic_jam_detected=False,
+            accident_on_route=False,
+            weather_alert_active=False,
+            parking_unavailable=False,
+            border_delay=False,
+            ferry_or_train_crossing=False
+        )
+        
+        # Przekierowanie wywołania ze starego interfejsu do nowoczesnego serwisu
+        return self.service.run_audit(
+            driver_id="STREAMLIT_DRIVER", 
+            image_bytes=image_bytes, 
+            external_evidence=fallback_evidence, 
+            pack=profile
+        )
