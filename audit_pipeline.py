@@ -1,7 +1,7 @@
 # =========================================================
 # POCKET DGSA & TACHO
-# ENTERPRISE COMPLIANCE AI ENGINE v26
-# THE BULLETPROOF PARSER CORE (LLM RESILIENT)
+# ENTERPRISE COMPLIANCE AI ENGINE v25
+# THE FORENSIC SYMBOL TRANSCRIBER CORE (LLM RESILIENT)
 # =========================================================
 
 import base64
@@ -194,9 +194,11 @@ class PostgresMockTimelineRepository(TimelineRepository):
         return events
 
 class OCRTimelineEvent(BaseModel):
+    # KRYTYCZNA ZMIANA: Model OCR zwraca surowy piktogram jako tekst. 
+    # Brak Pydanticowego Enuma rozwiązuje problem odrzucania 'brudnych' odczytów przez model AI.
     start_time_raw: str
     duration_raw: str
-    pictogram_raw: str  # Przechowuje absolutnie surowy znak lub wyraz
+    pictogram_raw: str
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
 
     @field_validator("start_time_raw", "duration_raw", "pictogram_raw", mode="before")
@@ -213,21 +215,18 @@ class OCRExtractionResult(BaseModel):
 class OCRService:
     def extract(self, image_bytes) -> Tuple[str, List[OCRTimelineEvent], float, str]:
         b64 = base64.b64encode(image_bytes).decode("utf-8")
-        system_prompt = """
-        Analyze tachograph printout. YOU MUST TRANSCRIBE EVERY SINGLE ACTIVITY LINE.
-        CRITICAL RULES:
-        1. Start extracting FROM THE VERY TOP of the receipt. DO NOT skip the first lines!
-           It is VITAL to include lines like 'h 00:00 22h27' and 'h 22:27 00h01'.
-        2. Extract EXACTLY what is printed:
-           - 'start_time_raw': timestamp (e.g., 22:27)
-           - 'duration_raw': duration (e.g., 00h01). DO NOT CONVERT to "1 min".
-           - 'pictogram_raw': symbol (e.g., *, o, h, X, ☒)
-        3. Stop extraction immediately when you see the summary marker '--- Σ ---'. Do not extract the summary footer.
-        """
+        system_prompt = """Analyze tachograph printout. STRICT LINE TRANSCRIBING RULES:
+        1. Extract the primary activity list ONLY. Stop processing completely immediately when you reach the section marker '--- Σ ---' or any summary block.
+        2. For every printed activity line before the summary, extract EXACTLY what is printed:
+           - 'start_time_raw': the printed timestamp (HH:MM)
+           - 'duration_raw': the printed duration (HHhMM)
+           - 'pictogram_raw': the EXACT character or symbol printed at the very start of that line (*, o, h, ☒).
+        3. Do NOT convert symbols to text. Do NOT convert duration to 'minutes'. Just transcribe."""
+        
         res = client.beta.chat.completions.parse(
             model=OPENAI_MODEL_VISION,
             messages=[{"role": "system", "content": system_prompt},
-                      {"role": "user", "content": [{"type": "text", "text": "Transcribe the printed timeline rows carefully."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
+                      {"role": "user", "content": [{"type": "text", "text": "Transcribe the printed timeline rows carefully. Ignore the summary footer."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
             response_format=OCRExtractionResult, temperature=0
         )
         parsed = res.choices[0].message.parsed
@@ -236,7 +235,7 @@ class OCRService:
         return parsed.document_date, parsed.events, parsed.overall_confidence, d_name
 
 # =========================================================
-# 5. SERVICE LAYER: TIMELINE RECONSTRUCTION (BULLETPROOF PARSER)
+# 5. SERVICE LAYER: TIMELINE RECONSTRUCTION (DETERMINISTIC)
 # =========================================================
 
 class TimelineService:
@@ -244,7 +243,6 @@ class TimelineService:
         self.repo = repo
 
     def parse_time(self, raw: str) -> Tuple[int, int]:
-        # PANCERNY PARSER: Łapie "00h01", "00:01", "1 min", "1"
         clean = str(raw).lower().replace("h", ":").replace("m", "").replace("in", "").replace(" ", "").strip()
         if clean.isdigit():
             val = int(clean)
@@ -257,7 +255,6 @@ class TimelineService:
         return 0, 0
 
     def map_pictogram_to_type(self, pic: str) -> EventType:
-        # PANCERNY MAPPER: Łapie angielskie, polskie i piktogramy
         char = str(pic).strip().lower()
         if any(x in char for x in ['h', 'łóżko', 'odpoczynek', 'pauza', 'bed', 'rest']): 
             return EventType.REST
@@ -507,12 +504,12 @@ class ReportService:
                 confidence_score=ocr_conf, trace=trace
             )
             
-        system_prompt = f"""Jesteś Inspektorem ITD i certyfikowanym doradcą DGSA. Napisz profesjonalny raport dla kierowcy (Szanowny Panie {d_name}).
+        system_prompt = f"""Jesteś Inspektorem ITD i doradcą DGSA. Napisz profesjonalny raport dla kierowcy (Szanowny Panie/Pani {d_name}).
 ZASADY ARCHITEKTONICZNE:
 1. Data wydruku to: {doc_date}. Odnoś się wyłącznie do tej daty dokumentu. Absolutnie zakazuję stosowania daty dzisiejszej w opisie naruszeń.
-2. Przeanalizuj pole 'explanation' przekazanego naruszenia JSON. Znajdziesz tam precyzyjne uzasadnienie i gotowy SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (zaczynający się od znaku >).
-3. Przepisz ten szablon kropka w kropkę, bez żadnych modyfikacji, zmian słownictwa czy skrótów. Przewoźnicy potrzebują dokładnie tych formuł prawnych.
-4. Formatuj tekst w czytelnym i przejrzystym Markdown. Doceń profesjonalny wkład kierowcy.
+2. Używaj DOKŁADNIE argumentów z pola 'explanation' dostarczonego JSONa. Nie zmyślaj nowych naruszeń.
+3. Jeśli 'explanation' zawiera SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (zaczynający się od znaku >), MUSISZ go przekleić w całości, słowo w słowo, bez absolutnie żadnych zmian, pod spodem dodając instrukcję żeby kierowca złożył tam podpis.
+4. Użyj formatowania Markdown, aby uwydatnić wagę raportu. Doceń profesjonalny wkład kierowcy (np. prawidłowy wpis manualny z nocy).
 Dane naruszeń: {[v.model_dump() for v in violations]}"""
 
         try:
@@ -592,7 +589,7 @@ class AuditService:
         return {"status": status, "message": message}
 
 # =========================================================
-# BACKWARD COMPATIBILITY ADAPTER (FASADA DLA APP.PY)
+# BACKWARD COMPATIBILITY ADAPTER
 # =========================================================
 
 class AuditPipeline:
