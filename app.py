@@ -1,5 +1,5 @@
 # =========================================================
-# POCKET DGSA & TACHO - ENTERPRISE FRONTEND v5
+# POCKET DGSA & TACHO - ENTERPRISE FRONTEND v6
 # =========================================================
 import streamlit as st
 import uuid
@@ -45,7 +45,9 @@ DEFAULT_SESSION = {
     "current_audit_id": None,
     "credits_locked": False,
     "show_adr": False,
-    "show_pasy": False
+    "show_pasy": False,
+    "file_bytes": None,  # Zabezpieczenie plików przed resetem karty
+    "cam_bytes": None    # Zabezpieczenie zdjęć aparatu przed resetem karty
 }
 
 for key, value in DEFAULT_SESSION.items():
@@ -77,11 +79,12 @@ header {visibility: hidden;} footer {visibility: hidden;}
 # SYSTEMY BEZPIECZEŃSTWA (PRO)
 # =========================================================
 def sanitize_html(content):
-    # Chroni przed atakami XSS (wstrzykiwaniem złośliwego kodu)
-    return bleach.clean(content, tags=["b", "i", "strong", "em", "p", "br", "ul", "li"], strip=True)
+    if not isinstance(content, str): return ""
+    # Chroni przed XSS, zachowuje dozwolone tagi
+    clean_text = bleach.clean(content, tags=["b", "i", "strong", "em", "p", "br", "ul", "li"], strip=True)
+    return clean_text
 
 def secure_use_credit(username):
-    # Mutex: Blokuje podwójne kliknięcia pobierające 2 żetony naraz
     if st.session_state.credits_locked: return False
     st.session_state.credits_locked = True
     try:
@@ -92,7 +95,6 @@ def secure_use_credit(username):
         st.session_state.credits_locked = False
 
 def create_audit_trace():
-    # Nadaje unikalne ID każdemu zapytaniu dla logów audytowych
     audit_id = str(uuid.uuid4())
     st.session_state.current_audit_id = audit_id
     return audit_id
@@ -113,35 +115,56 @@ def classify_intent(text):
     except: return "OGOLNE"
 
 # =========================================================
-# RENDEROWANIE RAPORTU AUDYTU (HTML)
+# RENDEROWANIE RAPORTU AUDYTU (HTML) - ZABEZPIECZONY DTO
 # =========================================================
 def render_audit_report(report_data):
-    if report_data.get("status") == "UNCERTAIN":
-        return f"<div class='audit-box' style='border-left: 5px solid #ffcc00;'>⚠️ <b>ANALIZA ZATRZYMANA</b><br>{report_data.get('message')}</div>"
+    # KRYTYCZNE ZABEZPIECZENIE: Sprawdzenie czy mamy do czynienia z early_exit / errorem
+    status = report_data.get("status")
+    if status not in ["COMPLIANT", "NON_COMPLIANT"]:
+        msg = report_data.get("message", "Wystąpił nieoczekiwany błąd podczas analizy wydruku.")
+        return f"<div class='audit-box' style='border-left: 5px solid #ffcc00;'>⚠️ <b>ANALIZA ZATRZYMANA ({status})</b><br>{msg}</div>"
+    
+    # BEZPIECZNE POBIERANIE KLUCZY DTO
+    c_status = report_data.get('compliance_status', 'UNKNOWN')
+    conf_score = report_data.get('confidence_score', 0.0)
+    
+    # Zamiana znaków nowej linii z AI na <br> by zachować układ w HTML
+    summary_raw = str(report_data.get('summary', ''))
+    summary_html = sanitize_html(summary_raw).replace('\n', '<br>')
+    
+    violations = report_data.get('violations', [])
     
     html = f"""
     <div class='audit-box'>
         <h3 style='color: #fff; margin-top: 0;'>📑 RAPORT COMPLIANCE AI</h3>
-        <p style='color: #aaa;'>Status: <strong style='color: {"#ff4c4c" if report_data['compliance_status'] == "NON_COMPLIANT" else "#4CAF50"};'>{report_data['compliance_status']}</strong> | Pewność: {int(report_data['confidence_score']*100)}%</p>
-        <p style='color: #ddd;'>{sanitize_html(report_data['summary'])}</p>
+        <p style='color: #aaa;'>Status: <strong style='color: {"#ff4c4c" if c_status == "NON_COMPLIANT" else "#4CAF50"};'>{c_status}</strong> | Pewność: {int(conf_score*100)}%</p>
+        <div style='color: #ddd;'>{summary_html}</div>
     </div>
     """
-    if not report_data['violations']:
-        html += "<div class='audit-box' style='border-left: 5px solid #4CAF50; color: #a5d6a7;'>✅ <b>BRAK NARUSZEŃ</b> - Pełna zgodność prawna.</div>"
+    
+    if not violations:
+        html += "<div class='audit-box' style='border-left: 5px solid #4CAF50; color: #a5d6a7;'>✅ <b>BRAK NARUSZEŃ</b> - System nie odnotował przekroczeń limitów na przetworzonej osi czasu.</div>"
     else:
-        for v in report_data['violations']:
+        for v in violations:
+            article = str(v.get('article', ''))
+            reg = str(v.get('regulation', ''))
+            desc = str(v.get('description', ''))
+            fine = v.get('estimated_fine_eur', 'N/A')
+            defense = str(v.get('defense_strategy', ''))
+            
             html += f"""
             <div class='audit-box' style='border-left: 6px solid #D32F2F;'>
-                <h4 style="color: #ff4c4c; margin-top: 0;">🚨 {sanitize_html(v['article'])} ({sanitize_html(v['regulation'])})</h4>
-                <p style="color: #eee;">{sanitize_html(v['description'])}</p>
+                <h4 style="color: #ff4c4c; margin-top: 0;">🚨 {sanitize_html(article)} ({sanitize_html(reg)})</h4>
+                <p style="color: #eee;">{sanitize_html(desc)}</p>
                 <div style="background: #2e0000; padding: 8px; border-radius: 4px; display: inline-block; color: #ff9800; font-weight: bold;">
-                    💸 Kara: {v.get('estimated_fine_eur', 'N/A')} EUR
+                    💸 Kara (Szac.): {fine} EUR
                 </div>
             """
-            if v.get('defense_possible') and v.get('defense_strategy'):
+            
+            if v.get('defense_possible') and defense:
                 html += f"""
                 <div style="background: #002200; border-left: 4px solid #4CAF50; padding: 12px; margin-top: 15px;">
-                    <p style="color: #81c784; margin: 0;"><strong>🛡️ OBRONA:</strong><br>{sanitize_html(v['defense_strategy'])}</p>
+                    <p style="color: #81c784; margin: 0;"><strong>🛡️ KROKI ZARADCZE / OBRONA:</strong><br>{sanitize_html(defense).replace('\n', '<br>')}</p>
                 </div>
                 """
             html += "</div>"
@@ -216,7 +239,7 @@ with st.sidebar:
     st.success(f"👤 {user_info['full_name']}")
     st.info(f"🏢 {user_info['company_name']}")
     st.divider()
-    jezyk_pism = st.selectbox("Organ Kontrolny:", ["Niemiecki (BAG)", "Polski (ITD)", "Angielski (DVSA)", "Francuski (DREAL)", "Hiszpański (Guardia Civil)"])
+    jezyk_pism = st.selectbox("Organ Kontrolny:", ["Niemiecki (BALM)", "Polski (ITD)", "Angielski (DVSA)", "Francuski (DREAL)", "Hiszpański (Guardia Civil)"])
     st.divider()
     if st.button("WYLOGUJ", use_container_width=True):
         st.session_state.logged_in = False
@@ -270,32 +293,44 @@ for message in st.session_state.messages:
         if message.get("pdf_bytes"):
             st.download_button("⬇️ Pobierz Dokument PDF", data=message["pdf_bytes"], file_name="Oswiadczenie.pdf", mime="application/pdf", key=str(uuid.uuid4()))
 
-# --- INPUT ZDJĘĆ / PLIKÓW (AUDIT PIPELINE V3/V4) ---
+# --- INPUT ZDJĘĆ / PLIKÓW (Z ZABEZPIECZENIEM PRZED RESETEM SESJI) ---
 with st.popover(i18n.t(lang, 'chat.attach')):
     tab_cam, tab_gal = st.tabs(["📸 APARAT", "📁 PLIKI"])
     
     with tab_cam:
         zdjecie_kamera = st.camera_input("Zrób zdjęcie", label_visibility="collapsed")
-        if zdjecie_kamera and st.button("SKANUJ PARAGON (ENTERPRISE AI)", type="primary", use_container_width=True):
+        
+        # Zapisz do sesji, by nie zniknęło po przełączeniu okna na telefonie
+        if zdjecie_kamera is not None:
+            st.session_state.cam_bytes = zdjecie_kamera.getvalue()
+            
+        if st.session_state.get("cam_bytes") and st.button("SKANUJ ZDJĘCIE (ENTERPRISE AI)", type="primary", use_container_width=True):
             if secure_use_credit(user_info['username']):
                 with st.spinner("Przetwarzanie w silniku Compliance AI..."):
                     audit_id = create_audit_trace()
-                    raport_json = audit_system.run(zdjecie_kamera.read())
+                    raport_json = audit_system.run(st.session_state.cam_bytes)
                     html_raport = render_audit_report(raport_json)
-                    st.session_state.messages.append({"role": "user", "content": "📸 *Zlecono audyt wydruku*"})
+                    st.session_state.messages.append({"role": "user", "content": "📸 *Zlecono audyt ze zdjęcia*"})
                     st.session_state.messages.append({"role": "assistant", "content": html_raport, "audit_id": audit_id})
+                    st.session_state.cam_bytes = None # Czyść po udanym przetworzeniu
                     st.rerun()
 
     with tab_gal:
         uploaded_file = st.file_uploader("Wgraj z urządzenia", type=["jpg", "png"], label_visibility="collapsed")
-        if uploaded_file and st.button("SKANUJ PLIK (ENTERPRISE AI)", type="primary", use_container_width=True):
+        
+        # Zapisz do sesji, by nie zniknęło po przełączeniu okna
+        if uploaded_file is not None:
+            st.session_state.file_bytes = uploaded_file.getvalue()
+            
+        if st.session_state.get("file_bytes") and st.button("SKANUJ PLIK (ENTERPRISE AI)", type="primary", use_container_width=True):
             if secure_use_credit(user_info['username']):
                 with st.spinner("Przetwarzanie w silniku Compliance AI..."):
                     audit_id = create_audit_trace()
-                    raport_json = audit_system.run(uploaded_file.read())
+                    raport_json = audit_system.run(st.session_state.file_bytes)
                     html_raport = render_audit_report(raport_json)
                     st.session_state.messages.append({"role": "user", "content": "📁 *Zlecono audyt z pliku*"})
                     st.session_state.messages.append({"role": "assistant", "content": html_raport, "audit_id": audit_id})
+                    st.session_state.file_bytes = None # Czyść po udanym przetworzeniu
                     st.rerun()
 
 # --- INPUT TEKSTOWY (RAG ENGINE & ROUTER) ---
