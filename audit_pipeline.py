@@ -1,7 +1,7 @@
 # =========================================================
 # POCKET DGSA & TACHO
-# ENTERPRISE COMPLIANCE AI ENGINE v25
-# FORENSIC SYMBOL TRANSCRIBER CORE (DETERMINISTIC MATH)
+# ENTERPRISE COMPLIANCE AI ENGINE v26
+# THE BULLETPROOF PARSER CORE (LLM RESILIENT)
 # =========================================================
 
 import base64
@@ -53,12 +53,6 @@ class UnknownPolicy(str, Enum):
     STRICT = "STRICT"
     NEUTRAL = "NEUTRAL"
     DRIVER_FRIENDLY = "DRIVER_FRIENDLY"
-
-class RestType(str, Enum):
-    NONE = "NONE"
-    REGULAR_DAILY = "REGULAR_DAILY"
-    REDUCED_DAILY = "REDUCED_DAILY"
-    SPLIT_DAILY = "SPLIT_DAILY"
 
 # =========================================================
 # 2. DOMAIN LAYER: EXTERNAL EVIDENCE & JURISDICTIONS
@@ -200,10 +194,9 @@ class PostgresMockTimelineRepository(TimelineRepository):
         return events
 
 class OCRTimelineEvent(BaseModel):
-    # KRYTYCZNA ZMIANA: Model OCR zwraca absolutnie surowy tekst. Żadnej matematyki, żadnych enumów.
     start_time_raw: str
     duration_raw: str
-    pictogram_raw: str  # Przechowuje surowy znak: 'o', '*', 'h', 'X'
+    pictogram_raw: str  # Przechowuje absolutnie surowy znak lub wyraz
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
 
     @field_validator("start_time_raw", "duration_raw", "pictogram_raw", mode="before")
@@ -221,26 +214,20 @@ class OCRService:
     def extract(self, image_bytes) -> Tuple[str, List[OCRTimelineEvent], float, str]:
         b64 = base64.b64encode(image_bytes).decode("utf-8")
         system_prompt = """
-        Analyze tachograph printout. STRICT LINE TRANSCRIBING RULES:
-        1. Extract the primary activity list ONLY. Stop processing completely immediately when you reach the section marker '--- Σ ---'.
-        2. For every printed activity line before '--- Σ ---', extract:
-           - 'start_time_raw': the printed timestamp (HH:MM)
-           - 'duration_raw': the printed duration (HHhMM)
-           - 'pictogram_raw': the exact activity character or symbol printed at the start of that line.
-        
-        CRITICAL SYMBOL GUIDE:
-        - If the line starts with a circle symbol, 'o', or 'O' -> set pictogram_raw to 'o'
-        - If the line starts with crossed hammers, or '*' -> set pictogram_raw to '*'
-        - If the line starts with a bed icon, or 'h', 'H' -> set pictogram_raw to 'h'
-        - If the line starts with a crossed square, 'X', '☒' -> set pictogram_raw to 'X'
-        
-        Example line: '* 22:39 00h59' -> start_time_raw='22:39', duration_raw='00h59', pictogram_raw='*'
-        Example line: 'o 23:41 00h19' -> start_time_raw='23:41', duration_raw='00h19', pictogram_raw='o'
+        Analyze tachograph printout. YOU MUST TRANSCRIBE EVERY SINGLE ACTIVITY LINE.
+        CRITICAL RULES:
+        1. Start extracting FROM THE VERY TOP of the receipt. DO NOT skip the first lines!
+           It is VITAL to include lines like 'h 00:00 22h27' and 'h 22:27 00h01'.
+        2. Extract EXACTLY what is printed:
+           - 'start_time_raw': timestamp (e.g., 22:27)
+           - 'duration_raw': duration (e.g., 00h01). DO NOT CONVERT to "1 min".
+           - 'pictogram_raw': symbol (e.g., *, o, h, X, ☒)
+        3. Stop extraction immediately when you see the summary marker '--- Σ ---'. Do not extract the summary footer.
         """
         res = client.beta.chat.completions.parse(
             model=OPENAI_MODEL_VISION,
             messages=[{"role": "system", "content": system_prompt},
-                      {"role": "user", "content": [{"type": "text", "text": "Transcribe the printed timeline rows carefully. Ignore the summary footer."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
+                      {"role": "user", "content": [{"type": "text", "text": "Transcribe the printed timeline rows carefully."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
             response_format=OCRExtractionResult, temperature=0
         )
         parsed = res.choices[0].message.parsed
@@ -249,7 +236,7 @@ class OCRService:
         return parsed.document_date, parsed.events, parsed.overall_confidence, d_name
 
 # =========================================================
-# 5. SERVICE LAYER: TIMELINE RECONSTRUCTION (DETERMINISTIC MATH)
+# 5. SERVICE LAYER: TIMELINE RECONSTRUCTION (BULLETPROOF PARSER)
 # =========================================================
 
 class TimelineService:
@@ -257,26 +244,28 @@ class TimelineService:
         self.repo = repo
 
     def parse_time(self, raw: str) -> Tuple[int, int]:
-        clean = str(raw).lower().replace("h", ":").replace("m", "").strip()
+        # PANCERNY PARSER: Łapie "00h01", "00:01", "1 min", "1"
+        clean = str(raw).lower().replace("h", ":").replace("m", "").replace("in", "").replace(" ", "").strip()
+        if clean.isdigit():
+            val = int(clean)
+            if val < 60: return 0, val
+            else: return val // 60, val % 60
         if ":" in clean:
             parts = clean.split(":", 1)
             try: return int(parts[0]), int(parts[1])
             except: return 0, 0
-        elif len(clean) == 4 and clean.isdigit():
-            return int(clean[:2]), int(clean[2:])
         return 0, 0
 
     def map_pictogram_to_type(self, pic: str) -> EventType:
-        # Twarda detekcja bez halucynacji AI
+        # PANCERNY MAPPER: Łapie angielskie, polskie i piktogramy
         char = str(pic).strip().lower()
-        if 'o' in char or '0' in char or 'circle' in char:
-            return EventType.DRIVING
-        if '*' in char or 'hammer' in char or 'work' in char or 'x' in char:
-            # Wiele OCR myli * z literą x
-            return EventType.OTHER_WORK
-        if 'h' in char or 'bed' in char or 'rest' in char:
+        if any(x in char for x in ['h', 'łóżko', 'odpoczynek', 'pauza', 'bed', 'rest']): 
             return EventType.REST
-        if '☒' in char or 'box' in char or 'avail' in char:
+        if any(x in char for x in ['*', 'młotki', 'praca', 'work', 'hammer', 'x']): 
+            return EventType.OTHER_WORK
+        if any(x in char for x in ['o', 'jazda', 'kółko', 'circle', 'driving', '0']): 
+            return EventType.DRIVING
+        if any(x in char for x in ['☒', 'koperta', 'dyspozycyjność', 'box', 'avail']): 
             return EventType.AVAILABILITY
         return EventType.UNKNOWN
 
@@ -298,7 +287,6 @@ class TimelineService:
                     clean_date += timedelta(days=1)
                     s_dt += timedelta(days=1)
                 
-                # TWARDA MATEMATYKA ZAMIAST DOMYSŁÓW AI
                 e_dt = s_dt + timedelta(hours=dh, minutes=dm)
                 act_type = self.map_pictogram_to_type(r.pictogram_raw)
                 
@@ -360,7 +348,7 @@ class TimelineService:
         return entities, sorted(list(flags_dict.values()), key=lambda x: x.code), stats
 
 # =========================================================
-# 6. SERVICE LAYER: RULE ENGINE (BEHAVIORAL & LIMITS)
+# 6. SERVICE LAYER: RULE ENGINE (THE FORENSIC EXPERT PACK)
 # =========================================================
 
 class DriverStateContext(BaseModel):
@@ -377,7 +365,7 @@ class RuleService:
         
         for idx, ev in enumerate(timeline):
             # ---------------------------------------------------------
-            # ART. 34: BŁĄD SELEKTORA (1 do 15 min łóżka po zalogowaniu)
+            # EXPERT JURISDICTION RULE: Art. 34 (Procedural Selector Error)
             # ---------------------------------------------------------
             if ev.activity == EventType.REST and 0 < ev.duration_minutes <= 15:
                 prev_ev = timeline[idx-1] if idx > 0 else None
@@ -400,8 +388,9 @@ class RuleService:
 Zamiast natychmiastowego wybrania statusu 'inna praca' (młotki) w celu przygotowania pojazdu i obsługi technicznej, urządzenie zarejestrowało odpoczynek. Jest to traktowane jako uchybienie proceduralne.
 
 **Narzędzia i Podstawy Prawne do obrony:**
-* **Rozp. (UE) nr 165/2014, Art. 34 ust. 3:** Gwarantuje kierowcy prawo do ręcznego skorygowania błędu ewidencji poprzez odręczną adnotację na rewersie taśmy.
-* **Rozp. (UE) nr 1266/2009 (Reguła 1 minuty):** Urządzenie mogło domyślnie znajdować się w trybie odpoczynku, a proces logowania zajął kilkanaście sekund – zaokrąglenie to ograniczenie technologiczne, a nie świadome fałszowanie.
+* **Rozporządzenie (UE) nr 165/2014, Art. 34 ust. 3:** Gwarantuje kierowcy prawo do ręcznego skorygowania błędu ewidencji poprzez odręczną adnotację na rewersie taśmy.
+* **Rozporządzenie Komisji (UE) nr 1266/2009 (Reguła 1 minuty):** Urządzenie mogło domyślnie znajdować się w trybie odpoczynku, a proces logowania zajął kilkanaście sekund – zaokrąglenie minuty to ograniczenie technologiczne, a nie świadome fałszowanie norm.
+* **Wytyczna nr 3 Komisji Europejskiej:** Służby kontrolne powinny uznać poprawne intencje kierowcy skorygowane odręcznie, jeśli stan faktyczny nie budzi podejrzeń o oszustwo.
 
 **SZABLON WPISU DO PRZEPISANIA NA ODWROCIE WYDRUKU:**
 > **Data i czas zdarzenia:** {doc_d}, godz. {s_time} – {e_time}
@@ -416,7 +405,7 @@ Zamiast natychmiastowego wybrania statusu 'inna praca' (młotki) w celu przygoto
                             explanation=explanation,
                             severity=Severity.MEDIUM, estimated_fine_eur=pack.calculate_fine("ART34_SELECTOR_ERROR", 0),
                             confidence=ev.confidence, defense_possible=True, defense_score=0.95,
-                            defense_strategy="Bardzo silna obrona. Opisz wydruk odręcznie wg podanego szablonu, podpisz i zachowaj na 56 dni.",
+                            defense_strategy="Bardzo silna obrona. Opisz wydruk odręcznie wg podanego szablonu, podpisz i zachowaj na 56 dni. To całkowicie chroni przed mandatem.",
                             evidence_event_ids=[ev.event_id], triggered_at=datetime.now(timezone.utc)
                         ))
                         ctx.triggered_rules.append(rule_key)
@@ -430,9 +419,9 @@ Zamiast natychmiastowego wybrania statusu 'inna praca' (młotki) w celu przygoto
                     violations.append(Violation(
                         violation_id=str(uuid.uuid4()), rule_id="DATA_GAP", article="Art. 34", regulation="165/2014",
                         description=f"Brak danych z tachografu przez {ev.duration_minutes} min.",
-                        explanation=f"Wykryto faktyczną lukę w odczytach. Jeśli w tym czasie prowadzono pojazd bez karty lub wykonywano inną pracę, wymagane jest posiadanie wydruku z wpisem manualnym (Manual Entry).",
+                        explanation=f"Wykryto brak danych. Sprawdź czy dokonano wpisu manualnego.",
                         severity=Severity.MEDIUM, estimated_fine_eur=pack.calculate_fine("DATA_GAP_RULE", 0),
-                        confidence=1.0, defense_possible=True, defense_score=0.1, defense_strategy="Wpis manualny na rewersie wydruku.",
+                        confidence=1.0, defense_possible=True, defense_score=0.1, defense_strategy="Wpis manualny.",
                         evidence_event_ids=[ev.event_id], triggered_at=datetime.now(timezone.utc)
                     ))
                     ctx.triggered_rules.append(rule_key)
@@ -518,12 +507,12 @@ class ReportService:
                 confidence_score=ocr_conf, trace=trace
             )
             
-        system_prompt = f"""Jesteś Głównym Inspektorem ITD i certyfikowanym doradcą DGSA. Zwróć się bezpośrednio do kierowcy (Szanowny Panie/Pani {d_name}).
+        system_prompt = f"""Jesteś Inspektorem ITD i certyfikowanym doradcą DGSA. Napisz profesjonalny raport dla kierowcy (Szanowny Panie {d_name}).
 ZASADY ARCHITEKTONICZNE:
-1. Data wydruku to: {doc_date}. Odnoś się wyłącznie do tej daty dokumentu. Absolutnie zakazuję stosowania daty dzisiejszej w opisie.
-2. Używaj DOKŁADNIE argumentów z pola 'explanation' dostarczonego JSONa. Nie zmyślaj nowych naruszeń (takich jak fałszywe braki danych).
-3. Jeśli 'explanation' zawiera SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (zaczynający się od znaku >), MUSISZ go przekleić w całości, słowo w słowo, bez absolutnie żadnych zmian, pod spodem dodając instrukcję żeby kierowca złożył tam podpis.
-4. Użyj formatowania Markdown, aby uwydatnić wagę raportu. Doceń profesjonalizm (np. prawidłowy wpis manualny z nocy i 8 minut obsługi codziennej), by budować pozytywne relacje z kierowcą.
+1. Data wydruku to: {doc_date}. Odnoś się wyłącznie do tej daty dokumentu. Absolutnie zakazuję stosowania daty dzisiejszej w opisie naruszeń.
+2. Przeanalizuj pole 'explanation' przekazanego naruszenia JSON. Znajdziesz tam precyzyjne uzasadnienie i gotowy SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (zaczynający się od znaku >).
+3. Przepisz ten szablon kropka w kropkę, bez żadnych modyfikacji, zmian słownictwa czy skrótów. Przewoźnicy potrzebują dokładnie tych formuł prawnych.
+4. Formatuj tekst w czytelnym i przejrzystym Markdown. Doceń profesjonalny wkład kierowcy.
 Dane naruszeń: {[v.model_dump() for v in violations]}"""
 
         try:
@@ -569,7 +558,7 @@ class AuditService:
         doc_date, raw_events, ocr_conf, ext_name = self.ocr_svc.extract(image_bytes)
         trace.ocr_latency_ms = (time.time() - ocr_start) * 1000
 
-        if not raw_events: return self._early_exit(audit_id, trace, "NO_EVENTS_FOUND", "Brak zdarzeń na wydruku.", ocr_conf)
+        if not raw_events: return self._early_exit(audit_id, trace, "NO_EVENTS_FOUND", "Brak zdarzeń.", ocr_conf)
 
         try:
             _, flags, stats = self.timeline_svc.process_and_save(audit_id, driver_id, doc_date, raw_events)
@@ -603,7 +592,7 @@ class AuditService:
         return {"status": status, "message": message}
 
 # =========================================================
-# BACKWARD COMPATIBILITY ADAPTER
+# BACKWARD COMPATIBILITY ADAPTER (FASADA DLA APP.PY)
 # =========================================================
 
 class AuditPipeline:
