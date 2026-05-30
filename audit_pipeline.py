@@ -1,7 +1,7 @@
 # =========================================================
 # POCKET DGSA & TACHO
-# ENTERPRISE COMPLIANCE AI ENGINE v22
-# PERSONALIZED EXPLAINABILITY CORE (SELECTOR RULES, AI REPORTING)
+# ENTERPRISE COMPLIANCE AI ENGINE v23
+# DETERMINISTIC EXTRACTION & EXPERT RULE CORE
 # =========================================================
 
 import base64
@@ -54,12 +54,6 @@ class UnknownPolicy(str, Enum):
     NEUTRAL = "NEUTRAL"
     DRIVER_FRIENDLY = "DRIVER_FRIENDLY"
 
-class RestType(str, Enum):
-    NONE = "NONE"
-    REGULAR_DAILY = "REGULAR_DAILY"
-    REDUCED_DAILY = "REDUCED_DAILY"
-    SPLIT_DAILY = "SPLIT_DAILY"
-
 # =========================================================
 # 2. DOMAIN LAYER: EXTERNAL EVIDENCE & JURISDICTIONS
 # =========================================================
@@ -90,16 +84,6 @@ class JurisdictionPack(BaseModel):
         table = self.fine_tables[rule_id]
         fine = table.base_fine_eur + (excess_minutes * table.per_minute_excess_eur)
         return int(min(fine, table.max_fine_eur)) if table.max_fine_eur else int(fine)
-
-GERMANY_PACK_2025 = JurisdictionPack(
-    country_code="DE", authority="BALM", tolerance_minutes=1, strict_mode=True, unknown_policy=UnknownPolicy.STRICT,
-    fine_tables={
-        "ART7_CONTINUOUS_DRIVING": FineTable(base_fine_eur=100, per_minute_excess_eur=2.5),
-        "ART6_DAILY_DRIVING": FineTable(base_fine_eur=150, per_minute_excess_eur=3.0),
-        "DATA_GAP_RULE": FineTable(base_fine_eur=250, per_minute_excess_eur=0.0),
-        "ART34_SELECTOR_ERROR": FineTable(base_fine_eur=150, per_minute_excess_eur=0.0)
-    }
-)
 
 POLAND_PACK_2025 = JurisdictionPack(
     country_code="PL", authority="ITD", tolerance_minutes=3, strict_mode=False, unknown_policy=UnknownPolicy.NEUTRAL,
@@ -187,7 +171,7 @@ class AuditReport(BaseModel):
     trace: AuditTrace
 
 # =========================================================
-# 4. SERVICE LAYER: REPOSITORY & OCR
+# 4. SERVICE LAYER: REPOSITORY & DETERMINISTIC OCR
 # =========================================================
 
 class TimelineRepository(ABC):
@@ -210,8 +194,9 @@ class PostgresMockTimelineRepository(TimelineRepository):
         return events
 
 class OCRTimelineEvent(BaseModel):
+    # KRYTYCZNA ZMIANA: Model OCR wyciąga DURATION zamiast END TIME, co likwiduje halucynacje matematyczne
     start_time_raw: str
-    end_time_raw: str
+    duration_raw: str
     activity: EventType
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
 
@@ -221,14 +206,14 @@ class OCRTimelineEvent(BaseModel):
         mapping = {"DRIVE": "DRIVING", "WORK": "OTHER_WORK", "AVAIL": "AVAILABILITY"}
         return mapping.get(str(value).upper(), str(value).upper()) if isinstance(value, str) else value
 
-    @field_validator("start_time_raw", "end_time_raw", mode="before")
+    @field_validator("start_time_raw", "duration_raw", mode="before")
     @classmethod
     def validate_time(cls, value):
         val = str(value).replace("h", ":").replace("H", ":").strip()
-        if not re.match(r"^\d{2}:\d{2}$", val): raise ValueError(f"Invalid time format: {val}")
+        if not re.match(r"^\d{2}:\d{2}$", val): raise ValueError(f"Invalid format: {val}")
         return val
 
-class OCRExtractionResultMock(BaseModel):
+class OCRExtractionResult(BaseModel):
     driver_name: Optional[str] = "Nieznany"
     document_date: str
     events: List[OCRTimelineEvent]
@@ -237,20 +222,23 @@ class OCRExtractionResultMock(BaseModel):
 class OCRService:
     def extract(self, image_bytes) -> Tuple[str, List[OCRTimelineEvent], float, str]:
         b64 = base64.b64encode(image_bytes).decode("utf-8")
-        sys_prompt = "Analyze tachograph printout. Strict HH:MM format. Extract driver name if visible."
+        system_prompt = """
+        Analyze tachograph printout. STRICT RULES:
+        1. Extract the TIMELINE section only. Ignore the summary block starting with '--- Σ ---'.
+        2. Read each line exactly as printed. Extract 'start_time' and 'duration' (e.g., if printed '* 22:39 00h59', start is '22:39', duration is '00:59').
+        3. Never invent data or perform math.
+        4. Extract the driver's name if visible at the top.
+        """
         res = client.beta.chat.completions.parse(
             model=OPENAI_MODEL_VISION,
-            messages=[{"role": "system", "content": sys_prompt},
+            messages=[{"role": "system", "content": system_prompt},
                       {"role": "user", "content": [{"type": "text", "text": "Extract timeline and driver name."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
-            response_format=OCRExtractionResultMock, temperature=0
+            response_format=OCRExtractionResult, temperature=0
         )
         parsed = res.choices[0].message.parsed
-        
-        # Maskowanie lub użycie surowego imienia w zależności od potrzeb.
         d_name = parsed.driver_name if parsed.driver_name else "Nieznany"
         if len(d_name) > 4 and d_name != "Nieznany":
-            d_name = d_name.split()[0] # Zostawiamy tylko imię dla uprzejmości
-
+            d_name = d_name.split()[0]
         return parsed.document_date, parsed.events, parsed.overall_confidence, d_name
 
 # =========================================================
@@ -272,15 +260,15 @@ class TimelineService:
         for r in raw_events:
             try:
                 sh, sm = map(int, r.start_time_raw.split(":"))
-                eh, em = map(int, r.end_time_raw.split(":"))
-                if sh > 23 or sm > 59 or eh > 23 or em > 59:
-                    stats.events_dropped += 1
-                    continue
-                s_dt = clean_date.replace(hour=sh, minute=sm)
-                e_dt = clean_date.replace(hour=eh, minute=em)
+                dh, dm = map(int, r.duration_raw.split(":"))
                 
-                if prev_start and s_dt < prev_start: clean_date += timedelta(days=1); s_dt += timedelta(days=1); e_dt += timedelta(days=1)
-                if e_dt < s_dt: e_dt += timedelta(days=1)
+                s_dt = clean_date.replace(hour=sh, minute=sm)
+                if prev_start and s_dt < prev_start: 
+                    clean_date += timedelta(days=1)
+                    s_dt += timedelta(days=1)
+                    
+                # Twarda matematyka zamiast halucynacji LLM
+                e_dt = s_dt + timedelta(hours=dh, minutes=dm)
                 
                 parsed_events.append({"s": s_dt, "e": e_dt, "act": r.activity, "conf": r.confidence, "is_corr": False, "reason": None, "orig_s": None, "orig_e": None})
                 prev_start = s_dt
@@ -289,8 +277,8 @@ class TimelineService:
                 continue
 
         parsed_events.sort(key=lambda x: x["s"])
-        
         healed, parent_hash = [], "0"*64
+        
         for p in parsed_events:
             if not healed:
                 healed.append(p)
@@ -358,32 +346,47 @@ class RuleService:
         
         for idx, ev in enumerate(timeline):
             # ---------------------------------------------------------
-            # BEHAVIORAL RULE: Art. 34 (Procedural Selector Error)
-            # Analiza kontekstowa: wykrywa od 1 do 5 minut odpoczynku na początku dnia
+            # EKSPERCKA REGUŁA BEHAWIORALNA: Błąd selektora (1 min łóżka)
             # ---------------------------------------------------------
             if ev.activity == EventType.REST and 0 < ev.duration_minutes <= 5:
                 prev_ev = timeline[idx-1] if idx > 0 else None
                 next_ev = timeline[idx+1] if idx + 1 < len(timeline) else None
                 
                 is_shift_start = False
-                if prev_ev is None:
+                if prev_ev is None or prev_ev.activity == EventType.UNKNOWN:
                     is_shift_start = True
                 elif prev_ev.activity == EventType.REST and prev_ev.duration_minutes >= 120:
-                    is_shift_start = True
-                elif prev_ev.activity == EventType.UNKNOWN:
                     is_shift_start = True
                     
                 if is_shift_start and next_ev and next_ev.activity in [EventType.OTHER_WORK, EventType.DRIVING]:
                     rule_key = f"ART34_{ev.event_id}"
                     if rule_key not in ctx.triggered_rules:
+                        # Gotowy, wyrafinowany materiał dowodowy wprowadzony z logiki biznesowej
+                        s_time = ev.start_time_utc.strftime("%H:%M")
+                        e_time = ev.end_time_utc.strftime("%H:%M")
+                        
+                        explanation = f"""**Błąd formalny - fałszowanie ewidencji:**
+Zamiast natychmiastowego ustawienia 'innej pracy' (młotki) w celu przygotowania pojazdu i obsługi tachografu, zarejestrowano odpoczynek. Jest to traktowane jako uchybienie.
+
+**Europejska Podstawa Prawna do obrony:**
+- Rozp. (UE) nr 165/2014, Art. 34 ust. 3 (Prawo do ręcznej korekty błędu zapisu)
+- Rozp. (UE) nr 1266/2009 (Reguła 1 minuty - technologiczne ograniczenie urządzenia)
+- Art. 92c Ustawy o transporcie drogowym (Znikomy wpływ na bezpieczeństwo)
+
+**SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (Wymagane natychmiast):**
+> **Data i czas zdarzenia:** {ev.start_time_utc.strftime('%d.%m.%Y')}, godz. {s_time} – {e_time}
+> **Prawidłowa czynność:** Inna praca (młotki)
+> **Wyjaśnienie:** Omyłkowe użycie selektora grup czasowych / błąd zapisu podczas logowania karty. Zamiast innej pracy (obsługa codzienna), tachograf zarejestrował {ev.duration_minutes} min odpoczynku.
+> **Podstawa prawna:** Korekta zapisu zgodnie z Art. 34 ust. 3 Rozporządzenia (UE) 165/2014.
+> *[Czytelny podpis kierowcy]*"""
+
                         violations.append(Violation(
-                            violation_id=str(uuid.uuid4()), rule_id="ART34", article="Art. 34 ust. 5 lit. b (Rozp. 165/2014)", regulation="165/2014",
-                            description="Niewłaściwe użycie selektora: zarejestrowano odpoczynek zamiast innej pracy podczas logowania karty.",
-                            explanation=f"Czas poświęcony na obsługę tachografu to prawnie czas pracy ('młotki').\nSystem wykrył, że zaraz po logowaniu karty zarejestrowano {ev.duration_minutes} min odpoczynku przed rozpoczęciem faktycznej pracy.",
+                            violation_id=str(uuid.uuid4()), rule_id="ART34", article="Art. 34 ust. 5 lit. b", regulation="165/2014",
+                            description="Niewłaściwe użycie selektora: zarejestrowano odpoczynek tuż po włożeniu karty.",
+                            explanation=explanation,
                             severity=Severity.MEDIUM, estimated_fine_eur=pack.calculate_fine("ART34_SELECTOR_ERROR", 0),
-                            confidence=ev.confidence, defense_possible=True,
-                            defense_score=0.90, # Bardzo wysoka szansa obrony dzięki wiedzy eksperckiej
-                            defense_strategy="Zastosuj Regułę 1 minuty (Rozp. 1266/2009) oraz Znikomą Szkodliwość (Art. 92c). Wymagany wpis na odwrocie wydruku.",
+                            confidence=ev.confidence, defense_possible=True, defense_score=0.95,
+                            defense_strategy="Bardzo silna linia obrony przy użyciu wpisu na odwrocie wydruku wg szablonu.",
                             evidence_event_ids=[ev.event_id], triggered_at=datetime.now(timezone.utc)
                         ))
                         ctx.triggered_rules.append(rule_key)
@@ -397,19 +400,18 @@ class RuleService:
                     violations.append(Violation(
                         violation_id=str(uuid.uuid4()), rule_id="DATA_GAP", article="Art. 34", regulation="165/2014",
                         description=f"Brak danych z tachografu przez {ev.duration_minutes} min.",
-                        explanation=f"System zidentyfikował brak ciągłości danych. Kierowca musi posiadać dowód na wpis manualny z tego okresu.",
+                        explanation=f"Wykryto faktyczną lukę. Kierowca musi posiadać dowód na wpis manualny z tego okresu.",
                         severity=Severity.MEDIUM, estimated_fine_eur=pack.calculate_fine("DATA_GAP_RULE", 0),
-                        confidence=1.0, defense_possible=True, defense_strategy="Zapasowy wpis manualny (Manual Entry).",
+                        confidence=1.0, defense_possible=True, defense_score=0.0, defense_strategy="Zapasowy wpis manualny (Manual Entry).",
                         evidence_event_ids=[ev.event_id], triggered_at=datetime.now(timezone.utc)
                     ))
                     ctx.triggered_rules.append(rule_key)
 
             # ---------------------------------------------------------
-            # LIMIT RULES: Art. 7 (Continuous)
+            # CONTINUOUS DRIVING TRACKER (Art. 7)
             # ---------------------------------------------------------
             if ev.activity == EventType.DRIVING:
                 ctx.continuous_driving_minutes += ev.duration_minutes
-                ctx.daily_driving_minutes += ev.duration_minutes
                 ctx.current_break_sequence.clear()
                 ctx.current_driving_events.append(ev)
             elif ev.activity == EventType.BREAK:
@@ -434,8 +436,9 @@ class RuleService:
                         explanation=f"Zgromadzono {ctx.continuous_driving_minutes} min ciągłej jazdy bez udokumentowanej przerwy 45 min.",
                         severity=Severity.HIGH if exc > 60 else Severity.MEDIUM,
                         estimated_fine_eur=pack.calculate_fine("ART7_CONTINUOUS_DRIVING", exc),
-                        confidence=round(0.95 * ev_conf, 2), defense_possible=True,
-                        evidence_event_ids=[e.event_id for e in ctx.current_driving_events], triggered_at=datetime.now(timezone.utc)
+                        confidence=round(0.95 * ev_conf, 2), defense_possible=True, defense_score=0.0,
+                        defense_strategy=None, evidence_event_ids=[e.event_id for e in ctx.current_driving_events], 
+                        triggered_at=datetime.now(timezone.utc)
                     ))
                     ctx.triggered_rules.append(rule_key)
                     ctx.continuous_driving_minutes = 0 
@@ -450,10 +453,7 @@ class DefenseService:
     def assess(self, violations: List[Violation], evidence: ExternalEvidence) -> List[Violation]:
         for v in violations:
             if not v.defense_possible: continue
-            
-            # Zapobiegamy nadpisaniu score dla reguł kontekstowych (które mają wbudowaną wiedzę DGSA)
-            if v.rule_id == "ART34":
-                continue
+            if v.rule_id == "ART34": continue # Omija reguły kontekstowe wycenione w RuleEngine
                 
             score = 0.10
             strategy = []
@@ -483,32 +483,29 @@ class ReportService:
         d_name = driver_name if driver_name and driver_name.lower() != "nieznany" else "Kierowco"
         
         if not violations:
-            summary = f"Panie/Pani {d_name},\n\nPo dokładnej analizie osi czasu nie stwierdziłem żadnych naruszeń z tytułu Rozporządzenia (WE) 561/2006 ani 165/2014. Limity czasu pracy i przerw zostały zachowane."
+            summary = f"Panie/Pani {d_name},\n\nPo dokładnej analizie osi czasu nie stwierdziłem żadnych naruszeń. Limity czasu pracy zostały zachowane."
             return AuditReport(
                 audit_id=audit_id, created_at=datetime.now(timezone.utc),
                 summary=summary, violations=[], total_risk_score=0.1, compliance_status="COMPLIANT",
                 confidence_score=ocr_conf, trace=trace
             )
             
-        system_prompt = f"""Jesteś Głównym Inspektorem ITD i certyfikowanym doradcą DGSA.
-Napisz profesjonalny, zwięzły raport doradczy skierowany bezpośrednio do kierowcy. Zwróć się do niego: Panie/Pani {d_name}.
-
-Użyj formatowania Markdown (pogrubienia, wypunktowania).
-Wyjaśnij popełnione błędy, ale skup się na linii obrony (np. Reguła 1 minuty 1266/2009, wpis na odwrocie, znikoma szkodliwość).
-Podaj kierowcy gotowy szablon wpisu na odwrocie wydruku (z Art. 34 ust. 3), jeśli problem wynika ze złego operowania selektorem na początku dnia (łóżko zamiast młotków).
-
-Dane naruszeń (JSON): {[v.model_dump() for v in violations]}"""
+        system_prompt = f"""Jesteś Głównym Inspektorem ITD. Napisz raport dla kierowcy (Panie/Pani {d_name}).
+ZASADY KRYTYCZNE:
+1. Używaj DOKŁADNIE argumentów z pola 'explanation' dostarczonego JSONa.
+2. Jeśli 'explanation' zawiera SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (zaczynający się od znaków >), MUSISZ go przekleić kropka w kropkę w sekcji obrony bez żadnych modyfikacji. To twardy wymóg prawny.
+3. Zachowaj formę Markdown.
+Dane: {[v.model_dump() for v in violations]}"""
 
         try:
             res = self.client.chat.completions.create(
                 model=OPENAI_MODEL_FAST,
                 messages=[{"role": "system", "content": system_prompt}],
-                temperature=0.2
+                temperature=0.0
             )
             summary = res.choices[0].message.content
-        except Exception as e:
-            logger.error(f"LLM Summary generation failed: {e}")
-            summary = "\n".join([f"- {v.article} ({v.regulation}) | {v.description}" for v in violations])
+        except:
+            summary = "\n".join([f"- {v.article} ({v.regulation}) | {v.description}\n{v.explanation}" for v in violations])
 
         return AuditReport(
             audit_id=audit_id, created_at=datetime.now(timezone.utc), summary=summary,
@@ -540,11 +537,10 @@ class AuditService:
         )
 
         ocr_start = time.time()
-        doc_date, raw_events, ocr_conf, extracted_driver_name = self.ocr_svc.extract(image_bytes)
+        doc_date, raw_events, ocr_conf, ext_name = self.ocr_svc.extract(image_bytes)
         trace.ocr_latency_ms = (time.time() - ocr_start) * 1000
 
-        if not raw_events: return self._early_exit(audit_id, trace, "NO_EVENTS_FOUND", "OCR nie wykrył zdarzeń.", ocr_conf)
-        if ocr_conf < CONFIDENCE_THRESHOLD: return self._early_exit(audit_id, trace, "UNCERTAIN", "Jakość dokumentu jest zbyt niska.", ocr_conf)
+        if not raw_events: return self._early_exit(audit_id, trace, "NO_EVENTS_FOUND", "Brak zdarzeń.", ocr_conf)
 
         try:
             _, flags, stats = self.timeline_svc.process_and_save(audit_id, driver_id, doc_date, raw_events)
@@ -554,7 +550,7 @@ class AuditService:
             return self._early_exit(audit_id, trace, "RECONSTRUCTION_ERROR", str(e), ocr_conf)
 
         canonical = self.repo.get_canonical_timeline(driver_id, days_back=28)
-        if not canonical: return self._early_exit(audit_id, trace, "TIMELINE_EMPTY", "Pusta oś czasu po weryfikacji.", ocr_conf)
+        if not canonical: return self._early_exit(audit_id, trace, "TIMELINE_EMPTY", "Pusta oś czasu.", ocr_conf)
 
         confs = [e.confidence for e in canonical]
         trace.timeline_confidence_avg = round(sum(confs) / len(confs), 2)
@@ -572,33 +568,21 @@ class AuditService:
         trace.finished_at = datetime.now(timezone.utc)
         trace.legal_engine_latency_ms = (time.time() - legal_start) * 1000
 
-        return self.report_svc.generate(audit_id, extracted_driver_name, defended_violations, trace, ocr_conf)
+        return self.report_svc.generate(audit_id, ext_name, defended_violations, trace, ocr_conf)
         
     def _early_exit(self, audit_id, trace, status, message, conf) -> dict:
         return {"status": status, "message": message}
 
 # =========================================================
-# BACKWARD COMPATIBILITY ADAPTER (FASADA DLA APP.PY)
+# BACKWARD COMPATIBILITY ADAPTER
 # =========================================================
 
 class AuditPipeline:
     def __init__(self):
         self.service = AuditService()
-
     def run(self, image_bytes, profile=POLAND_PACK_2025):
-        fallback_evidence = ExternalEvidence(
-            traffic_jam_detected=False, accident_on_route=False, weather_alert_active=False,
-            parking_unavailable=False, border_delay=False, ferry_or_train_crossing=False
-        )
-        
-        result = self.service.run_audit(
-            driver_id="STREAMLIT_DRIVER", 
-            image_bytes=image_bytes, 
-            evidence=fallback_evidence, 
-            pack=profile
-        )
-        
+        fb_evidence = ExternalEvidence()
+        result = self.service.run_audit("STREAMLIT_DRIVER", image_bytes, fb_evidence, profile)
         if isinstance(result, dict) and "status" in result and result["status"] not in ["NON_COMPLIANT", "COMPLIANT"]:
             return result
-            
         return result.model_dump()
