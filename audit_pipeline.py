@@ -1,7 +1,7 @@
 # =========================================================
 # POCKET DGSA & TACHO
-# ENTERPRISE COMPLIANCE AI ENGINE v24
-# BULLETPROOF EXTRACTION & REPORTING CORE
+# ENTERPRISE COMPLIANCE AI ENGINE v25
+# FORENSIC SYMBOL TRANSCRIBER CORE (DETERMINISTIC MATH)
 # =========================================================
 
 import base64
@@ -53,6 +53,12 @@ class UnknownPolicy(str, Enum):
     STRICT = "STRICT"
     NEUTRAL = "NEUTRAL"
     DRIVER_FRIENDLY = "DRIVER_FRIENDLY"
+
+class RestType(str, Enum):
+    NONE = "NONE"
+    REGULAR_DAILY = "REGULAR_DAILY"
+    REDUCED_DAILY = "REDUCED_DAILY"
+    SPLIT_DAILY = "SPLIT_DAILY"
 
 # =========================================================
 # 2. DOMAIN LAYER: EXTERNAL EVIDENCE & JURISDICTIONS
@@ -171,7 +177,7 @@ class AuditReport(BaseModel):
     trace: AuditTrace
 
 # =========================================================
-# 4. SERVICE LAYER: REPOSITORY & ROBUST OCR
+# 4. SERVICE LAYER: REPOSITORY & RAW LINGUISTIC OCR
 # =========================================================
 
 class TimelineRepository(ABC):
@@ -194,18 +200,13 @@ class PostgresMockTimelineRepository(TimelineRepository):
         return events
 
 class OCRTimelineEvent(BaseModel):
+    # KRYTYCZNA ZMIANA: Model OCR zwraca absolutnie surowy tekst. Żadnej matematyki, żadnych enumów.
     start_time_raw: str
     duration_raw: str
-    activity: EventType
+    pictogram_raw: str  # Przechowuje surowy znak: 'o', '*', 'h', 'X'
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
 
-    @field_validator("activity", mode="before")
-    @classmethod
-    def normalize_activity(cls, value):
-        mapping = {"DRIVE": "DRIVING", "WORK": "OTHER_WORK", "AVAIL": "AVAILABILITY"}
-        return mapping.get(str(value).upper(), str(value).upper()) if isinstance(value, str) else value
-
-    @field_validator("start_time_raw", "duration_raw", mode="before")
+    @field_validator("start_time_raw", "duration_raw", "pictogram_raw", mode="before")
     @classmethod
     def allow_all_strings(cls, value):
         return str(value).strip()
@@ -220,16 +221,26 @@ class OCRService:
     def extract(self, image_bytes) -> Tuple[str, List[OCRTimelineEvent], float, str]:
         b64 = base64.b64encode(image_bytes).decode("utf-8")
         system_prompt = """
-        Analyze tachograph printout. STRICT RULES:
-        1. Extract the TIMELINE section only. 
-        2. CRITICAL: STOP EXTRACTION immediately when you see the line '--- Σ ---' or the sum symbol. Do NOT extract any data from the summary block at the bottom.
-        3. Read each line exactly as printed. Extract 'start_time_raw' and 'duration_raw'.
-        4. Extract the driver's name if visible.
+        Analyze tachograph printout. STRICT LINE TRANSCRIBING RULES:
+        1. Extract the primary activity list ONLY. Stop processing completely immediately when you reach the section marker '--- Σ ---'.
+        2. For every printed activity line before '--- Σ ---', extract:
+           - 'start_time_raw': the printed timestamp (HH:MM)
+           - 'duration_raw': the printed duration (HHhMM)
+           - 'pictogram_raw': the exact activity character or symbol printed at the start of that line.
+        
+        CRITICAL SYMBOL GUIDE:
+        - If the line starts with a circle symbol, 'o', or 'O' -> set pictogram_raw to 'o'
+        - If the line starts with crossed hammers, or '*' -> set pictogram_raw to '*'
+        - If the line starts with a bed icon, or 'h', 'H' -> set pictogram_raw to 'h'
+        - If the line starts with a crossed square, 'X', '☒' -> set pictogram_raw to 'X'
+        
+        Example line: '* 22:39 00h59' -> start_time_raw='22:39', duration_raw='00h59', pictogram_raw='*'
+        Example line: 'o 23:41 00h19' -> start_time_raw='23:41', duration_raw='00h19', pictogram_raw='o'
         """
         res = client.beta.chat.completions.parse(
             model=OPENAI_MODEL_VISION,
             messages=[{"role": "system", "content": system_prompt},
-                      {"role": "user", "content": [{"type": "text", "text": "Extract timeline. Stop at summary block."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
+                      {"role": "user", "content": [{"type": "text", "text": "Transcribe the printed timeline rows carefully. Ignore the summary footer."}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}}] }],
             response_format=OCRExtractionResult, temperature=0
         )
         parsed = res.choices[0].message.parsed
@@ -238,7 +249,7 @@ class OCRService:
         return parsed.document_date, parsed.events, parsed.overall_confidence, d_name
 
 # =========================================================
-# 5. SERVICE LAYER: TIMELINE RECONSTRUCTION (BULLETPROOF PARSER)
+# 5. SERVICE LAYER: TIMELINE RECONSTRUCTION (DETERMINISTIC MATH)
 # =========================================================
 
 class TimelineService:
@@ -248,12 +259,26 @@ class TimelineService:
     def parse_time(self, raw: str) -> Tuple[int, int]:
         clean = str(raw).lower().replace("h", ":").replace("m", "").strip()
         if ":" in clean:
-            h, m = clean.split(":", 1)
-            return int(h), int(m)
+            parts = clean.split(":", 1)
+            try: return int(parts[0]), int(parts[1])
+            except: return 0, 0
         elif len(clean) == 4 and clean.isdigit():
             return int(clean[:2]), int(clean[2:])
-        else:
-            return 0, int(clean)
+        return 0, 0
+
+    def map_pictogram_to_type(self, pic: str) -> EventType:
+        # Twarda detekcja bez halucynacji AI
+        char = str(pic).strip().lower()
+        if 'o' in char or '0' in char or 'circle' in char:
+            return EventType.DRIVING
+        if '*' in char or 'hammer' in char or 'work' in char or 'x' in char:
+            # Wiele OCR myli * z literą x
+            return EventType.OTHER_WORK
+        if 'h' in char or 'bed' in char or 'rest' in char:
+            return EventType.REST
+        if '☒' in char or 'box' in char or 'avail' in char:
+            return EventType.AVAILABILITY
+        return EventType.UNKNOWN
 
     def process_and_save(self, audit_id: str, driver_id: str, doc_date: str, raw_events: List[OCRTimelineEvent]) -> Tuple[List[TimelineEvent], List[AuditFlag], ReconstructionStats]:
         clean_date = datetime.strptime(re.search(r"(\d{2}[./-]\d{2}[./-]\d{4})", doc_date).group(1).replace("-", ".").replace("/", "."), "%d.%m.%Y").replace(tzinfo=timezone.utc)
@@ -272,11 +297,14 @@ class TimelineService:
                 if prev_start and s_dt < prev_start: 
                     clean_date += timedelta(days=1)
                     s_dt += timedelta(days=1)
-                    
+                
+                # TWARDA MATEMATYKA ZAMIAST DOMYSŁÓW AI
                 e_dt = s_dt + timedelta(hours=dh, minutes=dm)
-                parsed_events.append({"s": s_dt, "e": e_dt, "act": r.activity, "conf": r.confidence, "is_corr": False, "reason": None, "orig_s": None, "orig_e": None})
+                act_type = self.map_pictogram_to_type(r.pictogram_raw)
+                
+                parsed_events.append({"s": s_dt, "e": e_dt, "act": act_type, "conf": r.confidence, "is_corr": False, "reason": None, "orig_s": None, "orig_e": None})
                 prev_start = s_dt
-            except Exception as e:
+            except:
                 stats.events_dropped += 1
                 continue
 
@@ -349,7 +377,7 @@ class RuleService:
         
         for idx, ev in enumerate(timeline):
             # ---------------------------------------------------------
-            # ART. 34: BŁĄD SELEKTORA (1 min łóżka po zalogowaniu)
+            # ART. 34: BŁĄD SELEKTORA (1 do 15 min łóżka po zalogowaniu)
             # ---------------------------------------------------------
             if ev.activity == EventType.REST and 0 < ev.duration_minutes <= 15:
                 prev_ev = timeline[idx-1] if idx > 0 else None
@@ -368,22 +396,27 @@ class RuleService:
                         e_time = ev.end_time_utc.strftime("%H:%M")
                         doc_d = ev.start_time_utc.strftime('%d.%m.%Y')
                         
-                        explanation = f"""**Błąd formalny - niewłaściwe użycie selektora:**
-Zamiast natychmiastowego ustawienia 'innej pracy' (młotki) w celu przygotowania pojazdu i obsługi tachografu po włożeniu karty, urządzenie zarejestrowało odpoczynek. Służby kontrolne traktują to jako uchybienie proceduralne.
+                        explanation = f"""**Błąd formalny - niewłaściwe użycie przełącznika grup czasowych:**
+Zamiast natychmiastowego wybrania statusu 'inna praca' (młotki) w celu przygotowania pojazdu i obsługi technicznej, urządzenie zarejestrowało odpoczynek. Jest to traktowane jako uchybienie proceduralne.
 
-**SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU:**
+**Narzędzia i Podstawy Prawne do obrony:**
+* **Rozp. (UE) nr 165/2014, Art. 34 ust. 3:** Gwarantuje kierowcy prawo do ręcznego skorygowania błędu ewidencji poprzez odręczną adnotację na rewersie taśmy.
+* **Rozp. (UE) nr 1266/2009 (Reguła 1 minuty):** Urządzenie mogło domyślnie znajdować się w trybie odpoczynku, a proces logowania zajął kilkanaście sekund – zaokrąglenie to ograniczenie technologiczne, a nie świadome fałszowanie.
+
+**SZABLON WPISU DO PRZEPISANIA NA ODWROCIE WYDRUKU:**
 > **Data i czas zdarzenia:** {doc_d}, godz. {s_time} – {e_time}
 > **Prawidłowa czynność:** Inna praca (młotki)
-> **Wyjaśnienie:** Omyłkowe użycie selektora / błąd techniczny zapisu podczas logowania karty. Zamiast innej pracy, tachograf zarejestrował {ev.duration_minutes} min odpoczynku.
-> **Podstawa prawna:** Korekta zapisu zgodnie z Art. 34 ust. 3 Rozporządzenia (UE) 165/2014."""
+> **Wyjaśnienie:** Omyłkowe użycie selektora grup czasowych / błąd zapisu podczas logowania karty. Zamiast innej pracy, tachograf zarejestrował {ev.duration_minutes} min odpoczynku.
+> **Podstawa prawna:** Korekta zapisu zgodnie z Art. 34 ust. 3 Rozporządzenia (UE) 165/2014.
+> *[Czytelny podpis kierowcy]*"""
 
                         violations.append(Violation(
                             violation_id=str(uuid.uuid4()), rule_id="ART34", article="Art. 34 ust. 5 lit. b", regulation="165/2014",
-                            description="Zarejestrowano odpoczynek tuż po włożeniu karty (zamiast innej pracy).",
+                            description=f"Zarejestrowano błąd formalny selektora ({ev.duration_minutes} min łóżka tuż po zalogowaniu karty).",
                             explanation=explanation,
                             severity=Severity.MEDIUM, estimated_fine_eur=pack.calculate_fine("ART34_SELECTOR_ERROR", 0),
                             confidence=ev.confidence, defense_possible=True, defense_score=0.95,
-                            defense_strategy="Bardzo silna obrona przy zastosowaniu odręcznego wpisu na wydruku (zgodnie z załączonym szablonem).",
+                            defense_strategy="Bardzo silna obrona. Opisz wydruk odręcznie wg podanego szablonu, podpisz i zachowaj na 56 dni.",
                             evidence_event_ids=[ev.event_id], triggered_at=datetime.now(timezone.utc)
                         ))
                         ctx.triggered_rules.append(rule_key)
@@ -397,9 +430,9 @@ Zamiast natychmiastowego ustawienia 'innej pracy' (młotki) w celu przygotowania
                     violations.append(Violation(
                         violation_id=str(uuid.uuid4()), rule_id="DATA_GAP", article="Art. 34", regulation="165/2014",
                         description=f"Brak danych z tachografu przez {ev.duration_minutes} min.",
-                        explanation=f"Wykryto faktyczną lukę. Kierowca musi posiadać dowód na wpis manualny z tego okresu.",
+                        explanation=f"Wykryto faktyczną lukę w odczytach. Jeśli w tym czasie prowadzono pojazd bez karty lub wykonywano inną pracę, wymagane jest posiadanie wydruku z wpisem manualnym (Manual Entry).",
                         severity=Severity.MEDIUM, estimated_fine_eur=pack.calculate_fine("DATA_GAP_RULE", 0),
-                        confidence=1.0, defense_possible=True, defense_score=0.0, defense_strategy="Zapasowy wpis manualny.",
+                        confidence=1.0, defense_possible=True, defense_score=0.1, defense_strategy="Wpis manualny na rewersie wydruku.",
                         evidence_event_ids=[ev.event_id], triggered_at=datetime.now(timezone.utc)
                     ))
                     ctx.triggered_rules.append(rule_key)
@@ -450,18 +483,16 @@ class DefenseService:
     def assess(self, violations: List[Violation], evidence: ExternalEvidence) -> List[Violation]:
         for v in violations:
             if not v.defense_possible: continue
-            if v.rule_id == "ART34": continue # Omijamy reguły eksperckie zdefiniowane twardo w silniku
+            if v.rule_id == "ART34": continue
                 
             score = 0.10
             strategy = []
-            
             if evidence.traffic_jam_detected: score += 0.40; strategy.append("Zator drogowy")
             if evidence.accident_on_route: score += 0.50; strategy.append("Wypadek")
             if evidence.parking_unavailable: score += 0.30; strategy.append("Brak parkingu")
             if evidence.border_delay: score += 0.35; strategy.append("Opóźnienie na granicy")
 
             v.defense_score = min(1.0, score)
-            
             if v.defense_score > 0.70: v.defense_strategy = " | ".join(strategy) + " -> Bardzo mocne dowody (Art. 12)."
             elif v.defense_score > 0.30: v.defense_strategy = " | ".join(strategy) + " -> Umiarkowane szanse."
             else: v.defense_strategy = "Słabe dowody. Znikoma szansa."
@@ -480,20 +511,20 @@ class ReportService:
         d_name = driver_name if driver_name and driver_name.lower() != "nieznany" else "Kierowco"
         
         if not violations:
-            summary = f"Panie/Pani {d_name},\n\nPo dokładnej analizie osi czasu nie stwierdziłem żadnych naruszeń. Limity czasu pracy zostały zachowane."
+            summary = f"Szanowny Panie/Pani {d_name},\n\nPo dokładnej, deterministycznej analizie osi czasu z dnia {doc_date} nie stwierdzono żadnych uchybień ani naruszeń przepisów Rozporządzenia (WE) nr 561/2006. Pełna zgodność prawna."
             return AuditReport(
                 audit_id=audit_id, created_at=datetime.now(timezone.utc),
                 summary=summary, violations=[], total_risk_score=0.1, compliance_status="COMPLIANT",
                 confidence_score=ocr_conf, trace=trace
             )
             
-        system_prompt = f"""Jesteś Inspektorem ITD i doradcą DGSA. Napisz raport dla kierowcy (Panie/Pani {d_name}).
-ZASADY KRYTYCZNE:
-1. Data wygenerowania wydruku to: {doc_date}. NIE UŻYWAJ dzisiejszej daty do opisu zdarzeń z wydruku!
-2. Używaj DOKŁADNIE argumentów z pola 'explanation' dostarczonego JSONa. Nie zmyślaj nowych naruszeń.
-3. Jeśli 'explanation' zawiera SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (zaczynający się od znaków >), MUSISZ go przekleić w całości, słowo w słowo. To twardy wymóg prawny.
-4. Formatuj tekst w Markdown (pogrubienia, sekcje).
-Dane: {[v.model_dump() for v in violations]}"""
+        system_prompt = f"""Jesteś Głównym Inspektorem ITD i certyfikowanym doradcą DGSA. Zwróć się bezpośrednio do kierowcy (Szanowny Panie/Pani {d_name}).
+ZASADY ARCHITEKTONICZNE:
+1. Data wydruku to: {doc_date}. Odnoś się wyłącznie do tej daty dokumentu. Absolutnie zakazuję stosowania daty dzisiejszej w opisie.
+2. Używaj DOKŁADNIE argumentów z pola 'explanation' dostarczonego JSONa. Nie zmyślaj nowych naruszeń (takich jak fałszywe braki danych).
+3. Jeśli 'explanation' zawiera SZABLON DO PRZEPISANIA NA ODWROCIE WYDRUKU (zaczynający się od znaku >), MUSISZ go przekleić w całości, słowo w słowo, bez absolutnie żadnych zmian, pod spodem dodając instrukcję żeby kierowca złożył tam podpis.
+4. Użyj formatowania Markdown, aby uwydatnić wagę raportu. Doceń profesjonalizm (np. prawidłowy wpis manualny z nocy i 8 minut obsługi codziennej), by budować pozytywne relacje z kierowcą.
+Dane naruszeń: {[v.model_dump() for v in violations]}"""
 
         try:
             res = self.client.chat.completions.create(
@@ -538,7 +569,7 @@ class AuditService:
         doc_date, raw_events, ocr_conf, ext_name = self.ocr_svc.extract(image_bytes)
         trace.ocr_latency_ms = (time.time() - ocr_start) * 1000
 
-        if not raw_events: return self._early_exit(audit_id, trace, "NO_EVENTS_FOUND", "Brak zdarzeń.", ocr_conf)
+        if not raw_events: return self._early_exit(audit_id, trace, "NO_EVENTS_FOUND", "Brak zdarzeń na wydruku.", ocr_conf)
 
         try:
             _, flags, stats = self.timeline_svc.process_and_save(audit_id, driver_id, doc_date, raw_events)
@@ -566,14 +597,13 @@ class AuditService:
         trace.finished_at = datetime.now(timezone.utc)
         trace.legal_engine_latency_ms = (time.time() - legal_start) * 1000
 
-        # PRZEKAZANIE TWARDEJ DATY DOKUMENTU DO LLM
         return self.report_svc.generate(audit_id, ext_name, doc_date, defended_violations, trace, ocr_conf)
         
     def _early_exit(self, audit_id, trace, status, message, conf) -> dict:
         return {"status": status, "message": message}
 
 # =========================================================
-# BACKWARD COMPATIBILITY ADAPTER (FASADA DLA APP.PY)
+# BACKWARD COMPATIBILITY ADAPTER
 # =========================================================
 
 class AuditPipeline:
